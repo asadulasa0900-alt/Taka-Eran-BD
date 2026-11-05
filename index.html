@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টাকা আর্ন বিডি (Taka Earn BD)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
+        body { background-color: #0A0E1A; color: #E1E7EF; min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: #121829; padding: 16px; border-bottom: 1px solid #1E293B; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #3B82F6, #10B981); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 20px; color: #ffffff; }
+        .balance-badge { background-color: #1E293B; border: 1px solid #10B981; color: #10B981; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+        .container { flex: 1; padding: 16px; max-width: 480px; margin: 0 auto; width: 100%; padding-bottom: 90px; }
+        .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .title { font-size: 16px; font-weight: 700; color: #F8FAFC; }
+        .subtitle { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; transition: background-color 0.2s, transform 0.1s; background-color: #3B82F6; color: #ffffff; text-decoration: none; margin-top: 8px; }
+        .btn:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-green { background-color: #10B981; }
+        .btn-purple { background-color: #8B5CF6; }
+        .btn-red { background-color: #EF4444; }
+        .btn-disabled { background-color: #334155 !important; color: #94A3B8 !important; cursor: not-allowed; }
+        .badge { background-color: rgba(16, 185, 129, 0.2); color: #10B981; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        nav { position: fixed; bottom: 0; left: 0; right: 0; background-color: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 10px 0; z-index: 100; max-width: 480px; margin: 0 auto; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #94A3B8; text-decoration: none; font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: #10B981; font-weight: bold; }
+        .nav-icon { font-size: 18px; margin-bottom: 2px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-top: 6px; margin-bottom: 12px; outline: none; font-size: 14px; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background-color: #10B981; color: #ffffff; padding: 12px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); display: none; z-index: 1000; text-align: center; max-width: 90%; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-box">
+            <div class="logo-icon">৳</div>
+            <div>
+                <div class="title" style="font-size: 15px;">টাকা আর্ন বিডি</div>
+                <div class="subtitle">Taka Earn BD</div>
+            </div>
+        </div>
+        <div class="balance-badge" id="userBalance">৳10.00</div>
+    </header>
+
+    <div class="toast" id="toast"></div>
+
+    <div class="container">
+        <!-- REELS PAGE -->
+        <div id="pageReels" class="page active">
+            <!-- Daily Check-in Card -->
+            <div class="card" style="border-color: #10B981;">
+                <div class="card-header">
+                    <div>
+                        <div class="title">🎁 ডেইলি চেক-ইন বোনাস</div>
+                        <div class="subtitle">প্রতিদিন অ্যাপ চালু করে বোনাস নিন</div>
+                    </div>
+                    <span class="badge" id="streakCount">স্ট্রিক: 0 দিন</span>
+                </div>
+                <button class="btn btn-green" id="btnCheckIn" onclick="claimDailyCheckIn()">ডেইলি চেক-ইন করুন (+৳১.০০)</button>
+            </div>
+
+            <!-- Top Side-by-Side Ad Options -->
+            <div class="card">
+                <div class="title" style="margin-bottom: 10px;">ভিডিও ও অ্যাড ডিরেক্ট স্লট (৳০.৫০ আয়)</div>
+                <div class="ad-grid">
+                    <div style="background-color: #0A0E1A; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #3B82F6;">
+                        <div style="font-weight: bold; font-size: 14px;">অ্যাড ১</div>
+                        <div style="font-size: 11px; color: #3B82F6; margin: 4px 0;">আন অ্যাড ইনকাম</div>
+                        <div style="font-size: 11px; color: #94A3B8;">৳০.৫০ টাকা</div>
+                        <button class="btn" style="padding: 8px; font-size: 12px;" onclick="openAd('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', 'অ্যাড ১')">এড দেখুন</button>
+                    </div>
+
+                    <div style="background-color: #0A0E1A; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #8B5CF6;">
+                        <div style="font-weight: bold; font-size: 14px;">অ্যাড ২</div>
+                        <div style="font-size: 11px; color: #8B5CF6; margin: 4px 0;">আন অ্যাড ইনকাম</div>
+                        <div style="font-size: 11px; color: #94A3B8;">৳০.৫০ টাকা</div>
+                        <button class="btn btn-purple" style="padding: 8px; font-size: 12px;" onclick="openAd('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 'অ্যাড ২')">এড দেখুন</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Short Reels -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="title">🎬 ৩০ সেকেন্ড শর্ট ভিডিও রিলস</div>
+                        <div class="subtitle">ভিডিও দেখে ইনকাম করুন ৫০ পয়সা</div>
+                    </div>
+                    <span class="badge">+৳০.৫০</span>
+                </div>
+                <button class="btn btn-red" onclick="openAd('https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f', 'শর্ট ভিডিও রিলস')">ভিডিও দেখা শুরু করুন</button>
+            </div>
+
+            <!-- Bottom Sponsored Ad Slots -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="title">🔥 স্পনসরড অ্যাড স্লট ১</div>
+                        <div class="subtitle">Adsterra Direct Ad | রিওয়ার্ড ৫০ পয়সা</div>
+                    </div>
+                    <span class="badge">+৳০.৫০</span>
+                </div>
+                <button class="btn btn-green" onclick="openAd('https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927', 'স্পনসরড অ্যাড ১')">বিজ্ঞাপনে যান ও ৫০ পয়সা নিন</button>
+            </div>
+        </div>
+
+        <!-- TASKS PAGE -->
+        <div id="pageTasks" class="page">
+            <div class="card">
+                <div class="title">📋 মাইক্রো-টাস্কসমূহ</div>
+                <div class="subtitle">টাস্কগুলো সম্পন্ন করে অতিরিক্ত টাকা আর্ন করুন</div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="title">ইউটিউব চ্যানেল সাবস্ক্রাইব</div>
+                        <div class="subtitle">অফিসিয়াল চ্যানেল সাবস্ক্রাইব করুন</div>
+                    </div>
+                    <span class="badge">৳১০.০০</span>
+                </div>
+                <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', 10.0)">কাজ করুন</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="title">ফেসবুক পেজে লাইক ও ফলো</div>
+                        <div class="subtitle">পেজ ভিজিট করে লাইক দিন</div>
+                    </div>
+                    <span class="badge">৳১০.০০</span>
+                </div>
+                <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 10.0)">কাজ করুন</button>
+            </div>
+
+            <!-- Task Special Ad Slot -->
+            <div class="card" style="border-color: #3B82F6;">
+                <div class="card-header">
+                    <div>
+                        <div class="title">⭐ টাস্ক পেজ স্পেশাল অ্যাড স্লট</div>
+                        <div class="subtitle">বিজ্ঞাপনে ক্লিক করে সরাসরি আয় করুন</div>
+                    </div>
+                    <span class="badge">+৳০.৫০</span>
+                </div>
+                <button class="btn" onclick="openAd('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', 'টাস্ক স্পেশাল অ্যাড')">বিজ্ঞাপনে যান ও ৫০ পয়সা নিন</button>
+            </div>
+        </div>
+
+        <!-- REFERRAL PAGE -->
+        <div id="pageRefer" class="page">
+            <div class="card">
+                <div class="title">👥 রেফার ও ইনকাম</div>
+                <div class="subtitle">বন্ধুদের রেফার করে বোনাস অর্জন করুন</div>
+                <div style="background-color:#0A0E1A; padding:12px; border-radius:10px; margin-top:12px; text-align:center;">
+                    <div style="font-size:12px; color:#94A3B8;">আপনার রেফারেল কোড</div>
+                    <div style="font-size:20px; font-weight:bold; color:#10B981; margin:4px 0;" id="refCode">REF-74921</div>
+                    <div style="font-size:12px; color:#94A3B8;">মোট রেফার করেছেন: <span id="refCount" style="color:#ffffff; font-weight:bold;">0</span> জন</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WITHDRAWAL PAGE -->
+        <div id="pageWithdraw" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <div class="title">💳 উইথড্রয়াল (উইথড্র)</div>
+                    <span style="font-size: 10px; color:#94A3B8; cursor:pointer;" onclick="promptAdmin()">🔒 এডমিন</span>
+                </div>
+                <div class="subtitle">বিকাশ, নগদ বা মোবাইল রিচার্জে টাকা তুলুন</div>
+                
+                <div style="margin-top:12px;">
+                    <label style="font-size:12px; color:#94A3B8;">পেমেন্ট মেথড</label>
+                    <select id="withdrawMethod">
+                        <option value="bKash">bKash (বিকাশ)</option>
+                        <option value="Nagad">Nagad (নগদ)</option>
+                        <option value="Recharge">Mobile Recharge (রিচার্জ)</option>
+                    </select>
+
+                    <label style="font-size:12px; color:#94A3B8;">অ্যাাকাউন্ট নম্বর</label>
+                    <input type="text" id="withdrawAccount" placeholder="০1700000000">
+
+                    <label style="font-size:12px; color:#94A3B8;">পরিমাণ (সর্বনিম্ন ১০০ ৳)</label>
+                    <input type="number" id="withdrawAmount" placeholder="100">
+
+                    <button class="btn btn-green" onclick="processWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-item active" onclick="switchPage('Reels', this)">
+            <div class="nav-icon">🎥</div>
+            <div>রিলস/ভিডিও</div>
+        </div>
+        <div class="nav-item" onclick="switchPage('Tasks', this)">
+            <div class="nav-icon">📋</div>
+            <div>টাস্ক</div>
+        </div>
+        <div class="nav-item" onclick="switchPage('Refer', this)">
+            <div class="nav-icon">👥</div>
+            <div>রেফার</div>
+        </div>
+        <div class="nav-item" onclick="switchPage('Withdraw', this)">
+            <div class="nav-icon">💳</div>
+            <div>উইথড্র</div>
+        </div>
+    </nav>
+
+    <script>
+        var balance = parseFloat(localStorage.getItem('taka_balance') || '10.00');
+        var streak = parseInt(localStorage.getItem('taka_streak') || '0', 10);
+        var lastCheckIn = localStorage.getItem('taka_lastCheckIn') || '';
+        var adsWatched = parseInt(localStorage.getItem('taka_adsWatched') || '0', 10);
+        var refCount = parseInt(localStorage.getItem('taka_refCount') || '0', 10);
+
+        var todayStr = new Date().toISOString().split('T')[0];
+
+        function updateUI() {
+            var balElem = document.getElementById('userBalance');
+            if (balElem) balElem.innerText = '৳' + balance.toFixed(2);
+            var strElem = document.getElementById('streakCount');
+            if (strElem) strElem.innerText = 'স্ট্রিক: ' + streak + ' দিন';
+            var refElem = document.getElementById('refCount');
+            if (refElem) refElem.innerText = refCount;
+            
+            var btnCheck = document.getElementById('btnCheckIn');
+            if (btnCheck) {
+                if (lastCheckIn === todayStr) {
+                    btnCheck.innerText = 'আজকের বোনাস নেওয়া হয়েছে ✓';
+                    btnCheck.className = 'btn btn-disabled';
+                    btnCheck.onclick = null;
+                } else {
+                    btnCheck.innerText = 'ডেইলি চেক-ইন করুন (+৳১.০০)';
+                    btnCheck.className = 'btn btn-green';
+                    btnCheck.onclick = claimDailyCheckIn;
+                }
+            }
+        }
+
+        function showToast(msg) {
+            var toast = document.getElementById('toast');
+            if (toast) {
+                toast.innerText = msg;
+                toast.style.display = 'block';
+                setTimeout(function() { toast.style.display = 'none'; }, 3000);
+            }
+        }
+
+        function switchPage(pageName, element) {
+            var pages = document.querySelectorAll('.page');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            var navItems = document.querySelectorAll('.nav-item');
+            for (var j = 0; j < navItems.length; j++) {
+                navItems[j].classList.remove('active');
+            }
+            var targetPage = document.getElementById('page' + pageName);
+            if (targetPage) targetPage.classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        function openAd(url, name) {
+            window.open(url, '_blank');
+            balance += 0.50;
+            adsWatched += 1;
+            localStorage.setItem('taka_balance', balance.toString());
+            localStorage.setItem('taka_adsWatched', adsWatched.toString());
+            updateUI();
+            showToast(name + ' দেখে ৳০.৫০ আয় যোগ হয়েছে!');
+        }
+
+        function openTask(url, reward) {
+            window.open(url, '_blank');
+            balance += reward;
+            localStorage.setItem('taka_balance', balance.toString());
+            updateUI();
+            showToast('টাস্ক সম্পন্ন হয়েছে! ৳' + reward + ' যোগ হয়েছে।');
+        }
+
+        function claimDailyCheckIn() {
+            if (lastCheckIn === todayStr) return;
+            balance += 1.00;
+            streak += 1;
+            lastCheckIn = todayStr;
+            localStorage.setItem('taka_balance', balance.toString());
+            localStorage.setItem('taka_streak', streak.toString());
+            localStorage.setItem('taka_lastCheckIn', lastCheckIn);
+            updateUI();
+            showToast('অভিনন্দন! ডেইলি চেক-ইন বোনাস ৳১.০০ যোগ হয়েছে!');
+        }
+
+        function processWithdraw() {
+            var accElem = document.getElementById('withdrawAccount');
+            var amtElem = document.getElementById('withdrawAmount');
+            var acc = accElem ? accElem.value.trim() : '';
+            var amt = amtElem ? parseFloat(amtElem.value || '0') : 0;
+
+            if (adsWatched < 100) {
+                showToast('উইথড্র করতে কমপক্ষে ১০০ টি Ads দেখা লাগবে! (আপনার দেখা হয়েছে: ' + adsWatched + '/১০০)');
+                return;
+            }
+            if (refCount < 10) {
+                showToast('উইথড্র করতে কমপক্ষে ১০ টি রেফার করা লাগবে! (আপনার রেফার হয়েছে: ' + refCount + '/১০)');
+                return;
+            }
+            if (!acc) {
+                showToast('সঠিক অ্যাকাউন্ট নম্বর দিন!');
+                return;
+            }
+            if (amt < 100) {
+                showToast('সর্বনিম্ন উইথড্র অ্যামাউন্ট ১০০ টাকা!');
+                return;
+            }
+            if (balance < amt) {
+                showToast('আপনার পর্যাপ্ত ব্যালেন্স নেই!');
+                return;
+            }
+            balance -= amt;
+            localStorage.setItem('taka_balance', balance.toString());
+            updateUI();
+            showToast('আপনার উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
+        }
+
+        function promptAdmin() {
+            var pass = prompt('এডমিন পাসওয়ার্ড দিন:');
+            if (pass === 'Asadul123@AR') {
+                alert('এডমিন প্যানেলে প্রবেশ সফল হয়েছে!');
+            } else if (pass !== null) {
+                alert('ভুল পাসওয়ার্ড!');
+            }
+        }
+
+        window.onload = function() {
+            updateUI();
+        };
+    </script>
+</body>
+</html>
