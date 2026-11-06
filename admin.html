@@ -15,7 +15,6 @@
         .btn-purple { background-color: #8B5CF6; }
         .btn-red { background-color: #EF4444; }
         .btn-green { background-color: #10B981; }
-        .btn-blue { background-color: #3B82F6; }
         .sec-title { font-weight: bold; color: #3B82F6; margin: 15px 0 10px 0; border-top: 1px dashed #334155; padding-top: 10px; }
         .req-card { background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
         .btn-group { display: flex; gap: 10px; margin-top: 8px; }
@@ -24,13 +23,6 @@
 </head>
 <body>
 
-    <!-- Download Card for User -->
-    <div class="card" style="border-color: #3B82F6;">
-        <div class="title" style="color: #3B82F6;">📥 এডমিন ফাইল ডাউনলোড</div>
-        <div style="font-size: 13px; color: #94A3B8; margin-bottom: 10px; text-align: center;">আপনার এই এডমিন প্যানেলটি ফাইল আকারে ডাউনলোড করতে নিচের বাটনে ক্লিক করুন:</div>
-        <a class="btn btn-blue" href="admin.html" download="admin.html">ডাউনলোড এডমিন প্যানেল (.html)</a>
-    </div>
-
     <!-- Admin Login Screen -->
     <div id="loginSection" class="card">
         <div class="title">🔒 এডমিন লগইন</div>
@@ -38,7 +30,7 @@
         <button class="btn" onclick="loginAdmin()">লগইন করুন</button>
     </div>
 
-    <!-- Admin Main Dashboard (Hidden by default) -->
+    <!-- Admin Main Dashboard -->
     <div id="dashboardSection" style="display: none;">
         <div class="card">
             <div class="title">👑 টাকা আর্ন বিডি - এডমিন প্যানেল</div>
@@ -58,19 +50,20 @@
         </div>
     </div>
 
-    <!-- Firebase Connection -->
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
+        // আপনার ফায়ারবেজ কনসোল থেকে আসল কনফিগারেশন এখানে বসান
         const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForTakaEarnBD",
+            apiKey: "আপনার_আসল_apiKey_এখানে_দিন",
             authDomain: "taka-earn-bd-default-rtdb.firebaseapp.com",
             databaseURL: "https://taka-earn-bd-default-rtdb.firebaseio.com",
             projectId: "taka-earn-bd",
             storageBucket: "taka-earn-bd.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456:web:abcdef"
+            messagingSenderId: "আপনার_আসল_SenderId",
+            appId: "আপনার_আসল_AppId"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -135,9 +128,9 @@
                 for (var key in data) {
                     var req = data[key];
                     html += `<div class="req-card">
-                        <b>মেথড:</b> ${req.method} | <b>নম্বর:</b> ${req.account}<br>
-                        <b>টাকা:</b> ৳${req.amount} | <b>সময়:</b> ${req.time}<br>
-                        <b>স্ট্যাটাস:</b> <span style="color:${req.status === 'Approved' ? '#10B981' : (req.status === 'Rejected' ? '#EF4444' : '#F59E0B')}">${req.status}</span>
+                        <b>মেথড:</b> ${req.method || 'N/A'} | <b>নম্বর:</b> ${req.account || 'N/A'}<br>
+                        <b>টাকা:</b> ৳${req.amount || 0} | <b>সময়:</b> ${req.time || 'N/A'}<br>
+                        <b>স্ট্যাটাস:</b> <span style="color:${req.status === 'Approved' ? '#10B981' : (req.status === 'Rejected' ? '#EF4444' : '#F59E0B')}">${req.status || 'Pending'}</span>
                         <div class="btn-group">
                             <button class="btn-sm btn-green" onclick="updateReqStatus('${key}', 'Approved')">Approve</button>
                             <button class="btn-sm btn-red" onclick="updateReqStatus('${key}', 'Rejected')">Reject</button>
@@ -152,7 +145,9 @@
             database.ref('withdrawRequests/' + key).update({
                 status: newStatus
             }).then(function() {
-                alert('উইথড্র রিকোয়েস্ট স্ট্যাটাস করা হয়েছে: ' + newStatus);
+                alert('উইথড্র রিকোয়েস্ট স্ট্যাটাস আপডেট করা হয়েছে: ' + newStatus);
+            }).catch(function(error) {
+                alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে: ' + error.message);
             });
         }
     </script>
