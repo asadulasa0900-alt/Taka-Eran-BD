@@ -10,7 +10,7 @@
         body { background-color: #0A0E1A; color: #E1E7EF; padding: 20px; max-width: 500px; margin: 0 auto; }
         .card { background-color: #121829; border: 1px solid #10B981; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
         .title { font-size: 18px; font-weight: bold; color: #10B981; margin-bottom: 15px; text-align: center; }
-        input { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-top: 6px; margin-bottom: 12px; font-size: 14px; outline: none; }
+        input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-top: 6px; margin-bottom: 12px; font-size: 14px; outline: none; }
         .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; text-align: center; text-decoration: none; display: block; margin-top: 10px; }
         .btn-purple { background-color: #8B5CF6; }
         .btn-red { background-color: #EF4444; }
@@ -36,13 +36,21 @@
             <div class="title">👑 টাকা আর্ন বিডি - এডমিন প্যানেল</div>
             <button class="btn btn-red" style="margin-bottom: 15px;" onclick="logoutAdmin()">লগআউট করুন</button>
 
-            <!-- 1. Add New Task -->
-            <div class="sec-title">➕ নতুন টাস্ক যোগ করুন (ইউটিউব/টিকটক/অ্যাপস)</div>
-            <input type="text" id="taskTitle" placeholder="টাস্ক টাইটেল (যেমন: YouTube Subscribe)">
-            <input type="text" id="taskSub" placeholder="বিবরণ (যেমন: চ্যানেল সাবস্ক্রাইব করুন)">
-            <input type="text" id="taskLink" placeholder="কাজের লিংক (https://...)">
-            <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 10)">
-            <button class="btn btn-purple" onclick="addNewTask()">টাস্ক প্যানেলে যুক্ত করুন</button>
+            <!-- 1. Add New Task / Video / Sponsor / Image -->
+            <div class="sec-title">➕ নতুন টাস্ক/ভিডিও/স্পন্সার/ছবি পোস্ট যুক্ত করুন</div>
+            
+            <label style="font-size:12px; color:#94A3B8;">কন্টেন্টের ধরন</label>
+            <select id="contentType">
+                <option value="Task">মাইক্রো-টাস্ক (ইউটিউব/ফেসবুক ইত্যাদি)</option>
+                <option value="Video">ভিডিও / রিলস</option>
+                <option value="Sponsor">স্পন্সার পোস্ট / ব্যানার বিজ্ঞাপন</option>
+            </select>
+
+            <input type="text" id="taskTitle" placeholder="টাইটেল (যেমন: ভিডিও দেখুন বা চ্যানেল সাবস্ক্রাইব)">
+            <input type="text" id="taskSub" placeholder="বিবরণ / সাব-টাইটেল">
+            <input type="text" id="taskLink" placeholder="কাজের লিংক / ভিডিও লিংক / ছবি URL (https://...)">
+            <input type="number" id="taskReward" step="0.01" placeholder="টাকার পরিমাণ (যেমন: 10 বা 0.50)">
+            <button class="btn btn-purple" onclick="addNewContent()">অ্যাপে লাইভ যুক্ত করুন</button>
 
             <!-- 2. Manage Withdraw Requests -->
             <div class="sec-title">💳 পেন্ডিং উইথড্র রিকোয়েস্টসমূহ</div>
@@ -55,15 +63,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
-        // আপনার ফায়ারবেজ কনসোল থেকে আসল কনফিগারেশন এখানে বসান
         const firebaseConfig = {
-            apiKey: "আপনার_আসল_apiKey_এখানে_দিন",
-            authDomain: "taka-earn-bd-default-rtdb.firebaseapp.com",
-            databaseURL: "https://taka-earn-bd-default-rtdb.firebaseio.com",
-            projectId: "taka-earn-bd",
-            storageBucket: "taka-earn-bd.appspot.com",
-            messagingSenderId: "আপনার_আসল_SenderId",
-            appId: "আপনার_আসল_AppId"
+            apiKey: "AIzaSyB9KjekXH9oD1JQLKU0HLQMnWMLDmzU4",
+            authDomain: "taka-rane-bd.firebaseapp.com",
+            databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
+            projectId: "taka-rane-bd",
+            storageBucket: "taka-rane-bd.appspot.com",
+            messagingSenderId: "1017127718075",
+            appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
         };
 
         firebase.initializeApp(firebaseConfig);
@@ -86,26 +93,28 @@
             document.getElementById('dashboardSection').style.display = 'none';
         }
 
-        function addNewTask() {
+        function addNewContent() {
+            var type = document.getElementById('contentType').value;
             var title = document.getElementById('taskTitle').value.trim();
             var sub = document.getElementById('taskSub').value.trim();
             var link = document.getElementById('taskLink').value.trim();
             var reward = parseFloat(document.getElementById('taskReward').value || '0');
 
             if (!title || !link || reward <= 0) {
-                alert('অনুগ্রহ করে সঠিক বিবরণ ও লিংক দিন!');
+                alert('অনুগ্রহ করে সঠিক টাইটেল, লিংক ও টাকার পরিমাণ দিন!');
                 return;
             }
 
-            var newTaskRef = database.ref('customTasks').push();
-            newTaskRef.set({
+            var newRef = database.ref('customTasks').push();
+            newRef.set({
+                type: type,
                 title: title,
-                subtitle: sub || 'টাস্কটি সম্পন্ন করে আয় করুন',
+                subtitle: sub || 'কন্টেন্টটি সম্পন্ন করে আয় করুন',
                 link: link,
                 reward: reward
             }, function(err) {
                 if(!err) {
-                    alert('নতুন টাস্ক সফলভাবে লাইভ যোগ করা হয়েছে!');
+                    alert('সফলভাবে নতুন কন্টেন্ট বা টাস্ক অ্যাপে যোগ করা হয়েছে!');
                     document.getElementById('taskTitle').value = '';
                     document.getElementById('taskSub').value = '';
                     document.getElementById('taskLink').value = '';
