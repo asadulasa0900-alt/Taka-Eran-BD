@@ -53,7 +53,7 @@
                 <div class="subtitle">Taka Earn BD</div>
             </div>
         </div>
-        <div class="balance-badge" id="userBalance">৳10.00</div>
+        <div class="balance-badge" id="userBalance">৳00.00</div>
     </header>
 
     <div class="toast" id="toast"></div>
@@ -97,7 +97,7 @@
             <div class="card">
                 <div class="card-header">
                     <div>
-                        <div class="title">🎬 ৩০ সেকেন্ড ভিডিও রিলস</div>
+                        <div class="title">🎬 12 সেকেন্ড ভিডিও রিলস</div>
                         <div class="subtitle">ভিডিও দেখে ইনকাম করুন ৫০ পয়সা</div>
                     </div>
                     <span class="badge">+৳০.৫০</span>
@@ -121,9 +121,9 @@
                             <div class="title">ইউটিউব চ্যানেল সাবস্ক্রাইব</div>
                             <div class="subtitle">অফিসিয়াল চ্যানেল সাবস্ক্রাইব করুন</div>
                         </div>
-                        <span class="badge">৳১০.০০</span>
+                        <span class="badge">৳.৫০</span>
                     </div>
-                    <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', 10.0)">কাজ করুন (আয় ৳১০.০০)</button>
+                    <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', .50)">কাজ করুন (আয় ৳১০.০০)</button>
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -133,7 +133,7 @@
                         </div>
                         <span class="badge">৳১০.০০</span>
                     </div>
-                    <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 10.0)">কাজ করুন (আয় ৳১০.০০)</button>
+                    <button class="btn btn-green" onclick="openTask('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', .50)">কাজ করুন (আয় ৳.৫০)</button>
                 </div>
             </div>
         </div>
@@ -142,7 +142,7 @@
         <div id="pageRefer" class="page">
             <div class="card">
                 <div class="title">👥 রেফার ও ইনকাম</div>
-                <div class="subtitle">বন্ধুকে রেফার করলে পাবেন ৫.০০ টাকা বোনাস</div>
+                <div class="subtitle">বন্ধুকে রেফার করলে পাবেন ১০.০০ টাকা বোনাস</div>
                 <div style="background-color:#0A0E1A; padding:12px; border-radius:10px; margin-top:12px; text-align:center;">
                     <div style="font-size:12px; color:#94A3B8;">আপনার রেফারেল কোড</div>
                     <div style="font-size:20px; font-weight:bold; color:#10B981; margin:4px 0;" id="refCode">REF-74921</div>
@@ -199,8 +199,8 @@
                     <label style="font-size:12px; color:#94A3B8;">অ্যাাকাউন্ট নম্বর</label>
                     <input type="text" id="withdrawAccount" placeholder="০1700000000">
 
-                    <label style="font-size:12px; color:#94A3B8;">পরিমাণ (সর্বনিম্ন ১০০ ৳)</label>
-                    <input type="number" id="withdrawAmount" placeholder="100">
+                    <label style="font-size:12px; color:#94A3B8;">পরিমাণ (সর্বনিম্ন ১১০ ৳)</label>
+                    <input type="number" id="withdrawAmount" placeholder="110">
 
                     <button class="btn btn-green" onclick="processWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
                 </div>
@@ -404,7 +404,7 @@
                 return;
             }
             if (amt < 100) {
-                showToast('সর্বনিম্ন উইথড্র অ্যামাউন্ট ১০০ টাকা!');
+                showToast('সর্বনিম্ন উইথড্র অ্যামাউন্ট ১১০ টাকা!');
                 return;
             }
             if (balance < amt) {
