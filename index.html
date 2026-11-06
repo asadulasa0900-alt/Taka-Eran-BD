@@ -7,7 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0A0E1A; color: #E1E7EF; padding: 15px; max-width: 500px; margin: 0 auto; }
+        body { background-color: #0A0E1A; color: #E1E7EF; padding-bottom: 70px; max-width: 500px; margin: 0 auto; }
+        .header { background: #121829; padding: 15px; text-align: center; border-bottom: 1px solid #1E293B; font-size: 18px; font-weight: bold; color: #10B981; }
+        .page-content { padding: 15px; display: none; }
+        .page-content.active { display: block; }
         .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 15px; margin-bottom: 15px; }
         .balance-box { text-align: center; background: linear-gradient(135deg, #10B981, #059669); color: #fff; padding: 20px; border-radius: 16px; margin-bottom: 15px; }
         .balance-box h2 { font-size: 28px; margin-top: 5px; }
@@ -16,34 +19,169 @@
         .task-info h4 { font-size: 14px; color: #fff; }
         .task-info p { font-size: 12px; color: #94A3B8; }
         .btn { padding: 8px 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; text-decoration: none; font-size: 12px; }
-        input, select { width: 100%; padding: 10px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 8px; color: #ffffff; margin-bottom: 10px; font-size: 13px; outline: none; }
+        .btn-ad { background-color: #8B5CF6; }
+        input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 10px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
+        .nav-item { text-align: center; color: #94A3B8; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .nav-item.active { color: #10B981; font-weight: bold; }
+        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+        .criteria-box { background: #0A0E1A; border: 1px dashed #10B981; padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; color: #E1E7EF; }
     </style>
 </head>
 <body>
 
-    <!-- Balance Section -->
-    <div class="balance-box">
-        <p>আপনার বর্তমান ব্যালেন্স</p>
-        <h2 id="userBalance">৳ 0.00</h2>
+    <div class="header">💎 টাকা আর্ন বিডি</div>
+
+    <!-- 1. HOME / DASHBOARD PAGE -->
+    <div id="page-home" class="page-content active">
+        <div class="balance-box">
+            <p>আপনার বর্তমান ব্যালেন্স</p>
+            <h2 id="userBalance">৳ 0.00</h2>
+        </div>
+
+        <!-- Auto Adsterra Click Cards -->
+        <div class="card">
+            <div class="title">🎬 ইনস্ট্যান্ট অ্যাড দেখুন (বোনাস আয়)</div>
+            <p style="font-size: 12px; color: #94A3B8; margin-bottom: 10px;">নিচের বাটনগুলোতে ক্লিক করে বিজ্ঞাপন দেখুন এবং প্রতিটি দেখার জন্য রিওয়ার্ড অর্জন করুন:</p>
+            
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>স্পেশাল অ্যাড ১</h4>
+                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳১.০০</b></p>
+                </div>
+                <button class="btn btn-ad" onclick="openAdLink('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', 1)">অ্যাড দেখুন</button>
+            </div>
+            
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>স্পেশাল অ্যাড ২</h4>
+                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳১.০০</b></p>
+                </div>
+                <button class="btn btn-ad" onclick="openAdLink('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 1)">অ্যাড দেখুন</button>
+            </div>
+            
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>স্পেশাল অ্যাড ৩</h4>
+                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳১.০০</b></p>
+                </div>
+                <button class="btn btn-ad" onclick="openAdLink('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', 1)">অ্যাড দেখুন</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="title">✨ গুরুত্বপূর্ণ নিয়মাবলী</div>
+            <div class="criteria-box">
+                📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
+                • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
+                • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
+                • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি</b>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="title">🔥 এডমিন প্যানেলের লাইভ স্পন্সার</div>
+            <div id="homeSponsorList">লোড হচ্ছে...</div>
+        </div>
     </div>
 
-    <!-- Live Tasks & Videos Section -->
-    <div class="card">
-        <div class="title">📋 এভেইলেবল টাস্ক, ভিডিও ও স্পন্সার পোস্ট</div>
-        <div id="taskList">টাস্ক লোড হচ্ছে...</div>
+    <!-- 2. TASKS & VIDEOS PAGE -->
+    <div id="page-tasks" class="page-content">
+        <div class="card">
+            <div class="title">📺 কুইক ভিডিও ও ডিরেক্ট অ্যাডসমূহ</div>
+            
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>প্রিমিয়াম ভিডিও অ্যাড ১</h4>
+                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                </div>
+                <button class="btn" onclick="openAdLink('https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927', 0.5)">দেখা শুরু করুন</button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>প্রিমিয়াম ভিডিও অ্যাড ২</h4>
+                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                </div>
+                <button class="btn" onclick="openAdLink('https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f', 0.5)">দেখা শুরু করুন</button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>রিলস ও স্পনসর অ্যাড ১</h4>
+                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                </div>
+                <button class="btn" onclick="openAdLink('https://auctionr.org/4/cbbcf8888f80dad51ee68b6825a71afd', 0.5)">দেখা শুরু করুন</button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>রিলস ও স্পনসর অ্যাড ২</h4>
+                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                </div>
+                <button class="btn" onclick="openAdLink('https://auctionr.org/4/3047aa8e4114ebcff5d25d090162d684', 0.5)">দেখা শুরু করুন</button>
+            </div>
+
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>বিশেষ অফার অ্যাড</h4>
+                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳১.০০</b></p>
+                </div>
+                <button class="btn" onclick="openAdLink('https://asiafilm.org/4/592eb2255fd44e69d1ee990b034c8eed', 1)">দেখা শুরু করুন</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="title">📋 এডমিন প্যানেল থেকে দেওয়া টাস্ক ও কন্টেন্ট</div>
+            <div id="allTaskList">টাস্ক লোড হচ্ছে...</div>
+        </div>
     </div>
 
-    <!-- Withdraw Section -->
-    <div class="card">
-        <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
-        <select id="payMethod">
-            <option value="bKash">বিকাশ (bKash)</option>
-            <option value="Nagad">নগদ (Nagad)</option>
-            <option value="Recharge">মোবাইল রিচার্জ</option>
-        </select>
-        <input type="text" id="payAccount" placeholder="আপনার অ্যাকাউন্ট নম্বর দিন">
-        <input type="number" id="payAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ৫০ টাকা)">
-        <button class="btn" style="width: 100%; padding: 12px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+    <!-- 3. REFER PAGE -->
+    <div id="page-refer" class="page-content">
+        <div class="card" style="text-align: center;">
+            <div class="title">👥 বন্ধু রেফার করুন</div>
+            <p style="font-size: 13px; color: #94A3B8; margin-bottom: 15px;">উইথড্র করার জন্য আপনার কমপক্ষে **১০টি সফল রেফার** সম্পন্ন থাকতে হবে!</p>
+            <input type="text" value="https://asadulasa0900-alt.github.io/Taka-Eran-BD/index.html?ref=asadul" readonly style="text-align: center; background: #0A0E1A;">
+            <button class="btn" style="width: 100%; padding: 12px;" onclick="alert('রেফার লিংক কপি করা হয়েছে!')">লিংক কপি করুন</button>
+            <p style="font-size: 12px; color: #10B981; margin-top: 10px;">আপনার বর্তমান রেফার: <b id="refCount">০</b> / ১০</p>
+        </div>
+    </div>
+
+    <!-- 4. WITHDRAW PAGE -->
+    <div id="page-withdraw" class="page-content">
+        <div class="card">
+            <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
+            <div class="criteria-box" style="font-size: 12px;">
+                ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+            </div>
+            <select id="payMethod">
+                <option value="bKash">বিকাশ (bKash)</option>
+                <option value="Nagad">নগদ (Nagad)</option>
+                <option value="Recharge">মোবাইল রিচার্জ</option>
+            </select>
+            <input type="text" id="payAccount" placeholder="আপনার অ্যাকাউন্ট নম্বর দিন">
+            <input type="number" id="payAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ টাকা)">
+            <button class="btn" style="width: 100%; padding: 12px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('home', this)">
+            <div>🏠</div>হোম
+        </div>
+        <div class="nav-item" onclick="switchPage('tasks', this)">
+            <div>📋</div>টাস্ক ও ভিডিও
+        </div>
+        <div class="nav-item" onclick="switchPage('refer', this)">
+            <div>👥</div>রেফার
+        </div>
+        <div class="nav-item" onclick="switchPage('withdraw', this)">
+            <div>💳</div>উইথড্র
+        </div>
     </div>
 
     <!-- Firebase Scripts -->
@@ -51,6 +189,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
+        // ফায়ারবেজ কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyB9KjekXH9oD1JQLKU0HLQMnWMLDmzU4",
             authDomain: "taka-rane-bd.firebaseapp.com",
@@ -64,41 +203,92 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Load Tasks and Videos from Firebase
+        function switchPage(pageId, element) {
+            var pages = document.getElementsByClassName('page-content');
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].classList.remove('active');
+            }
+            document.getElementById('page-' + pageId).classList.add('active');
+
+            var navItems = document.getElementsByClassName('nav-item');
+            for (var i = 0; i < navItems.length; i++) {
+                navItems[i].classList.remove('active');
+            }
+            element.classList.add('active');
+        }
+
+        // Realtime Fetching from Admin Panel via Firebase
         database.ref('customTasks').on('value', function(snapshot) {
             var data = snapshot.val();
-            var list = document.getElementById('taskList');
+            var taskListDiv = document.getElementById('allTaskList');
+            var homeSponsorDiv = document.getElementById('homeSponsorList');
+            
             if(!data) {
-                list.innerHTML = "<p style='color:#94A3B8; text-align:center;'>বর্তমানে কোনো টাস্ক বা ভিডিও নেই।</p>";
+                taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>বর্তমানে এডমিন থেকে কোনো বাড়তি টাস্ক নেই।</p>";
+                homeSponsorDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>বর্তমানে কোনো স্পন্সার পোস্ট নেই।</p>";
                 return;
             }
-            var html = "";
+
+            var taskHtml = "";
+            var sponsorHtml = "";
+
             for(var key in data) {
                 var task = data[key];
-                html += `<div class="task-card">
+                var itemCard = `<div class="task-card">
                     <div class="task-info">
-                        <h4>[${task.type || 'Task'}] ${task.title}</h4>
+                        <h4>[${task.type}] ${task.title}</h4>
                         <p>${task.subtitle} | <b style="color:#10B981;">৳${task.reward}</b></p>
                     </div>
                     <a href="${task.link}" target="_blank" class="btn" onclick="addReward(${task.reward})">শুরু করুন</a>
                 </div>`;
+
+                if(task.type === 'Sponsor') {
+                    sponsorHtml += itemCard;
+                } else {
+                    taskHtml += itemCard;
+                }
             }
-            list.innerHTML = html;
+
+            taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো বাড়তি টাস্ক নেই।</p>";
+            homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
         });
 
         var currentBalance = 0;
+        var totalAdsWatched = 0; 
+        var totalReferrals = 0;  
+
+        // Adsterra Link Click Handling
+        function openAdLink(url, reward) {
+            window.open(url, '_blank');
+            addReward(reward);
+        }
+
         function addReward(amount) {
             currentBalance += amount;
+            totalAdsWatched += 1;
             document.getElementById('userBalance').innerText = "৳ " + currentBalance.toFixed(2);
         }
 
+        // Withdraw Validation
         function requestWithdraw() {
             var method = document.getElementById('payMethod').value;
             var account = document.getElementById('payAccount').value.trim();
             var amount = parseFloat(document.getElementById('payAmount').value || 0);
 
-            if(!account || amount < 50) {
-                alert('সঠিক অ্যাকাউন্ট নম্বর দিন এবং সর্বনিম্ন ৫০ টাকা বা তার বেশি তুলুন!');
+            if(amount < 100) {
+                alert('সর্বনিম্ন উইথড্র ১০০ টাকা হতে হবে!');
+                return;
+            }
+            if(totalAdsWatched < 100) {
+                alert('উইথড্র করতে হলে আপনাকে কমপক্ষে ১০০টি অ্যাড দেখতে বা টাস্ক সম্পন্ন করতে হবে! আপনার দেখা হয়েছে: ' + totalAdsWatched + '/১০০');
+                return;
+            }
+            if(totalReferrals < 10) {
+                alert('উইথড্র করতে হলে কমপক্ষে ১০টি রেফার করতে হবে! আপনার রেফার হয়েছে: ' + totalReferrals + '/১০');
+                return;
+            }
+            if(!account) {
+                alert('সঠিক অ্যাকাউন্ট নম্বর দিন!');
                 return;
             }
 
