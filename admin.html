@@ -38,39 +38,38 @@
 
         <!-- Add / Edit Task Form -->
         <div class="card">
-            <div class="title" id="formTitle">➕ যেকোনো সোশ্যাল মিডিয়া বা অ্যাপ টাস্ক যুক্ত করুন</div>
+            <div class="title" id="formTitle">➕ যেকোনো সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন</div>
             <input type="hidden" id="editTaskId">
             
             <select id="taskType">
-                <option value="Facebook">👍 ফেসবুক টাস্ক (Like/Follow/Share)</option>
-                <option value="TikTok">🎵 টিকটক টাস্ক (Follow/Like/Video)</option>
-                <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক (Follow/Like)</option>
-                <option value="YouTube">▶️ ইউটিউব ভিডিও/সাবস্ক্রাইব টাস্ক</option>
-                <option value="Telegram">📢 টেলিগ্রাম চ্যানেল জয়েন টাস্ক</option>
+                <option value="Video">🎬 রিলস ভিডিও কাজ</option>
+                <option value="Facebook">👍 ফেসবুক টাস্ক</option>
+                <option value="TikTok">🎵 টিকটক টাস্ক</option>
+                <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক</option>
+                <option value="YouTube">▶️ ইউটিউব টাস্ক</option>
+                <option value="Telegram">📢 টেলিগ্রাম টাস্ক</option>
                 <option value="AppDownload">📱 অ্যাপ ডাউনলোড টাস্ক</option>
-                <option value="Task">📌 সাধারণ অন্যান্য টাস্ক</option>
-                <option value="Video">🎬 ভিডিও কাজ</option>
                 <option value="Sponsor">🔥 স্পন্সার পোস্ট</option>
             </select>
 
-            <input type="text" id="taskTitle" placeholder="টাস্কের শিরোনাম (যেমন: টিকটক পেজ ফলো করুন)">
-            <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিওতে লাইক দিয়ে স্ক্রিনশট দিন)">
-            <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক (Facebook/TikTok/App Link ইত্যাদি)">
-            <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 2.00)">
+            <input type="text" id="taskTitle" placeholder="শিরোনাম (যেমন: নতুন রিলস ভিডিও বা পেজ ফলো)">
+            <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিও সম্পূর্ণ দেখুন)">
+            <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক বা ভিডিও সোর্স">
+            <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 1.50)">
 
-            <!-- ফাইল ম্যানেজার থেকে ভিডিও বা ইমেজ আপলোড অপশন -->
+            <!-- File Manager Video/Media Upload -->
             <div style="margin-bottom: 12px;">
-                <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে ফাইল/ভিডিও আপলোড (ঐচ্ছিক):</label>
+                <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে সরাসরি ভিডিও/ফাইল আপলোড:</label>
                 <input type="file" id="mediaFile" accept="video/*,image/*" style="padding: 8px; background: #0A0E1A;" onchange="handleFileUpload(event)">
             </div>
 
-            <button class="btn" id="saveBtn" onclick="saveTask()">টাস্ক সেভ করুন</button>
+            <button class="btn" id="saveBtn" onclick="saveTask()">টাস্ক বা রিলস সেভ করুন</button>
             <button class="btn" id="cancelEditBtn" onclick="resetForm()" style="background-color: #64748B; margin-top: 8px; display: none;">এডিট বাতিল করুন</button>
         </div>
 
         <!-- Manage Existing Tasks -->
         <div class="card">
-            <div class="title">📋 বিদ্যমান টাস্ক ও সোশ্যাল মিডিয়া ম্যানেজমেন্ট</div>
+            <div class="title">📋 বিদ্যমান টাস্ক ও রিলস ম্যানেজমেন্ট (এডিট/ডিলিট)</div>
             <div id="adminTaskList">টাস্ক লোড হচ্ছে...</div>
         </div>
     </div>
@@ -80,7 +79,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
-        // ফায়ারবেজ কনফিগারেশন অপরিবর্তিত রাখা হয়েছে
         const firebaseConfig = {
             apiKey: "AIzaSyB9KjekXH9oD1JQLKU0HLQMnWMLDmzU4",
             authDomain: "taka-rane-bd.firebaseapp.com",
@@ -103,24 +101,25 @@
                 document.getElementById('adminPanel').style.display = 'block';
                 loadAdminTasks();
             } else {
-                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
+                alert('ভুল পাসওয়ার্ড!');
             }
         }
 
-        // ফাইল ম্যানেজার থেকে মিডিয়া সিলেক্ট করে প্রসেস করা
+        // File Manager upload handler
         function handleFileUpload(event) {
             var file = event.target.files[0];
             if(file) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     uploadedMediaUrl = e.target.result;
-                    document.getElementById('taskLink').value = "ফাইল থেকে আপলোডকৃত কন্টেন্ট";
-                    alert('ফাইল সফলভাবে লোড হয়েছে!');
+                    document.getElementById('taskLink').value = uploadedMediaUrl;
+                    alert('ফাইল ম্যানেজার থেকে ভিডিও সফলভাবে লোড হয়েছে!');
                 };
                 reader.readAsDataURL(file);
             }
         }
 
+        // Save or Update Task in Firebase
         function saveTask() {
             var editId = document.getElementById('editTaskId').value;
             var type = document.getElementById('taskType').value;
@@ -129,8 +128,8 @@
             var link = document.getElementById('taskLink').value.trim();
             var reward = parseFloat(document.getElementById('taskReward').value);
 
-            if(!title || isNaN(reward)) {
-                alert('অনুগ্রহ করে শিরোনাম এবং টাকার পরিমাণ সঠিকভাবে পূরণ করুন!');
+            if(!title || !link || isNaN(reward)) {
+                alert('অনুগ্রহ করে শিরোনাম, লিংক/ভিডিও এবং টাকার পরিমাণ সঠিকভাবে দিন!');
                 return;
             }
 
@@ -138,23 +137,25 @@
                 type: type,
                 title: title,
                 subtitle: subtitle || 'নিয়ম মেনে কাজ সম্পন্ন করুন',
-                link: uploadedMediaUrl || link || '#',
+                link: link,
                 reward: reward
             };
 
             if(editId) {
+                // Update existing task
                 database.ref('customTasks/' + editId).set(taskData, function(error) {
                     if(!error) {
-                        alert('টাস্ক সফলভাবে আপডেট করা হয়েছে!');
+                        alert('সফলভাবে আপডেট করা হয়েছে!');
                         resetForm();
                     } else {
                         alert('ত্রুটি: ' + error.message);
                     }
                 });
             } else {
+                // Push new task
                 database.ref('customTasks').push().set(taskData, function(error) {
                     if(!error) {
-                        alert('নতুন টাস্ক সফলভাবে যুক্ত করা হয়েছে!');
+                        alert('সফলভাবে নতুন টাস্ক বা রিলস যুক্ত করা হয়েছে!');
                         resetForm();
                     } else {
                         alert('ত্রুটি: ' + error.message);
@@ -163,13 +164,14 @@
             }
         }
 
+        // Load Tasks into Admin Panel for Edit/Delete
         function loadAdminTasks() {
             database.ref('customTasks').on('value', function(snapshot) {
                 var data = snapshot.val();
                 var taskListDiv = document.getElementById('adminTaskList');
                 
                 if(!data) {
-                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
+                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক বা রিলস নেই।</p>";
                     return;
                 }
 
@@ -182,7 +184,7 @@
                             <p style="font-size:12px; color:#94A3B8;">রিওয়ার্ড: ৳${task.reward}</p>
                         </div>
                         <div>
-                            <button class="btn btn-edit" onclick="editTask('${key}', '${task.type}', '${task.title}', '${task.subtitle}', ${task.reward})">এডিট</button>
+                            <button class="btn btn-edit" onclick="editTask('${key}', '${task.type}', '${task.title}', '${task.subtitle}', '${task.link}', ${task.reward})">এডিট</button>
                             <button class="btn btn-danger" onclick="deleteTask('${key}')">ডিলিট</button>
                         </div>
                     </div>`;
@@ -191,31 +193,36 @@
             });
         }
 
+        // Delete Task
         function deleteTask(key) {
             if(confirm('আপনি কি নিশ্চিতভাবে এটি ডিলিট করতে চান?')) {
                 database.ref('customTasks/' + key).remove(function(error) {
                     if(!error) {
                         alert('সফলভাবে মুছে ফেলা হয়েছে!');
                     } else {
-                        alert('সমস্যা হয়েছে: ' + error.message);
+                        alert('ত্রুটি: ' + error.message);
                     }
                 });
             }
         }
 
-        function editTask(key, type, title, subtitle, reward) {
+        // Edit Task Setup
+        function editTask(key, type, title, subtitle, link, reward) {
             document.getElementById('editTaskId').value = key;
             document.getElementById('taskType').value = type;
             document.getElementById('taskTitle').value = title;
             document.getElementById('taskSubtitle').value = subtitle;
+            document.getElementById('taskLink').value = link;
             document.getElementById('taskReward').value = reward;
+            uploadedMediaUrl = link;
 
-            document.getElementById('formTitle').innerText = '✏️ টাস্ক বা কন্টেন্ট এডিট করুন';
+            document.getElementById('formTitle').innerText = '✏️ টাস্ক বা রিলস এডিট করুন';
             document.getElementById('saveBtn').innerText = 'আপডেট করুন';
             document.getElementById('cancelEditBtn').style.display = 'block';
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
+        // Reset Form
         function resetForm() {
             document.getElementById('editTaskId').value = '';
             document.getElementById('taskTitle').value = '';
@@ -224,8 +231,8 @@
             document.getElementById('taskReward').value = '';
             document.getElementById('mediaFile').value = '';
             uploadedMediaUrl = "";
-            document.getElementById('formTitle').innerText = '➕ যেকোনো সোশ্যাল মিডিয়া বা অ্যাপ টাস্ক যুক্ত করুন';
-            document.getElementById('saveBtn').innerText = 'টাস্ক সেভ করুন';
+            document.getElementById('formTitle').innerText = '➕ যেকোনো সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন';
+            document.getElementById('saveBtn').innerText = 'টাস্ক বা রিলস সেভ করুন';
             document.getElementById('cancelEditBtn').style.display = 'none';
         }
     </script>
