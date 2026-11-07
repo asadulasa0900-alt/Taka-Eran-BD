@@ -49,7 +49,7 @@
         <div id="registerForm">
             <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
             <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম">
-            <input type="text" id="regUsername" placeholder="ইউজারনেম (যেমন: asadul99)">
+            
             <input type="email" id="regEmail" placeholder="জিমেইল অ্যাকাউন্ট (Email)">
             <input type="password" id="regPass" placeholder="পাসওয়ার্ড দিন">
             <button class="btn" style="width:100%; padding:12px;" onclick="registerUser()">রেজিস্ট্রেশন করুন</button>
@@ -107,7 +107,7 @@
                     📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
                     • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
                     • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
-                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি (প্রতি রেফারে ৳১০)</b>
+                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ৩টি (প্রতি রেফারে ৳১০)</b>
                 </div>
             </div>
 
@@ -145,7 +145,7 @@
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
                     🔑 <b>ইউনিক ইউআইডি (UID):</b> <span id="profileUid" style="color: #10B981; word-break: break-all;">-</span><br><br>
                     👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span> / 100<br><br>
-                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 10 (প্রতি রেফারে ৳১০)<br><br>
+                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 3 (প্রতি রেফারে ৳১০)<br><br>
                     🔗 <b>আপনার রেফারেল লিংক:</b><br>
                     <input type="text" id="refLinkInput" readonly style="margin-top: 5px; font-size: 11px; padding: 8px;" onclick="this.select(); document.execCommand('copy'); alert('রেফারেল লিংক কপি করা হয়েছে!');">
                 </div>
@@ -165,7 +165,7 @@
             <div class="card">
                 <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
                 <div class="criteria-box" style="font-size: 12px;">
-                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>৩টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
                 </div>
                 <select id="payMethod">
                     <option value="bKash">বিকাশ (bKash)</option>
@@ -410,7 +410,7 @@
                         checkinBtn.style.backgroundColor = "#4B5563";
                         checkinBtn.disabled = true;
                     } else {
-                        checkinBtn.innerText = "আজকের চেক-ইন করুন (৳২)";
+                        checkinBtn.innerText = "আজকের চেক-ইন করুন (৳১)";
                         checkinBtn.style.backgroundColor = "#10B981";
                         checkinBtn.disabled = false;
                     }
@@ -470,7 +470,7 @@
                     lastCheckin: today
                 }, function(error) {
                     if(!error) {
-                        alert('অভিনন্দন! সফলভাবে দৈনিক চেক-ইন বোনাস ৳২ পেয়ে গেছেন।');
+                        alert('অভিনন্দন! সফলভাবে দৈনিক চেক-ইন বোনাস ৳১ পেয়ে গেছেন।');
                     }
                 });
             }
@@ -486,7 +486,7 @@
             }
 
             window.open(adUrl, '_blank');
-            addRewardDirect(0.50);
+            addRewardDirect(0.40);
 
             if(currentUserUid) {
                 database.ref('users/' + currentUserUid).update({ ad1Daily: ad1Count, ad2Daily: ad2Count });
@@ -500,7 +500,7 @@
             }
             specialAdCount++;
             window.open(adUrl, '_blank');
-            addRewardDirect(1.00);
+            addRewardDirect(0.60);
 
             if(currentUserUid) {
                 database.ref('users/' + currentUserUid).update({ specialAdDaily: specialAdCount });
