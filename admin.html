@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আর্ন বিডি - এডমিন প্যানেল</title>
+    <title>টাকা আর্ন বিডি - অ্যাডমিন কন্ট্রোল প্যানেল</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -11,10 +11,15 @@
         .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
         .title { font-size: 18px; font-weight: bold; color: #10B981; margin-bottom: 15px; }
         input, select, textarea { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
-        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; width: 100%; font-size: 14px; }
-        .btn-danger { background-color: #EF4444; padding: 6px 10px; font-size: 12px; width: auto; }
-        .btn-edit { background-color: #3B82F6; padding: 6px 10px; font-size: 12px; width: auto; margin-right: 5px; }
-        .task-item { background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; width: 100%; font-size: 14px; text-align: center; }
+        .btn-danger { background-color: #EF4444; padding: 6px 12px; font-size: 12px; width: auto; }
+        .btn-edit { background-color: #3B82F6; padding: 6px 12px; font-size: 12px; width: auto; margin-right: 5px; }
+        .task-item { background: #0A0E1A; border: 1px solid #334155; padding: 14px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px; background: #121829; border: 1px solid #1E293B; color: #94A3B8; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
+        .tab-btn.active { background: #10B981; color: #fff; border-color: #10B981; }
+        .panel-section { display: none; }
+        .panel-section.active { display: block; }
         #adminPanel { display: none; }
         #loginBox { text-align: center; margin-top: 50px; }
     </style>
@@ -24,7 +29,6 @@
     <!-- 1. LOGIN BOX -->
     <div id="loginBox" class="card">
         <div class="title">🔐 এডমিন লগইন</div>
-        <!-- পাসওয়ার্ড যেন আগে থেকে দৃশ্যমান না থাকে এবং ডট আকারে দেখায়, তার জন্য type="password" নিশ্চিত করা হয়েছে -->
         <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" autocomplete="new-password" value="">
         <button class="btn" onclick="checkLogin()">লগইন করুন</button>
     </div>
@@ -36,41 +40,52 @@
             <button class="btn btn-danger" onclick="location.reload()" style="width: auto;">লগআউট</button>
         </div>
 
-        <!-- Add / Edit Task Form -->
-        <div class="card">
-            <div class="title" id="formTitle">➕ যেকোনো সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন</div>
-            <input type="hidden" id="editTaskId">
-            
-            <select id="taskType">
-                <option value="Video">🎬 রিলস ভিডিও কাজ</option>
-                <option value="Facebook">👍 ফেসবুক টাস্ক</option>
-                <option value="TikTok">🎵 টিকটক টাস্ক</option>
-                <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক</option>
-                <option value="YouTube">▶️ ইউটিউব টাস্ক</option>
-                <option value="Telegram">📢 টেলিগ্রাম টাস্ক</option>
-                <option value="AppDownload">📱 অ্যাপ ডাউনলোড টাস্ক</option>
-                <option value="Sponsor">🔥 স্পন্সার পোস্ট</option>
-            </select>
-
-            <input type="text" id="taskTitle" placeholder="শিরোনাম (যেমন: নতুন রিলস ভিডিও বা পেজ ফলো)">
-            <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিও সম্পূর্ণ দেখুন)">
-            <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক বা ভিডিও সোর্স">
-            <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 1.50)">
-
-            <!-- File Manager Video/Media Upload -->
-            <div style="margin-bottom: 12px;">
-                <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে সরাসরি ভিডিও/ফাইল আপলোড:</label>
-                <input type="file" id="mediaFile" accept="video/*,image/*" style="padding: 8px; background: #0A0E1A;" onchange="handleFileUpload(event)">
-            </div>
-
-            <button class="btn" id="saveBtn" onclick="saveTask()">টাস্ক বা রিলস সেভ করুন</button>
-            <button class="btn" id="cancelEditBtn" onclick="resetForm()" style="background-color: #64748B; margin-top: 8px; display: none;">এডিট বাতিল করুন</button>
+        <!-- Tab Navigation Buttons -->
+        <div class="tab-menu">
+            <div class="tab-btn active" onclick="switchTab('create', this)">➕ টাস্ক বা ভিডিও পোস্ট</div>
+            <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট ও ডিলিট প্যানেল</div>
         </div>
 
-        <!-- Manage Existing Tasks -->
-        <div class="card">
-            <div class="title">📋 বিদ্যমান টাস্ক ও রিলস ম্যানেজমেন্ট (এডিট/ডিলিট)</div>
-            <div id="adminTaskList">টাস্ক লোড হচ্ছে...</div>
+        <!-- SECTION 1: ADD & EDIT TASK FORM -->
+        <div id="section-create" class="panel-section active">
+            <div class="card">
+                <div class="title" id="formTitle">➕ নতুন সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন</div>
+                <input type="hidden" id="editTaskId">
+                
+                <select id="taskType">
+                    <option value="Video">🎬 রিলস ভিডিও কাজ</option>
+                    <option value="Facebook">👍 ফেসবুক টাস্ক</option>
+                    <option value="TikTok">🎵 টিকটক টাস্ক</option>
+                    <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক</option>
+                    <option value="YouTube">▶️ ইউটিউব টাস্ক</option>
+                    <option value="Telegram">📢 টেলিগ্রাম টাস্ক</option>
+                    <option value="AppDownload">📱 অ্যাপ ডাউনলোড টাস্ক</option>
+                    <option value="Sponsor">🔥 স্পন্সার পোস্ট</option>
+                </select>
+
+                <input type="text" id="taskTitle" placeholder="শিরোনাম (যেমন: নতুন রিলস ভিডিও বা পেজ ফলো)">
+                <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিও সম্পূর্ণ দেখুন)">
+                <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক বা ভিডিও সোর্স">
+                <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 1.50)">
+
+                <!-- File Manager Video/Media Upload -->
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে সরাসরি ভিডিও/ফাইল আপলোড:</label>
+                    <input type="file" id="mediaFile" accept="video/*,image/*" style="padding: 8px; background: #0A0E1A;" onchange="handleFileUpload(event)">
+                </div>
+
+                <button class="btn" id="saveBtn" onclick="saveTask()">টাস্ক বা রিলস সেভ করুন</button>
+                <button class="btn" id="cancelEditBtn" onclick="resetForm()" style="background-color: #64748B; margin-top: 8px; display: none;">এডিট বাতিল করুন</button>
+            </div>
+        </div>
+
+        <!-- SECTION 2: MANAGE, EDIT & DELETE EXISTING TASKS -->
+        <div id="section-manage" class="panel-section">
+            <div class="card">
+                <div class="title">📋 বিদ্যমান টাস্ক ও রিলস ম্যানেজমেন্ট (এডিট / ডিলিট)</div>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">যে টাস্ক বা ভিডিওতে সমস্যা মনে হবে, নিচের 'ডিলিট' বাটনে ক্লিক করে তা মুছে ফেলতে পারবেন।</p>
+                <div id="adminTaskList">টাস্ক লোড হচ্ছে...</div>
+            </div>
         </div>
     </div>
 
@@ -104,11 +119,25 @@
                 loadAdminTasks();
             } else {
                 alert('ভুল পাসওয়ার্ড!');
-                passField.value = ''; // ভুল হলে পাসওয়ার্ড ফিল্ড ফাকা করে দেওয়া
+                passField.value = '';
             }
         }
 
-        // File Manager upload handler
+        // Switch between Create and Manage tabs
+        function switchTab(tabName, element) {
+            var sections = document.getElementsByClassName('panel-section');
+            for(var i = 0; i < sections.length; i++) {
+                sections[i].classList.remove('active');
+            }
+            document.getElementById('section-' + tabName).classList.add('active');
+
+            var tabs = document.getElementsByClassName('tab-btn');
+            for(var i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            element.classList.add('active');
+        }
+
         function handleFileUpload(event) {
             var file = event.target.files[0];
             if(file) {
@@ -122,7 +151,6 @@
             }
         }
 
-        // Save or Update Task in Firebase
         function saveTask() {
             var editId = document.getElementById('editTaskId').value;
             var type = document.getElementById('taskType').value;
@@ -145,21 +173,21 @@
             };
 
             if(editId) {
-                // Update existing task
                 database.ref('customTasks/' + editId).set(taskData, function(error) {
                     if(!error) {
                         alert('সফলভাবে আপডেট করা হয়েছে!');
                         resetForm();
+                        switchTab('manage', document.getElementsByClassName('tab-btn')[1]);
                     } else {
                         alert('ত্রুটি: ' + error.message);
                     }
                 });
             } else {
-                // Push new task
                 database.ref('customTasks').push().set(taskData, function(error) {
                     if(!error) {
                         alert('সফলভাবে নতুন টাস্ক বা রিলস যুক্ত করা হয়েছে!');
                         resetForm();
+                        switchTab('manage', document.getElementsByClassName('tab-btn')[1]);
                     } else {
                         alert('ত্রুটি: ' + error.message);
                     }
@@ -167,7 +195,6 @@
             }
         }
 
-        // Load Tasks into Admin Panel for Edit/Delete
         function loadAdminTasks() {
             database.ref('customTasks').on('value', function(snapshot) {
                 var data = snapshot.val();
@@ -184,8 +211,8 @@
                     var task = data[key];
                     html += `<div class="task-item">
                         <div>
-                            <h4 style="font-size:14px; color:#fff;">[${task.type}] ${task.title}</h4>
-                            <p style="font-size:12px; color:#94A3B8;">রিওয়ার্ড: ৳${task.reward}</p>
+                            <h4 style="font-size:14px; color:#fff; margin-bottom:3px;">[${task.type}] ${task.title}</h4>
+                            <p style="font-size:12px; color:#10B981;">রিওয়ার্ড: ৳${task.reward}</p>
                         </div>
                         <div>
                             <button class="btn btn-edit" onclick="prepareEdit('${key}')">এডিট</button>
@@ -197,9 +224,8 @@
             });
         }
 
-        // Delete Task (Fully functional for any video/task)
         function deleteTask(key) {
-            if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্কটি ডিলিট করতে চান?')) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্ক বা ভিডিওটি ডিলিট করতে চান?')) {
                 database.ref('customTasks/' + key).remove(function(error) {
                     if(!error) {
                         alert('সফলভাবে মুছে ফেলা হয়েছে!');
@@ -210,7 +236,6 @@
             }
         }
 
-        // Prepare Edit Task
         function prepareEdit(key) {
             var task = allTasksData[key];
             if(!task) return;
@@ -226,10 +251,11 @@
             document.getElementById('formTitle').innerText = '✏️ টাস্ক বা রিলস এডিট করুন';
             document.getElementById('saveBtn').innerText = 'আপডেট করুন';
             document.getElementById('cancelEditBtn').style.display = 'block';
-            window.scrollTo({top: 0, behavior: 'smooth'});
+
+            // Switch automatically to the create/edit form tab
+            switchTab('create', document.getElementsByClassName('tab-btn')[0]);
         }
 
-        // Reset Form
         function resetForm() {
             document.getElementById('editTaskId').value = '';
             document.getElementById('taskTitle').value = '';
@@ -238,7 +264,7 @@
             document.getElementById('taskReward').value = '';
             document.getElementById('mediaFile').value = '';
             uploadedMediaUrl = "";
-            document.getElementById('formTitle').innerText = '➕ যেকোনো সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন';
+            document.getElementById('formTitle').innerText = '➕ নতুন সোশ্যাল মিডিয়া বা রিলস ভিডিও যুক্ত করুন';
             document.getElementById('saveBtn').innerText = 'টাস্ক বা রিলস সেভ করুন';
             document.getElementById('cancelEditBtn').style.display = 'none';
         }
