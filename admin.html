@@ -24,8 +24,7 @@
     <!-- 1. LOGIN BOX -->
     <div id="loginBox" class="card">
         <div class="title">🔐 এডমিন লগইন</div>
-        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 15px;">পাসওয়ার্ড দিয়ে এডমিন প্যানেলে প্রবেশ করুন</p>
-        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন">
+        <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন">
         <button class="btn" onclick="checkLogin()">লগইন করুন</button>
     </div>
 
@@ -93,6 +92,7 @@
         const database = firebase.database();
 
         let uploadedMediaUrl = "";
+        let allTasksData = {}; 
 
         function checkLogin() {
             var pass = document.getElementById('adminPass').value;
@@ -168,6 +168,7 @@
         function loadAdminTasks() {
             database.ref('customTasks').on('value', function(snapshot) {
                 var data = snapshot.val();
+                allTasksData = data || {}; 
                 var taskListDiv = document.getElementById('adminTaskList');
                 
                 if(!data) {
@@ -184,7 +185,7 @@
                             <p style="font-size:12px; color:#94A3B8;">রিওয়ার্ড: ৳${task.reward}</p>
                         </div>
                         <div>
-                            <button class="btn btn-edit" onclick="editTask('${key}', '${task.type}', '${task.title}', '${task.subtitle}', '${task.link}', ${task.reward})">এডিট</button>
+                            <button class="btn btn-edit" onclick="prepareEdit('${key}')">এডিট</button>
                             <button class="btn btn-danger" onclick="deleteTask('${key}')">ডিলিট</button>
                         </div>
                     </div>`;
@@ -195,10 +196,11 @@
 
         // Delete Task
         function deleteTask(key) {
-            if(confirm('আপনি কি নিশ্চিতভাবে এটি ডিলিট করতে চান?')) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্কটি ডিলিট করতে চান?')) {
                 database.ref('customTasks/' + key).remove(function(error) {
                     if(!error) {
                         alert('সফলভাবে মুছে ফেলা হয়েছে!');
+                        resetForm();
                     } else {
                         alert('ত্রুটি: ' + error.message);
                     }
@@ -206,15 +208,18 @@
             }
         }
 
-        // Edit Task Setup
-        function editTask(key, type, title, subtitle, link, reward) {
+        // Prepare Edit Task
+        function prepareEdit(key) {
+            var task = allTasksData[key];
+            if(!task) return;
+
             document.getElementById('editTaskId').value = key;
-            document.getElementById('taskType').value = type;
-            document.getElementById('taskTitle').value = title;
-            document.getElementById('taskSubtitle').value = subtitle;
-            document.getElementById('taskLink').value = link;
-            document.getElementById('taskReward').value = reward;
-            uploadedMediaUrl = link;
+            document.getElementById('taskType').value = task.type || 'Video';
+            document.getElementById('taskTitle').value = task.title || '';
+            document.getElementById('taskSubtitle').value = task.subtitle || '';
+            document.getElementById('taskLink').value = task.link || '';
+            document.getElementById('taskReward').value = task.reward || '';
+            uploadedMediaUrl = task.link || '';
 
             document.getElementById('formTitle').innerText = '✏️ টাস্ক বা রিলস এডিট করুন';
             document.getElementById('saveBtn').innerText = 'আপডেট করুন';
