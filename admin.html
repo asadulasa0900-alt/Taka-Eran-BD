@@ -3,58 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আর্ন বিডি - এডমিন কন্ট্রোল প্যানেল</title>
+    <title>টাকা আর্ন বিডি - এডমিন প্যানেল</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0A0E1A; color: #E1E7EF; padding: 20px; max-width: 500px; margin: 0 auto; }
-        .card { background-color: #121829; border: 1px solid #10B981; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .title { font-size: 18px; font-weight: bold; color: #10B981; margin-bottom: 15px; text-align: center; }
-        input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-top: 6px; margin-bottom: 12px; font-size: 14px; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; text-align: center; text-decoration: none; display: block; margin-top: 10px; }
-        .btn-purple { background-color: #8B5CF6; }
-        .btn-red { background-color: #EF4444; }
-        .btn-green { background-color: #10B981; }
-        .sec-title { font-weight: bold; color: #3B82F6; margin: 15px 0 10px 0; border-top: 1px dashed #334155; padding-top: 10px; }
-        .req-card { background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
-        .btn-group { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; }
+        body { background-color: #0A0E1A; color: #E1E7EF; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+        .title { font-size: 18px; font-weight: bold; color: #10B981; margin-bottom: 15px; }
+        input, select, textarea { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
+        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; width: 100%; font-size: 14px; }
+        .btn-danger { background-color: #EF4444; padding: 6px 10px; font-size: 12px; width: auto; }
+        .btn-edit { background-color: #3B82F6; padding: 6px 10px; font-size: 12px; width: auto; margin-right: 5px; }
+        .task-item { background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        #adminPanel { display: none; }
+        #loginBox { text-align: center; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <!-- Admin Login Screen -->
-    <div id="loginSection" class="card">
-        <div class="title">🔒 এডমিন লগইন</div>
-        <input type="password" id="adminPass" placeholder="এডমিন পাসওয়ার্ড দিন (Asadul123@AR)">
-        <button class="btn" onclick="loginAdmin()">লগইন করুন</button>
+    <!-- 1. LOGIN BOX -->
+    <div id="loginBox" class="card">
+        <div class="title">🔐 এডমিন লগইন</div>
+        <p style="font-size: 13px; color: #94A3B8; margin-bottom: 15px;">পাসওয়ার্ড দিয়ে এডমিন প্যানেলে প্রবেশ করুন</p>
+        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন">
+        <button class="btn" onclick="checkLogin()">লগইন করুন</button>
     </div>
 
-    <!-- Admin Main Dashboard -->
-    <div id="dashboardSection" style="display: none;">
-        <div class="card">
-            <div class="title">👑 টাকা আর্ন বিডি - এডমিন প্যানেল</div>
-            <button class="btn btn-red" style="margin-bottom: 15px;" onclick="logoutAdmin()">লগআউট করুন</button>
+    <!-- 2. MAIN ADMIN PANEL -->
+    <div id="adminPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="color: #10B981; font-size: 20px;">🛠️ এডমিন কন্ট্রোল প্যানেল</h2>
+            <button class="btn btn-danger" onclick="location.reload()" style="width: auto;">লগআউট</button>
+        </div>
 
-            <!-- 1. Add New Task / Video / Sponsor / Image -->
-            <div class="sec-title">➕ নতুন টাস্ক/ভিডিও/স্পন্সার/ছবি পোস্ট যুক্ত করুন</div>
+        <!-- Add / Edit Task Form -->
+        <div class="card">
+            <div class="title" id="formTitle">➕ যেকোনো সোশ্যাল মিডিয়া বা অ্যাপ টাস্ক যুক্ত করুন</div>
+            <input type="hidden" id="editTaskId">
             
-            <label style="font-size:12px; color:#94A3B8;">কন্টেন্টের ধরন</label>
-            <select id="contentType">
-                <option value="Task">মাইক্রো-টাস্ক (ইউটিউব/ফেসবুক ইত্যাদি)</option>
-                <option value="Video">ভিডিও / রিলস</option>
-                <option value="Sponsor">স্পন্সার পোস্ট / ব্যানার বিজ্ঞাপন</option>
+            <select id="taskType">
+                <option value="Facebook">👍 ফেসবুক টাস্ক (Like/Follow/Share)</option>
+                <option value="TikTok">🎵 টিকটক টাস্ক (Follow/Like/Video)</option>
+                <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক (Follow/Like)</option>
+                <option value="YouTube">▶️ ইউটিউব ভিডিও/সাবস্ক্রাইব টাস্ক</option>
+                <option value="Telegram">📢 টেলিগ্রাম চ্যানেল জয়েন টাস্ক</option>
+                <option value="AppDownload">📱 অ্যাপ ডাউনলোড টাস্ক</option>
+                <option value="Task">📌 সাধারণ অন্যান্য টাস্ক</option>
+                <option value="Video">🎬 ভিডিও কাজ</option>
+                <option value="Sponsor">🔥 স্পন্সার পোস্ট</option>
             </select>
 
-            <input type="text" id="taskTitle" placeholder="টাইটেল (যেমন: ভিডিও দেখুন বা চ্যানেল সাবস্ক্রাইব)">
-            <input type="text" id="taskSub" placeholder="বিবরণ / সাব-টাইটেল">
-            <input type="text" id="taskLink" placeholder="কাজের লিংক / ভিডিও লিংক / ছবি URL (https://...)">
-            <input type="number" id="taskReward" step="0.01" placeholder="টাকার পরিমাণ (যেমন: 10 বা 0.50)">
-            <button class="btn btn-purple" onclick="addNewContent()">অ্যাপে লাইভ যুক্ত করুন</button>
+            <input type="text" id="taskTitle" placeholder="টাস্কের শিরোনাম (যেমন: টিকটক পেজ ফলো করুন)">
+            <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিওতে লাইক দিয়ে স্ক্রিনশট দিন)">
+            <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক (Facebook/TikTok/App Link ইত্যাদি)">
+            <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 2.00)">
 
-            <!-- 2. Manage Withdraw Requests -->
-            <div class="sec-title">💳 পেন্ডিং উইথড্র রিকোয়েস্টসমূহ</div>
-            <div id="withdrawList">ডাটা লোড হচ্ছে...</div>
+            <!-- ফাইল ম্যানেজার থেকে ভিডিও বা ইমেজ আপলোড অপশন -->
+            <div style="margin-bottom: 12px;">
+                <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে ফাইল/ভিডিও আপলোড (ঐচ্ছিক):</label>
+                <input type="file" id="mediaFile" accept="video/*,image/*" style="padding: 8px; background: #0A0E1A;" onchange="handleFileUpload(event)">
+            </div>
+
+            <button class="btn" id="saveBtn" onclick="saveTask()">টাস্ক সেভ করুন</button>
+            <button class="btn" id="cancelEditBtn" onclick="resetForm()" style="background-color: #64748B; margin-top: 8px; display: none;">এডিট বাতিল করুন</button>
+        </div>
+
+        <!-- Manage Existing Tasks -->
+        <div class="card">
+            <div class="title">📋 বিদ্যমান টাস্ক ও সোশ্যাল মিডিয়া ম্যানেজমেন্ট</div>
+            <div id="adminTaskList">টাস্ক লোড হচ্ছে...</div>
         </div>
     </div>
 
@@ -63,6 +80,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
+        // ফায়ারবেজ কনফিগারেশন অপরিবর্তিত রাখা হয়েছে
         const firebaseConfig = {
             apiKey: "AIzaSyB9KjekXH9oD1JQLKU0HLQMnWMLDmzU4",
             authDomain: "taka-rane-bd.firebaseapp.com",
@@ -76,89 +94,140 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        function loginAdmin() {
+        let uploadedMediaUrl = "";
+
+        function checkLogin() {
             var pass = document.getElementById('adminPass').value;
-            if (pass === 'Asadul123@AR') {
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('dashboardSection').style.display = 'block';
-                loadAdminData();
+            if(pass === "Asadul123@AR") {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAdminTasks();
             } else {
-                alert('ভুল পাসওয়ার্ড!');
+                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড দিন।');
             }
         }
 
-        function logoutAdmin() {
-            document.getElementById('adminPass').value = '';
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('dashboardSection').style.display = 'none';
+        // ফাইল ম্যানেজার থেকে মিডিয়া সিলেক্ট করে প্রসেস করা
+        function handleFileUpload(event) {
+            var file = event.target.files[0];
+            if(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedMediaUrl = e.target.result;
+                    document.getElementById('taskLink').value = "ফাইল থেকে আপলোডকৃত কন্টেন্ট";
+                    alert('ফাইল সফলভাবে লোড হয়েছে!');
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
-        function addNewContent() {
-            var type = document.getElementById('contentType').value;
+        function saveTask() {
+            var editId = document.getElementById('editTaskId').value;
+            var type = document.getElementById('taskType').value;
             var title = document.getElementById('taskTitle').value.trim();
-            var sub = document.getElementById('taskSub').value.trim();
+            var subtitle = document.getElementById('taskSubtitle').value.trim();
             var link = document.getElementById('taskLink').value.trim();
-            var reward = parseFloat(document.getElementById('taskReward').value || '0');
+            var reward = parseFloat(document.getElementById('taskReward').value);
 
-            if (!title || !link || reward <= 0) {
-                alert('অনুগ্রহ করে সঠিক টাইটেল, লিংক ও টাকার পরিমাণ দিন!');
+            if(!title || isNaN(reward)) {
+                alert('অনুগ্রহ করে শিরোনাম এবং টাকার পরিমাণ সঠিকভাবে পূরণ করুন!');
                 return;
             }
 
-            var newRef = database.ref('customTasks').push();
-            newRef.set({
+            var taskData = {
                 type: type,
                 title: title,
-                subtitle: sub || 'কন্টেন্টটি সম্পন্ন করে আয় করুন',
-                link: link,
+                subtitle: subtitle || 'নিয়ম মেনে কাজ সম্পন্ন করুন',
+                link: uploadedMediaUrl || link || '#',
                 reward: reward
-            }, function(err) {
-                if(!err) {
-                    alert('সফলভাবে নতুন কন্টেন্ট বা টাস্ক অ্যাপে যোগ করা হয়েছে!');
-                    document.getElementById('taskTitle').value = '';
-                    document.getElementById('taskSub').value = '';
-                    document.getElementById('taskLink').value = '';
-                    document.getElementById('taskReward').value = '';
-                } else {
-                    alert('ত্রুটি: ' + err.message);
-                }
-            });
+            };
+
+            if(editId) {
+                database.ref('customTasks/' + editId).set(taskData, function(error) {
+                    if(!error) {
+                        alert('টাস্ক সফলভাবে আপডেট করা হয়েছে!');
+                        resetForm();
+                    } else {
+                        alert('ত্রুটি: ' + error.message);
+                    }
+                });
+            } else {
+                database.ref('customTasks').push().set(taskData, function(error) {
+                    if(!error) {
+                        alert('নতুন টাস্ক সফলভাবে যুক্ত করা হয়েছে!');
+                        resetForm();
+                    } else {
+                        alert('ত্রুটি: ' + error.message);
+                    }
+                });
+            }
         }
 
-        function loadAdminData() {
-            var display = document.getElementById('withdrawList');
-            database.ref('withdrawRequests').on('value', function(snapshot) {
+        function loadAdminTasks() {
+            database.ref('customTasks').on('value', function(snapshot) {
                 var data = snapshot.val();
-                if (!data) {
-                    display.innerHTML = "<div style='color:#94A3B8; text-align:center;'>কোনো উইথড্র রিকোয়েস্ট নেই।</div>";
+                var taskListDiv = document.getElementById('adminTaskList');
+                
+                if(!data) {
+                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
                     return;
                 }
+
                 var html = "";
-                for (var key in data) {
-                    var req = data[key];
-                    html += `<div class="req-card">
-                        <b>মেথড:</b> ${req.method || 'N/A'} | <b>নম্বর:</b> ${req.account || 'N/A'}<br>
-                        <b>টাকা:</b> ৳${req.amount || 0} | <b>সময়:</b> ${req.time || 'N/A'}<br>
-                        <b>স্ট্যাটাস:</b> <span style="color:${req.status === 'Approved' ? '#10B981' : (req.status === 'Rejected' ? '#EF4444' : '#F59E0B')}">${req.status || 'Pending'}</span>
-                        <div class="btn-group">
-                            <button class="btn-sm btn-green" onclick="updateReqStatus('${key}', 'Approved')">Approve</button>
-                            <button class="btn-sm btn-red" onclick="updateReqStatus('${key}', 'Rejected')">Reject</button>
+                for(var key in data) {
+                    var task = data[key];
+                    html += `<div class="task-item">
+                        <div>
+                            <h4 style="font-size:14px; color:#fff;">[${task.type}] ${task.title}</h4>
+                            <p style="font-size:12px; color:#94A3B8;">রিওয়ার্ড: ৳${task.reward}</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-edit" onclick="editTask('${key}', '${task.type}', '${task.title}', '${task.subtitle}', ${task.reward})">এডিট</button>
+                            <button class="btn btn-danger" onclick="deleteTask('${key}')">ডিলিট</button>
                         </div>
                     </div>`;
                 }
-                display.innerHTML = html;
+                taskListDiv.innerHTML = html;
             });
         }
 
-        function updateReqStatus(key, newStatus) {
-            database.ref('withdrawRequests/' + key).update({
-                status: newStatus
-            }).then(function() {
-                alert('উইথড্র রিকোয়েস্ট স্ট্যাটাস আপডেট করা হয়েছে: ' + newStatus);
-            }).catch(function(error) {
-                alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে: ' + error.message);
-            });
+        function deleteTask(key) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এটি ডিলিট করতে চান?')) {
+                database.ref('customTasks/' + key).remove(function(error) {
+                    if(!error) {
+                        alert('সফলভাবে মুছে ফেলা হয়েছে!');
+                    } else {
+                        alert('সমস্যা হয়েছে: ' + error.message);
+                    }
+                });
+            }
+        }
+
+        function editTask(key, type, title, subtitle, reward) {
+            document.getElementById('editTaskId').value = key;
+            document.getElementById('taskType').value = type;
+            document.getElementById('taskTitle').value = title;
+            document.getElementById('taskSubtitle').value = subtitle;
+            document.getElementById('taskReward').value = reward;
+
+            document.getElementById('formTitle').innerText = '✏️ টাস্ক বা কন্টেন্ট এডিট করুন';
+            document.getElementById('saveBtn').innerText = 'আপডেট করুন';
+            document.getElementById('cancelEditBtn').style.display = 'block';
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function resetForm() {
+            document.getElementById('editTaskId').value = '';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskSubtitle').value = '';
+            document.getElementById('taskLink').value = '';
+            document.getElementById('taskReward').value = '';
+            document.getElementById('mediaFile').value = '';
+            uploadedMediaUrl = "";
+            document.getElementById('formTitle').innerText = '➕ যেকোনো সোশ্যাল মিডিয়া বা অ্যাপ টাস্ক যুক্ত করুন';
+            document.getElementById('saveBtn').innerText = 'টাস্ক সেভ করুন';
+            document.getElementById('cancelEditBtn').style.display = 'none';
         }
     </script>
 </body>
-</html> 
+</html>
