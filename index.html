@@ -22,10 +22,10 @@
         .btn-ad { background-color: #8B5CF6; }
         input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
         
-        /* Small Square Ad Grid at Top */
+        /* Small Square Ad Grid at Top with Limits */
         .top-ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .square-ad-card { background: #121829; border: 1px dashed #8B5CF6; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; }
-        .square-ad-card h5 { font-size: 13px; color: #C084FC; margin-bottom: 5px; }
+        .square-ad-card { background: #121829; border: 1px dashed #8B5CF6; border-radius: 12px; padding: 12px; text-align: center; }
+        .square-ad-card h5 { font-size: 13px; color: #C084FC; margin-bottom: 3px; }
         .square-ad-card p { font-size: 11px; color: #94A3B8; margin-bottom: 8px; }
 
         /* Reels Video Card Styling */
@@ -74,16 +74,17 @@
 
         <!-- 1. HOME PAGE -->
         <div id="page-home" class="page-content active">
+            <!-- 2 Square Ad Options with 10 Daily Limit Each -->
             <div class="top-ads-grid">
-                <div class="square-ad-card" onclick="openAdLink('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', 1)">
-                    <h5>সুপার অ্যাড ১</h5>
-                    <p>ক্লিক করে আয় করুন ৳১</p>
-                    <button class="btn btn-ad" style="padding: 4px 8px; font-size: 10px;">ভিজিট করুন</button>
+                <div class="square-ad-card">
+                    <h5>অ্যাড অপশন ১</h5>
+                    <p>আজ দেখা: <span id="adCount1">0</span>/10 বার</p>
+                    <button class="btn btn-ad" style="padding: 5px 10px; font-size: 11px; width: 100%;" onclick="watchSquareAd(1, 'https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679')">অ্যাড দেখুন (৳১)</button>
                 </div>
-                <div class="square-ad-card" onclick="openAdLink('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 1)">
-                    <h5>সুপার অ্যাড ২</h5>
-                    <p>ক্লিক করে আয় করুন ৳১</p>
-                    <button class="btn btn-ad" style="padding: 4px 8px; font-size: 10px;">ভিজিট করুন</button>
+                <div class="square-ad-card">
+                    <h5>অ্যাড অপশন ২</h5>
+                    <p>আজ দেখা: <span id="adCount2">0</span>/10 বার</p>
+                    <button class="btn btn-ad" style="padding: 5px 10px; font-size: 11px; width: 100%;" onclick="watchSquareAd(2, 'https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f')">অ্যাড দেখুন (৳১)</button>
                 </div>
             </div>
 
@@ -98,7 +99,7 @@
                     📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
                     • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
                     • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
-                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি</b>
+                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি (প্রতি রেফারে ৳১০)</b>
                 </div>
             </div>
 
@@ -140,12 +141,12 @@
         <div id="page-reels" class="page-content">
             <div class="card">
                 <div class="title">🎬 এক্সক্লুসিভ রিলস ও ভিডিও ফিড</div>
-                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">এডমিন প্যানেল থেকে আপলোড করা ভিডিওগুলো নিচে সিরিয়ালি শো করছে। ভিডিও দেখে এবং নিচের অ্যাড ভিজিট করে আয় করুন!</p>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">এডমিন প্যানেল থেকে আপলোড করা ভিডিওগুলো নিচে সিরিয়ালি শো করছে।</p>
                 <div id="reelsContainer">রিলস লোড হচ্ছে...</div>
             </div>
         </div>
 
-        <!-- 4. PROFILE PAGE -->
+        <!-- 4. PROFILE PAGE (With Referral & UID) -->
         <div id="page-profile" class="page-content">
             <div class="card" style="text-align: center;">
                 <div style="width: 70px; height: 70px; background: #10B981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 10px;" id="profileAvatar">A</div>
@@ -156,7 +157,9 @@
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
                     🔑 <b>ইউনিক ইউআইডি (UID):</b> <span id="profileUid" style="color: #10B981; word-break: break-all;">-</span><br><br>
                     👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span> / 100<br><br>
-                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 10
+                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 10 (প্রতি রেফারে ৳১০)<br><br>
+                    🔗 <b>আপনার রেফারেল লিংক:</b><br>
+                    <input type="text" id="refLinkInput" readonly style="margin-top: 5px; font-size: 11px; padding: 8px;" onclick="this.select(); document.execCommand('copy'); alert('রেফারেল লিংক কপি করা হয়েছে!');">
                 </div>
 
                 <button class="btn" style="background-color: #EF4444; width: 100%;" onclick="logoutUser()">লগ আউট করুন</button>
@@ -223,8 +226,17 @@
         let currentBalance = 0;
         let totalAdsWatched = 0;
         let totalReferrals = 0;
+        let ad1Count = 0;
+        let ad2Count = 0;
 
         window.onload = function() {
+            // Check if URL has ref parameter for referral bonus (৳10)
+            const urlParams = new URLSearchParams(window.location.search);
+            const refBy = urlParams.get('ref');
+            if(refBy && !localStorage.getItem('referredDone')) {
+                localStorage.setItem('pendingRef', refBy);
+            }
+
             if(currentUserUid) {
                 loadUserData(currentUserUid);
             }
@@ -267,8 +279,27 @@
                 pass: pass,
                 balance: 0,
                 adsWatched: 0,
-                referrals: 0
+                referrals: 0,
+                ad1Daily: 0,
+                ad2Daily: 0
             };
+
+            // Check if registered via referral link
+            var pendingRef = localStorage.getItem('pendingRef');
+            if(pendingRef && pendingRef !== uid) {
+                database.ref('users/' + pendingRef).once('value').then(function(snap) {
+                    var refUser = snap.val();
+                    if(refUser) {
+                        var newRefCnt = (refUser.referrals || 0) + 1;
+                        var newRefBal = (refUser.balance || 0) + 10; // 10 BDT per referral
+                        database.ref('users/' + pendingRef).update({
+                            referrals: newRefCnt,
+                            balance: newRefBal
+                        });
+                        localStorage.setItem('referredDone', 'true');
+                    }
+                });
+            }
 
             database.ref('users/' + uid).set(newUser, function(error) {
                 if(!error) {
@@ -324,6 +355,8 @@
                     currentBalance = user.balance || 0;
                     totalAdsWatched = user.adsWatched || 0;
                     totalReferrals = user.referrals || 0;
+                    ad1Count = user.ad1Daily || 0;
+                    ad2Count = user.ad2Daily || 0;
 
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
@@ -337,9 +370,44 @@
                     document.getElementById('profileAdsCount').innerText = totalAdsWatched;
                     document.getElementById('profileRefCount').innerText = totalReferrals;
 
+                    // Generate Referral Link
+                    var refLink = window.location.origin + window.location.pathname + "?ref=" + user.uid;
+                    document.getElementById('refLinkInput').value = refLink;
+
+                    // Update Daily Ad Counts display
+                    document.getElementById('adCount1').innerText = ad1Count;
+                    document.getElementById('adCount2').innerText = ad2Count;
+
                     loadAdminTasksLive();
                 }
             });
+        }
+
+        // Square Ad Watch with 10 Daily Limit Each
+        function watchSquareAd(adNumber, adUrl) {
+            if(adNumber === 1) {
+                if(ad1Count >= 10) {
+                    alert('আজকের জন্য অ্যাড অপশন ১ এর ১০টি অ্যাড দেখার লিমিট শেষ!');
+                    return;
+                }
+                ad1Count++;
+            } else if(adNumber === 2) {
+                if(ad2Count >= 10) {
+                    alert('আজকের জন্য অ্যাড অপশন ২ এর ১০টি অ্যাড দেখার লিমিট শেষ!');
+                    return;
+                }
+                ad2Count++;
+            }
+
+            window.open(adUrl, '_blank');
+            addReward(1); // 1 BDT per ad
+
+            if(currentUserUid) {
+                database.ref('users/' + currentUserUid).update({
+                    ad1Daily: ad1Count,
+                    ad2Daily: ad2Count
+                });
+            }
         }
 
         function switchPage(pageId, element) {
@@ -356,7 +424,6 @@
             element.classList.add('active');
         }
 
-        // Realtime Fetching Admin Tasks & Reels
         function loadAdminTasksLive() {
             database.ref('customTasks').on('value', function(snapshot) {
                 var data = snapshot.val();
@@ -378,97 +445,4 @@
                 for(var key in data) {
                     var task = data[key];
                     var itemCard = `<div class="task-card">
-                        <div class="task-info">
-                            <h4>[${task.type}] ${task.title}</h4>
-                            <p>${task.subtitle} | <b style="color:#10B981;">৳${task.reward}</b></p>
-                        </div>
-                        <a href="${task.link}" target="_blank" class="btn" onclick="addReward(${task.reward})">শুরু করুন</a>
-                    </div>`;
-
-                    // If it's a video/reel or uploaded media
-                    if(task.type === 'Video' || task.type === 'TikTok' || task.link.startsWith('data:video')) {
-                        var videoSource = task.link.startsWith('data:video') ? task.link : 'https://www.w3schools.com/html/mov_bbb.mp4'; // fallback sample if external url
-                        reelsHtml += `<div class="reel-card">
-                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px; text-align:left;">${task.title}</h4>
-                            <video class="reel-video" controls src="${videoSource}"></video>
-                            <div class="reel-footer">
-                                <span style="font-size:12px; color:#10B981;">রিওয়ার্ড: ৳${task.reward}</span>
-                                <a href="${task.link}" target="_blank" class="btn btn-ad" onclick="addReward(${task.reward})">অ্যাড দেখুন ও আয় করুন</a>
-                            </div>
-                        </div>`;
-                    }
-
-                    if(task.type === 'Sponsor') {
-                        sponsorHtml += itemCard;
-                    } else {
-                        taskHtml += itemCard;
-                    }
-                }
-
-                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
-                homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
-                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো রিলস ভিডিও পাওয়া যায়নি।</p>";
-            });
-        }
-
-        function openAdLink(url, reward) {
-            window.open(url, '_blank');
-            addReward(reward);
-        }
-
-        function addReward(amount) {
-            currentBalance += amount;
-            totalAdsWatched += 1;
-
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({
-                    balance: currentBalance,
-                    adsWatched: totalAdsWatched
-                });
-            }
-        }
-
-        function requestWithdraw() {
-            var method = document.getElementById('payMethod').value;
-            var account = document.getElementById('payAccount').value.trim();
-            var amount = parseFloat(document.getElementById('payAmount').value || 0);
-
-            if(amount < 100) {
-                alert('সর্বনিম্ন উইথড্র ১০০ টাকা হতে হবে!');
-                return;
-            }
-            if(totalAdsWatched < 100) {
-                alert('উইথড্র করতে হলে কমপক্ষে ১০০টি অ্যাড দেখতে হবে! আপনার দেখা হয়েছে: ' + totalAdsWatched + '/১০০');
-                return;
-            }
-            if(totalReferrals < 10) {
-                alert('উইথড্র করতে হলে কমপক্ষে ১০টি রেফার করতে হবে! আপনার রেফার হয়েছে: ' + totalReferrals + '/১০');
-                return;
-            }
-            if(!account) {
-                alert('সঠিক অ্যাকাউন্ট নম্বর দিন!');
-                return;
-            }
-
-            var reqData = {
-                uid: currentUserUid,
-                method: method,
-                account: account,
-                amount: amount,
-                status: 'Pending',
-                time: new Date().toLocaleString()
-            };
-
-            database.ref('withdrawRequests').push().set(reqData, function(error) {
-                if(!error) {
-                    alert('আপনার উইথড্র রিকোয়েস্ট সফলভাবে জমা হয়েছে!');
-                    document.getElementById('payAccount').value = '';
-                    document.getElementById('payAmount').value = '';
-                } else {
-                    alert('সমস্যা হয়েছে: ' + error.message);
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+                        <div class="
