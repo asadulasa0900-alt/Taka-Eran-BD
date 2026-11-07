@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আর্ন বিডি - মূল অ্যাপ</title>
+    <title>টাকা আর্ন বিডি - রিলস ও টাস্ক অ্যাপ</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -22,165 +22,182 @@
         .btn-ad { background-color: #8B5CF6; }
         input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
         
+        /* Small Square Ad Grid at Top */
+        .top-ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .square-ad-card { background: #121829; border: 1px dashed #8B5CF6; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; }
+        .square-ad-card h5 { font-size: 13px; color: #C084FC; margin-bottom: 5px; }
+        .square-ad-card p { font-size: 11px; color: #94A3B8; margin-bottom: 8px; }
+
+        /* Reels Video Card Styling */
+        .reel-card { background: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 12px; margin-bottom: 15px; text-align: center; }
+        .reel-video { width: 100%; max-height: 350px; border-radius: 10px; background: #000; object-fit: cover; margin-bottom: 10px; }
+        .reel-footer { display: flex; justify-content: space-between; align-items: center; background: #0A0E1A; padding: 10px; border-radius: 10px; }
+
         /* Bottom Navigation Bar */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 10px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
-        .nav-item { text-align: center; color: #94A3B8; font-size: 12px; cursor: pointer; text-decoration: none; }
+        .nav-item { text-align: center; color: #94A3B8; font-size: 11px; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: #10B981; font-weight: bold; }
-        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+        .nav-item div { font-size: 16px; margin-bottom: 2px; }
         .criteria-box { background: #0A0E1A; border: 1px dashed #10B981; padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; color: #E1E7EF; }
+        
+        #authContainer { padding: 20px; max-width: 400px; margin: 30px auto; background: #121829; border-radius: 16px; border: 1px solid #1E293B; }
     </style>
 </head>
 <body>
 
-    <div class="header">💎 টাকা আর্ন বিডি</div>
-
-    <!-- 1. HOME / DASHBOARD PAGE -->
-    <div id="page-home" class="page-content active">
-        <div class="balance-box">
-            <p>আপনার বর্তমান ব্যালেন্স</p>
-            <h2 id="userBalance">৳ 0.00</h2>
+    <!-- AUTHENTICATION SECTION -->
+    <div id="authContainer">
+        <div class="header" style="background:none; border:none; margin-bottom:15px;">💎 টাকা আর্ন বিডি - পোর্টাল</div>
+        
+        <div id="registerForm">
+            <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
+            <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম">
+            <input type="text" id="regUsername" placeholder="ইউজারনেম (যেমন: asadul99)">
+            <input type="text" id="regEmailPhone" placeholder="ইমেল বা ফোন নম্বর">
+            <input type="password" id="regPass" placeholder="পাসওয়ার্ড দিন">
+            <button class="btn" style="width:100%; padding:12px;" onclick="registerUser()">রেজিস্ট্রেশন করুন</button>
+            <p style="text-align:center; font-size:12px; color:#94A3B8; margin-top:12px; cursor:pointer;" onclick="toggleAuthMode()">আগে থেকেই অ্যাকাউন্ট আছে? <b>লগইন করুন</b></p>
         </div>
 
-        <!-- Auto Adsterra Click Cards -->
-        <div class="card">
-            <div class="title">🎬 ইনস্ট্যান্ট অ্যাড দেখুন (বোনাস আয়)</div>
-            <p style="font-size: 12px; color: #94A3B8; margin-bottom: 10px;">নিচের বাটনগুলোতে ক্লিক করে বিজ্ঞাপন দেখুন এবং প্রতিটি দেখার জন্য রিওয়ার্ড অর্জন করুন:</p>
-            
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>স্পেশাল অ্যাড ১</h4>
-                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳০.৩০</b></p>
-                </div>
-                <button class="btn btn-ad" onclick="openAdLink('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', 1)">অ্যাড দেখুন</button>
-            </div>
-            
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>স্পেশাল অ্যাড ২</h4>
-                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳০.৫০</b></p>
-                </div>
-                <button class="btn btn-ad" onclick="openAdLink('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 1)">অ্যাড দেখুন</button>
-            </div>
-            
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>স্পেশাল অ্যাড ৩</h4>
-                    <p>বিজ্ঞাপনটি দেখুন | <b style="color:#10B981;">৳.৫০</b></p>
-                </div>
-                <button class="btn btn-ad" onclick="openAdLink('https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91', 1)">অ্যাড দেখুন</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="title">✨ গুরুত্বপূর্ণ নিয়মাবলী</div>
-            <div class="criteria-box">
-                📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
-                • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
-                • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
-                • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি</b>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="title">🔥 এডমিন প্যানেলের লাইভ স্পন্সার</div>
-            <div id="homeSponsorList">লোড হচ্ছে...</div>
+        <div id="loginForm" style="display: none;">
+            <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">অ্যাকাউন্ট লগইন</h3>
+            <input type="text" id="logEmailPhone" placeholder="ইমেল বা ফোন নম্বর">
+            <input type="password" id="logPass" placeholder="পাসওয়ার্ড দিন">
+            <button class="btn" style="width:100%; padding:12px;" onclick="loginUser()">লগইন করুন</button>
+            <p style="text-align:center; font-size:12px; color:#94A3B8; margin-top:12px; cursor:pointer;" onclick="toggleAuthMode()">অ্যাকাউন্ট নেই? <b>রেজিস্ট্রেশন করুন</b></p>
         </div>
     </div>
 
-    <!-- 2. TASKS & VIDEOS PAGE -->
-    <div id="page-tasks" class="page-content">
-        <div class="card">
-            <div class="title">📺 কুইক ভিডিও ও ডিরেক্ট অ্যাডসমূহ</div>
-            
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>প্রিমিয়াম ভিডিও অ্যাড ১</h4>
-                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+    <!-- MAIN APP WRAPPER -->
+    <div id="mainApp" style="display: none;">
+        <div class="header">💎 টাকা আর্ন বিডি</div>
+
+        <!-- 1. HOME PAGE -->
+        <div id="page-home" class="page-content active">
+            <div class="top-ads-grid">
+                <div class="square-ad-card" onclick="openAdLink('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', 1)">
+                    <h5>সুপার অ্যাড ১</h5>
+                    <p>ক্লিক করে আয় করুন ৳১</p>
+                    <button class="btn btn-ad" style="padding: 4px 8px; font-size: 10px;">ভিজিট করুন</button>
                 </div>
-                <button class="btn" onclick="openAdLink('https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927', 0.5)">দেখা শুরু করুন</button>
-            </div>
-
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>প্রিমিয়াম ভিডিও অ্যাড ২</h4>
-                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৪০</b></p>
+                <div class="square-ad-card" onclick="openAdLink('https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f', 1)">
+                    <h5>সুপার অ্যাড ২</h5>
+                    <p>ক্লিক করে আয় করুন ৳১</p>
+                    <button class="btn btn-ad" style="padding: 4px 8px; font-size: 10px;">ভিজিট করুন</button>
                 </div>
-                <button class="btn" onclick="openAdLink('https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f', 0.5)">দেখা শুরু করুন</button>
             </div>
 
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>রিলস ও স্পনসর অ্যাড ১</h4>
-                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৪০</b></p>
+            <div class="balance-box">
+                <p>আপনার বর্তমান ব্যালেন্স</p>
+                <h2 id="userBalance">৳ 0.00</h2>
+            </div>
+
+            <div class="card">
+                <div class="title">✨ গুরুত্বপূর্ণ নিয়মাবলী</div>
+                <div class="criteria-box">
+                    📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
+                    • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
+                    • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
+                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি</b>
                 </div>
-                <button class="btn" onclick="openAdLink('https://auctionr.org/4/cbbcf8888f80dad51ee68b6825a71afd', 0.5)">দেখা শুরু করুন</button>
             </div>
 
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>রিলস ও স্পনসর অ্যাড ২</h4>
-                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৩০</b></p>
+            <div class="card">
+                <div class="title">🔥 এডমিন প্যানেলের লাইভ টাস্ক ও স্পন্সার</div>
+                <div id="homeSponsorList">লোড হচ্ছে...</div>
+            </div>
+        </div>
+
+        <!-- 2. TASKS & VIDEOS PAGE -->
+        <div id="page-tasks" class="page-content">
+            <div class="card">
+                <div class="title">📺 প্রিমিয়াম ডিরেক্ট অ্যাডসমূহ</div>
+                
+                <div class="task-card">
+                    <div class="task-info">
+                        <h4>প্রিমিয়াম অ্যাড ১</h4>
+                        <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                    </div>
+                    <button class="btn" onclick="openAdLink('https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927', 0.5)">দেখা শুরু করুন</button>
                 </div>
-                <button class="btn" onclick="openAdLink('https://auctionr.org/4/3047aa8e4114ebcff5d25d090162d684', 0.5)">দেখা শুরু করুন</button>
-            </div>
 
-            <div class="task-card">
-                <div class="task-info">
-                    <h4>বিশেষ অফার অ্যাড</h4>
-                    <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                <div class="task-card">
+                    <div class="task-info">
+                        <h4>প্রিমিয়াম অ্যাড ২</h4>
+                        <p>রিওয়ার্ড: <b style="color:#10B981;">৳০.৫০</b></p>
+                    </div>
+                    <button class="btn" onclick="openAdLink('https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f', 0.5)">দেখা শুরু করুন</button>
                 </div>
-                <button class="btn" onclick="openAdLink('https://asiafilm.org/4/592eb2255fd44e69d1ee990b034c8eed', 1)">দেখা শুরু করুন</button>
+            </div>
+
+            <div class="card">
+                <div class="title">📋 এডমিন প্যানেল থেকে দেওয়া সোশ্যাল ও কাস্টম টাস্ক</div>
+                <div id="allTaskList">টাস্ক লোড হচ্ছে...</div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="title">📋 এডমিন প্যানেল থেকে দেওয়া টাস্ক ও কন্টেন্ট</div>
-            <div id="allTaskList">টাস্ক লোড হচ্ছে...</div>
-        </div>
-    </div>
-
-    <!-- 3. REFER PAGE -->
-    <div id="page-refer" class="page-content">
-        <div class="card" style="text-align: center;">
-            <div class="title">👥 বন্ধু রেফার করুন রেফার বোনাস ১০ টাকা </div>
-            <p style="font-size: 13px; color: #94A3B8; margin-bottom: 15px;">উইথড্র করার জন্য আপনার কমপক্ষে **১০টি সফল রেফার** সম্পন্ন থাকতে হবে!</p>
-            <input type="text" value="https://asadulasa0900-alt.github.io/Taka-Eran-BD/index.html?ref=asadul" readonly style="text-align: center; background: #0A0E1A;">
-            <button class="btn" style="width: 100%; padding: 12px;" onclick="alert('রেফার লিংক কপি করা হয়েছে!')">লিংক কপি করুন</button>
-            <p style="font-size: 12px; color: #10B981; margin-top: 10px;">আপনার বর্তমান রেফার: <b id="refCount">০</b> / ১০</p>
-        </div>
-    </div>
-
-    <!-- 4. WITHDRAW PAGE -->
-    <div id="page-withdraw" class="page-content">
-        <div class="card">
-            <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
-            <div class="criteria-box" style="font-size: 12px;">
-                ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১১০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+        <!-- 3. REELS / VIDEO STREAMING PAGE -->
+        <div id="page-reels" class="page-content">
+            <div class="card">
+                <div class="title">🎬 এক্সক্লুসিভ রিলস ও ভিডিও ফিড</div>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">এডমিন প্যানেল থেকে আপলোড করা ভিডিওগুলো নিচে সিরিয়ালি শো করছে। ভিডিও দেখে এবং নিচের অ্যাড ভিজিট করে আয় করুন!</p>
+                <div id="reelsContainer">রিলস লোড হচ্ছে...</div>
             </div>
-            <select id="payMethod">
-                <option value="bKash">বিকাশ (bKash)</option>
-                <option value="Nagad">নগদ (Nagad)</option>
-                <option value="Recharge">মোবাইল রিচার্জ</option>
-            </select>
-            <input type="text" id="payAccount" placeholder="আপনার অ্যাকাউন্ট নম্বর দিন">
-            <input type="number" id="payAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ টাকা)">
-            <button class="btn" style="width: 100%; padding: 12px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
-    </div>
 
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home', this)">
-            <div>🏠</div>হোম
+        <!-- 4. PROFILE PAGE -->
+        <div id="page-profile" class="page-content">
+            <div class="card" style="text-align: center;">
+                <div style="width: 70px; height: 70px; background: #10B981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 10px;" id="profileAvatar">A</div>
+                <h3 id="profileName" style="color: #fff; font-size: 18px;">নাম লোড হচ্ছে...</h3>
+                <p id="profileUsername" style="font-size: 13px; color: #10B981; margin-bottom: 5px;">@username</p>
+                <p id="profileEmailPhone" style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">email/phone</p>
+                
+                <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
+                    🔑 <b>ইউনিক ইউআইডি (UID):</b> <span id="profileUid" style="color: #10B981; word-break: break-all;">-</span><br><br>
+                    👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span> / 100<br><br>
+                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 10
+                </div>
+
+                <button class="btn" style="background-color: #EF4444; width: 100%;" onclick="logoutUser()">লগ আউট করুন</button>
+            </div>
         </div>
-        <div class="nav-item" onclick="switchPage('tasks', this)">
-            <div>📋</div>টাস্ক ও ভিডিও
+
+        <!-- 5. WITHDRAW PAGE -->
+        <div id="page-withdraw" class="page-content">
+            <div class="card">
+                <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
+                <div class="criteria-box" style="font-size: 12px;">
+                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+                </div>
+                <select id="payMethod">
+                    <option value="bKash">বিকাশ (bKash)</option>
+                    <option value="Nagad">নগদ (Nagad)</option>
+                    <option value="Recharge">মোবাইল রিচার্জ</option>
+                </select>
+                <input type="text" id="payAccount" placeholder="আপনার অ্যাকাউন্ট নম্বর দিন">
+                <input type="number" id="payAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ টাকা)">
+                <button class="btn" style="width: 100%; padding: 12px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+            </div>
         </div>
-        <div class="nav-item" onclick="switchPage('refer', this)">
-            <div>👥</div>রেফার
-        </div>
-        <div class="nav-item" onclick="switchPage('withdraw', this)">
-            <div>💳</div>উইথড্র
+
+        <!-- Bottom Navigation Bar -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('home', this)">
+                <div>🏠</div>হোম
+            </div>
+            <div class="nav-item" onclick="switchPage('tasks', this)">
+                <div>📋</div>টাস্ক
+            </div>
+            <div class="nav-item" onclick="switchPage('reels', this)">
+                <div>🎬</div>রিলস
+            </div>
+            <div class="nav-item" onclick="switchPage('profile', this)">
+                <div>👤</div>প্রোফাইল
+            </div>
+            <div class="nav-item" onclick="switchPage('withdraw', this)">
+                <div>💳</div>উইথড্র
+            </div>
         </div>
     </div>
 
@@ -189,7 +206,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
-        // ফায়ারবেজ কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyB9KjekXH9oD1JQLKU0HLQMnWMLDmzU4",
             authDomain: "taka-rane-bd.firebaseapp.com",
@@ -202,6 +218,129 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        let currentUserUid = localStorage.getItem('takaEranUserUid');
+        let currentBalance = 0;
+        let totalAdsWatched = 0;
+        let totalReferrals = 0;
+
+        window.onload = function() {
+            if(currentUserUid) {
+                loadUserData(currentUserUid);
+            }
+        };
+
+        function toggleAuthMode() {
+            var reg = document.getElementById('registerForm');
+            var log = document.getElementById('loginForm');
+            if(reg.style.display === 'none') {
+                reg.style.display = 'block';
+                log.style.display = 'none';
+            } else {
+                reg.style.display = 'none';
+                log.style.display = 'block';
+            }
+        }
+
+        function registerUser() {
+            var name = document.getElementById('regName').value.trim();
+            var username = document.getElementById('regUsername').value.trim();
+            var emailPhone = document.getElementById('regEmailPhone').value.trim();
+            var pass = document.getElementById('regPass').value;
+
+            if(!name || !username || !emailPhone || !pass) {
+                alert('সকল ঘর সঠিকভাবে পূরণ করুন!');
+                return;
+            }
+
+            if(localStorage.getItem('deviceRegistered')) {
+                alert('এই ডিভাইস থেকে ইতিমধ্যেই একটি অ্যাকাউন্ট তৈরি করা হয়েছে!');
+                return;
+            }
+
+            var uid = 'UID_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+            var newUser = {
+                uid: uid,
+                name: name,
+                username: username,
+                emailPhone: emailPhone,
+                pass: pass,
+                balance: 0,
+                adsWatched: 0,
+                referrals: 0
+            };
+
+            database.ref('users/' + uid).set(newUser, function(error) {
+                if(!error) {
+                    localStorage.setItem('takaEranUserUid', uid);
+                    localStorage.setItem('deviceRegistered', 'true');
+                    alert('রেজিস্ট্রেশন সফল হয়েছে!');
+                    loadUserData(uid);
+                } else {
+                    alert('ত্রুটি: ' + error.message);
+                }
+            });
+        }
+
+        function loginUser() {
+            var emailPhone = document.getElementById('logEmailPhone').value.trim();
+            var pass = document.getElementById('logPass').value;
+
+            if(!emailPhone || !pass) {
+                alert('ইমেল/ফোন এবং পাসওয়ার্ড দিন!');
+                return;
+            }
+
+            database.ref('users').once('value').then(function(snapshot) {
+                var users = snapshot.val();
+                var foundUid = null;
+                for(var uid in users) {
+                    if(users[uid].emailPhone === emailPhone && users[uid].pass === pass) {
+                        foundUid = uid;
+                        break;
+                    }
+                }
+
+                if(foundUid) {
+                    localStorage.setItem('takaEranUserUid', foundUid);
+                    localStorage.setItem('deviceRegistered', 'true');
+                    alert('লগইন সফল হয়েছে!');
+                    loadUserData(foundUid);
+                } else {
+                    alert('ভুল তথ্য! অ্যাকাউন্ট খুঁজে পাওয়া যায়নি।');
+                }
+            });
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('takaEranUserUid');
+            location.reload();
+        }
+
+        function loadUserData(uid) {
+            database.ref('users/' + uid).on('value', function(snapshot) {
+                var user = snapshot.val();
+                if(user) {
+                    currentBalance = user.balance || 0;
+                    totalAdsWatched = user.adsWatched || 0;
+                    totalReferrals = user.referrals || 0;
+
+                    document.getElementById('authContainer').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+
+                    document.getElementById('userBalance').innerText = "৳ " + currentBalance.toFixed(2);
+                    document.getElementById('profileName').innerText = user.name;
+                    document.getElementById('profileUsername').innerText = "@" + user.username;
+                    document.getElementById('profileEmailPhone').innerText = user.emailPhone;
+                    document.getElementById('profileUid').innerText = user.uid;
+                    document.getElementById('profileAvatar').innerText = user.name.charAt(0).toUpperCase();
+                    document.getElementById('profileAdsCount').innerText = totalAdsWatched;
+                    document.getElementById('profileRefCount').innerText = totalReferrals;
+
+                    loadAdminTasksLive();
+                }
+            });
+        }
 
         function switchPage(pageId, element) {
             var pages = document.getElementsByClassName('page-content');
@@ -217,47 +356,61 @@
             element.classList.add('active');
         }
 
-        // Realtime Fetching from Admin Panel via Firebase
-        database.ref('customTasks').on('value', function(snapshot) {
-            var data = snapshot.val();
-            var taskListDiv = document.getElementById('allTaskList');
-            var homeSponsorDiv = document.getElementById('homeSponsorList');
-            
-            if(!data) {
-                taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>বর্তমানে এডমিন থেকে কোনো বাড়তি টাস্ক নেই।</p>";
-                homeSponsorDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>বর্তমানে কোনো স্পন্সার পোস্ট নেই।</p>";
-                return;
-            }
-
-            var taskHtml = "";
-            var sponsorHtml = "";
-
-            for(var key in data) {
-                var task = data[key];
-                var itemCard = `<div class="task-card">
-                    <div class="task-info">
-                        <h4>[${task.type}] ${task.title}</h4>
-                        <p>${task.subtitle} | <b style="color:#10B981;">৳${task.reward}</b></p>
-                    </div>
-                    <a href="${task.link}" target="_blank" class="btn" onclick="addReward(${task.reward})">শুরু করুন</a>
-                </div>`;
-
-                if(task.type === 'Sponsor') {
-                    sponsorHtml += itemCard;
-                } else {
-                    taskHtml += itemCard;
+        // Realtime Fetching Admin Tasks & Reels
+        function loadAdminTasksLive() {
+            database.ref('customTasks').on('value', function(snapshot) {
+                var data = snapshot.val();
+                var taskListDiv = document.getElementById('allTaskList');
+                var homeSponsorDiv = document.getElementById('homeSponsorList');
+                var reelsContainerDiv = document.getElementById('reelsContainer');
+                
+                if(!data) {
+                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
+                    homeSponsorDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
+                    reelsContainerDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো রিলস বা ভিডিও আপলোড করা হয়নি।</p>";
+                    return;
                 }
-            }
 
-            taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো বাড়তি টাস্ক নেই।</p>";
-            homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
-        });
+                var taskHtml = "";
+                var sponsorHtml = "";
+                var reelsHtml = "";
 
-        var currentBalance = 0;
-        var totalAdsWatched = 0; 
-        var totalReferrals = 0;  
+                for(var key in data) {
+                    var task = data[key];
+                    var itemCard = `<div class="task-card">
+                        <div class="task-info">
+                            <h4>[${task.type}] ${task.title}</h4>
+                            <p>${task.subtitle} | <b style="color:#10B981;">৳${task.reward}</b></p>
+                        </div>
+                        <a href="${task.link}" target="_blank" class="btn" onclick="addReward(${task.reward})">শুরু করুন</a>
+                    </div>`;
 
-        // Adsterra Link Click Handling
+                    // If it's a video/reel or uploaded media
+                    if(task.type === 'Video' || task.type === 'TikTok' || task.link.startsWith('data:video')) {
+                        var videoSource = task.link.startsWith('data:video') ? task.link : 'https://www.w3schools.com/html/mov_bbb.mp4'; // fallback sample if external url
+                        reelsHtml += `<div class="reel-card">
+                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px; text-align:left;">${task.title}</h4>
+                            <video class="reel-video" controls src="${videoSource}"></video>
+                            <div class="reel-footer">
+                                <span style="font-size:12px; color:#10B981;">রিওয়ার্ড: ৳${task.reward}</span>
+                                <a href="${task.link}" target="_blank" class="btn btn-ad" onclick="addReward(${task.reward})">অ্যাড দেখুন ও আয় করুন</a>
+                            </div>
+                        </div>`;
+                    }
+
+                    if(task.type === 'Sponsor') {
+                        sponsorHtml += itemCard;
+                    } else {
+                        taskHtml += itemCard;
+                    }
+                }
+
+                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
+                homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
+                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো রিলস ভিডিও পাওয়া যায়নি।</p>";
+            });
+        }
+
         function openAdLink(url, reward) {
             window.open(url, '_blank');
             addReward(reward);
@@ -266,21 +419,26 @@
         function addReward(amount) {
             currentBalance += amount;
             totalAdsWatched += 1;
-            document.getElementById('userBalance').innerText = "৳ " + currentBalance.toFixed(2);
+
+            if(currentUserUid) {
+                database.ref('users/' + currentUserUid).update({
+                    balance: currentBalance,
+                    adsWatched: totalAdsWatched
+                });
+            }
         }
 
-        // Withdraw Validation
         function requestWithdraw() {
             var method = document.getElementById('payMethod').value;
             var account = document.getElementById('payAccount').value.trim();
             var amount = parseFloat(document.getElementById('payAmount').value || 0);
 
-            if(amount < 110) {
-                alert('সর্বনিম্ন উইথড্র ১১০ টাকা হতে হবে!');
+            if(amount < 100) {
+                alert('সর্বনিম্ন উইথড্র ১০০ টাকা হতে হবে!');
                 return;
             }
-            if(totalAdsWatched < 110) {
-                alert('উইথড্র করতে হলে আপনাকে কমপক্ষে ১১০টি অ্যাড দেখতে বা টাস্ক সম্পন্ন করতে হবে! আপনার দেখা হয়েছে: ' + totalAdsWatched + '/১১০');
+            if(totalAdsWatched < 100) {
+                alert('উইথড্র করতে হলে কমপক্ষে ১০০টি অ্যাড দেখতে হবে! আপনার দেখা হয়েছে: ' + totalAdsWatched + '/১০০');
                 return;
             }
             if(totalReferrals < 10) {
@@ -293,6 +451,7 @@
             }
 
             var reqData = {
+                uid: currentUserUid,
                 method: method,
                 account: account,
                 amount: amount,
@@ -312,4 +471,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
