@@ -41,7 +41,7 @@
             <button class="btn btn-danger" onclick="location.reload()" style="width: auto;">লগআউট</button>
         </div>
 
-        <!-- Tab Navigation Buttons -->
+        <!-- Tab Navigation Buttons (Two main sections / pages) -->
         <div class="tab-menu">
             <div class="tab-btn active" onclick="switchTab('create', this)">➕ টাস্ক বা ভিডিও পোস্ট</div>
             <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট ও ডিলিট</div>
@@ -91,8 +91,8 @@
         <!-- SECTION 3: PENDING TASK PROOFS APPROVAL -->
         <div id="section-proofs" class="panel-section">
             <div class="card">
-                <div class="title">✅ ইউজারের জমা দেওয়া টাস্ক প্রুফসমূহ</div>
-                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">ইউজাররা টাস্ক সম্পন্ন করে যে প্রুফ ও স্ক্রিনশট জমা দিয়েছে তা এখানে দেখা যাবে। 'অ্যাপ্রুভ' করলে ইউজারের ব্যালেন্সে টাকা যোগ হয়ে যাবে।</p>
+                <div class="title">✅ ইউজারের জমা দেওয়া টাস্ক প্রুফ ও স্ক্রিনশট</div>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">ইউজাররা টাস্ক সম্পন্ন করে যে প্রুফ বা স্ক্রিনশট জমা দিয়েছে তা এখানে দেখা যাবে। 'অ্যাপ্রুভ' করলে ইউজারের ব্যালেন্সে টাকা যোগ হয়ে যাবে।</p>
                 <div id="adminProofList">প্রুফ লোড হচ্ছে...</div>
             </div>
         </div>
@@ -242,12 +242,20 @@
                 for(var key in data) {
                     var sub = data[key];
                     if(sub.status === 'Pending') {
+                        var proofDisplay = "";
+                        if(sub.proof && sub.proof.startsWith('data:image')) {
+                            proofDisplay = `<a href="${sub.proof}" target="_blank"><img src="${sub.proof}" style="max-width:100px; max-height:100px; border-radius:8px; border:1px solid #334155; margin-top:5px;" alt="Screenshot"></a>`;
+                        } else {
+                            proofDisplay = `<a href="${sub.proof}" target="_blank" style="color:#38BDF8; word-break:break-all;">${sub.proof}</a>`;
+                        }
+
                         html += `<div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
                             <div>
                                 <h4 style="font-size:14px; color:#10B981;">টাস্ক: ${sub.taskTitle}</h4>
                                 <p style="font-size:12px; color:#fff; margin-top:2px;">ইউজার: <b>${sub.userName || 'User'}</b></p>
-                                <p style="font-size:12px; color:#C084FC; margin-top:2px;">প্রুফ/স্ক্রিনশট: <a href="${sub.proof}" target="_blank" style="color:#38BDF8; word-break:break-all;">${sub.proof}</a></p>
-                                <p style="font-size:12px; color:#94A3B8; margin-top:2px;">রিওয়ার্ড: ৳${sub.reward}</p>
+                                <p style="font-size:12px; color:#C084FC; margin-top:2px;">প্রুফ/স্ক্রিনশট ছবি:</p>
+                                ${proofDisplay}
+                                <p style="font-size:12px; color:#94A3B8; margin-top:5px;">রিওয়ার্ড: ৳${sub.reward}</p>
                             </div>
                             <div style="display:flex; gap:6px; align-self: flex-end;">
                                 <button class="btn btn-approve" onclick="approveProof('${key}', '${sub.userUid}', ${sub.reward})">অ্যাপ্রুভ করুন (টাকা দিন)</button>
