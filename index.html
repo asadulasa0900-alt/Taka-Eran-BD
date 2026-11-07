@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আর্ন বিডি - রিলস ও টাস্ক অ্যাপ</title>
+    <title>টাকা আর্ন বিডি - রিলস, স্পিন ও লুডু অ্যাপ</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -20,7 +20,8 @@
         .task-info p { font-size: 12px; color: #94A3B8; margin-bottom: 8px; }
         .btn { padding: 8px 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; text-decoration: none; font-size: 12px; display: inline-block; text-align: center; }
         .btn-ad { background-color: #8B5CF6; }
-        input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
+        .btn-disabled { background-color: #4B5563 !important; cursor: not-allowed; }
+        input, select, textarea { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
         
         .top-ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .square-ad-card { background: #121829; border: 1px dashed #8B5CF6; border-radius: 12px; padding: 12px; text-align: center; }
@@ -31,13 +32,14 @@
         .reel-ad-badge { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; font-size: 11px; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .reel-video { width: 100%; max-height: 350px; border-radius: 10px; background: #000; object-fit: cover; margin-bottom: 10px; }
         
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 10px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
-        .nav-item { text-align: center; color: #94A3B8; font-size: 11px; cursor: pointer; text-decoration: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 8px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
+        .nav-item { text-align: center; color: #94A3B8; font-size: 10px; cursor: pointer; text-decoration: none; flex: 1; }
         .nav-item.active { color: #10B981; font-weight: bold; }
         .nav-item div { font-size: 16px; margin-bottom: 2px; }
         .criteria-box { background: #0A0E1A; border: 1px dashed #10B981; padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 12px; color: #E1E7EF; }
         
         #authContainer { padding: 20px; max-width: 400px; margin: 30px auto; background: #121829; border-radius: 16px; border: 1px solid #1E293B; }
+        .game-box { background: #0A0E1A; border: 1px solid #334155; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -49,7 +51,6 @@
         <div id="registerForm">
             <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
             <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম">
-            
             <input type="email" id="regEmail" placeholder="জিমেইল অ্যাকাউন্ট (Email)">
             <input type="password" id="regPass" placeholder="পাসওয়ার্ড দিন">
             <button class="btn" style="width:100%; padding:12px;" onclick="registerUser()">রেজিস্ট্রেশন করুন</button>
@@ -107,7 +108,7 @@
                     📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
                     • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
                     • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
-                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ৩টি (প্রতি রেফারে ৳১০)</b>
+                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি (প্রতি রেফারে ৳১০)</b>
                 </div>
             </div>
 
@@ -117,7 +118,7 @@
             </div>
         </div>
 
-        <!-- 2. TASKS & MICRO-TASKS PAGE -->
+        <!-- 2. TASKS PAGE -->
         <div id="page-tasks" class="page-content">
             <div class="card">
                 <div class="title">📋 ইউটিউব, ফেসবুক ও সোশ্যাল টাস্ক (প্রুফ জমা দিন)</div>
@@ -125,7 +126,43 @@
             </div>
         </div>
 
-        <!-- 3. REELS / VIDEO STREAMING PAGE -->
+        <!-- 3. GAMES PAGE -->
+        <div id="page-games" class="page-content">
+            <div class="card">
+                <div class="title">🎡 লাকি স্পিন (প্রতিদিন ৩টি)</div>
+                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 10px;">১টি স্পিন করতে আপনাকে টানা ২টি অ্যাডস্টার অ্যাড দেখতে হবে।</p>
+                <div class="game-box">
+                    <p style="font-size: 13px; color: #10B981; font-weight: bold; margin-bottom: 8px;">আজকের অবশিষ্ট স্পিন: <span id="spinCountText">3</span>/3</p>
+                    <p style="font-size: 12px; color: #F59E0B; margin-bottom: 12px;" id="spinAdProgressText">অ্যাড দেখার অগ্রগতি: 0/2</p>
+                    
+                    <button class="btn btn-ad" id="spinAdBtn" onclick="watchSpinAd()" style="width: 100%; margin-bottom: 8px;">📺 অ্যাড দেখুন (১/২)</button>
+                    <button class="btn btn-disabled" id="spinPlayBtn" onclick="playSpinWheel()" disabled style="width: 100%;">🎡 স্পিন করুন (আনলক করুন)</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="title">🎲 বট লুডু ম্যাচ (VS Bot Ludo)</div>
+                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 10px;">এন্ট্রি ফি: <b>৳৫</b> | বিজয়ী পুরস্কার: <b>৳৭</b> | হারলে: ৳৫ কাটা যাবে!</p>
+                <div class="game-box">
+                    <div id="ludoSetup">
+                        <button class="btn" style="background: linear-gradient(135deg, #10B981, #059669); width: 100%; padding: 12px;" onclick="startLudoGame()">🎮 ৳৫ এন্ট্রি দিয়ে লুডু শুরু করুন</button>
+                    </div>
+                    <div id="ludoPlayArea" style="display: none;">
+                        <div style="text-align: center; margin: 15px 0;">
+                            <div style="font-size: 40px; margin-bottom: 5px;" id="diceDisplay">🎲</div>
+                            <p style="font-size: 12px; color: #94A3B8;" id="diceScoreText">ছক্কা চালুন!</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-around; font-size: 12px; margin-bottom: 15px;">
+                            <span>🔴 বটের পয়েন্ট: <b id="botPoints">0</b>/30</span>
+                            <span>🔵 আপনার পয়েন্ট: <b id="userPoints">0</b>/30</span>
+                        </div>
+                        <button class="btn btn-ad" id="rollDiceBtn" onclick="rollLudoDice()" style="width: 100%; padding: 10px;">🎲 ছক্কা চালুন (Roll)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. REELS PAGE -->
         <div id="page-reels" class="page-content">
             <div class="card">
                 <div class="title">🎬 এক্সক্লুসিভ রিলস ও ভিডিও ফিড</div>
@@ -134,23 +171,35 @@
             </div>
         </div>
 
-        <!-- 4. PROFILE PAGE -->
+        <!-- 5. PROFILE PAGE -->
         <div id="page-profile" class="page-content">
             <div class="card" style="text-align: center;">
-                <div style="width: 70px; height: 70px; background: #10B981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 10px;" id="profileAvatar">A</div>
-                <h3 id="profileName" style="color: #fff; font-size: 18px;">নাম লোড হচ্ছে...</h3>
-                <p id="profileUsername" style="font-size: 13px; color: #10B981; margin-bottom: 5px;">@username</p>
-                <p id="profileEmailPhone" style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">email</p>
+                <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 10px;">
+                    <img id="profileAvatarImg" src="" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #10B981; display: none;" alt="Profile">
+                    <div id="profileAvatarFallback" style="width: 80px; height: 80px; background: #10B981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; margin: 0 auto;">A</div>
+                </div>
                 
+                <h3 id="profileName" style="color: #fff; font-size: 18px;">নাম লোড হচ্ছে...</h3>
+                <p id="profileUidText" style="font-size: 13px; color: #10B981; margin-bottom: 5px;">UID: 125978</p>
+                
+                <div style="margin-bottom: 12px;">
+                    <p id="profileBioText" style="font-size: 12px; color: #94A3B8; font-style: italic;">বায়ো যোগ করা হয়নি...</p>
+                    <button onclick="editBioPrompt()" style="background: none; border: none; color: #38BDF8; font-size: 11px; cursor: pointer; text-decoration: underline; margin-top: 3px;">বায়ো এডিট করুন</button>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="font-size: 11px; color: #10B981; display: block; margin-bottom: 3px;">প্রোফাইল ছবি পরিবর্তন করুন:</label>
+                    <input type="file" id="profilePicFile" accept="image/*" style="font-size: 11px; padding: 6px;" onchange="uploadProfilePicture(event)">
+                </div>
+
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
-                    🔑 <b>ইউনিক ইউআইডি (UID):</b> <span id="profileUid" style="color: #10B981; word-break: break-all;">-</span><br><br>
-                    👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span> / 100<br><br>
-                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> / 3 (প্রতি রেফারে ৳১০)<br><br>
+                    💳 <b>মোট উত্তোলিত টাকা:</b> <span id="profileTotalWithdrawn" style="color: #F59E0B;">৳ 0.00</span><br><br>
+                    👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span><br><br>
+                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span><br><br>
                     🔗 <b>আপনার রেফারেল লিংক:</b><br>
                     <input type="text" id="refLinkInput" readonly style="margin-top: 5px; font-size: 11px; padding: 8px;" onclick="this.select(); document.execCommand('copy'); alert('রেফারেল লিংক কপি করা হয়েছে!');">
                 </div>
 
-                <!-- Completed Tasks Section in Profile -->
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
                     <div style="color: #10B981; font-weight: bold; margin-bottom: 8px;">✅ আপনার সম্পন্নকৃত টাস্কসমূহ:</div>
                     <div id="profileCompletedTasksList"><p style="color: #94A3B8; font-size: 12px;">কোনো কাজ সম্পন্ন হয়নি।</p></div>
@@ -160,12 +209,12 @@
             </div>
         </div>
 
-        <!-- 5. WITHDRAW PAGE -->
+        <!-- 6. WITHDRAW PAGE -->
         <div id="page-withdraw" class="page-content">
             <div class="card">
                 <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
                 <div class="criteria-box" style="font-size: 12px;">
-                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>৩টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
                 </div>
                 <select id="payMethod">
                     <option value="bKash">বিকাশ (bKash)</option>
@@ -186,6 +235,9 @@
             <div class="nav-item" onclick="switchPage('tasks', this)">
                 <div>📋</div>টাস্ক
             </div>
+            <div class="nav-item" onclick="switchPage('games', this)">
+                <div>🎮</div>গেম
+            </div>
             <div class="nav-item" onclick="switchPage('reels', this)">
                 <div>🎬</div>রিলস
             </div>
@@ -203,12 +255,9 @@
         <div style="background:#121829; padding:20px; border-radius:16px; width:90%; max-width:400px; border:1px solid #1E293B; text-align:center;">
             <h3 style="color:#10B981; margin-bottom:10px; font-size:16px;">📸 কাজের প্রুফ বা স্ক্রিনশট জমা দিন</h3>
             <p style="font-size:12px; color:#94A3B8; margin-bottom:15px;">ফাইল ম্যানেজার থেকে স্ক্রিনশটের ছবি সিলেক্ট করুন অথবা কাজের বিবরণ লিখুন।</p>
-            
             <input type="text" id="proofText" placeholder="আপনার ইউটিউব/ফেসবুক নাম বা প্রুফ নোট" style="margin-bottom: 10px;">
-            
             <label style="font-size: 12px; color: #10B981; display: block; margin-bottom: 5px; text-align:left;">ফাইল ম্যানেজার থেকে স্ক্রিনশট ছবি দিন:</label>
             <input type="file" id="proofFile" accept="image/*" style="padding: 8px; background: #0A0E1A; margin-bottom: 15px;">
-            
             <div style="display: flex; gap: 10px;">
                 <button class="btn" style="background-color: #EF4444; flex:1;" onclick="closeProofModal()">বাতিল</button>
                 <button class="btn" style="flex:1;" onclick="confirmSubmitProof()">জমা দিন</button>
@@ -238,6 +287,7 @@
         let currentBalance = 0;
         let totalAdsWatched = 0;
         let totalReferrals = 0;
+        let totalWithdrawn = 0;
         let ad1Count = 0;
         let ad2Count = 0;
         let specialAdCount = 0;
@@ -247,6 +297,14 @@
         let completedTasks = {}; 
         let approvedTaskTitles = [];
         
+        let dailySpinCount = 0;
+        let currentSpinAdCount = 0;
+        let lastSpinDate = "";
+
+        let userLudoScore = 0;
+        let botLudoScore = 0;
+        let isLudoActive = false;
+
         let selectedTaskKey = "";
         let selectedTaskTitle = "";
         let selectedTaskReward = 0;
@@ -284,33 +342,39 @@
 
         function registerUser() {
             var name = document.getElementById('regName').value.trim();
-            var username = document.getElementById('regUsername').value.trim();
             var email = document.getElementById('regEmail').value.trim();
             var pass = document.getElementById('regPass').value;
 
-            if(!name || !username || !email || !pass) {
+            if(!name || !email || !pass) {
                 alert('সকল ঘর সঠিকভাবে পূরণ করুন!');
                 return;
             }
 
-            var uid = 'UID_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+            // Generate unique 6-digit numeric UID (e.g. 125978)
+            var numericUid = Math.floor(100000 + Math.random() * 900000);
+            var uidKey = 'UID_' + numericUid;
+
             var newUser = {
-                uid: uid,
+                uid: numericUid,
                 name: name,
-                username: username,
                 email: email,
                 pass: pass,
                 balance: 0,
                 adsWatched: 0,
                 referrals: 0,
+                totalWithdrawn: 0,
+                bio: "টাকা আর্ন বিডিতে কাজ করছি...",
+                profilePic: "",
                 ad1Daily: 0,
                 ad2Daily: 0,
                 specialAdDaily: 0,
-                lastCheckin: ""
+                lastCheckin: "",
+                spinCount: 0,
+                lastSpinDate: ""
             };
 
             var pendingRef = localStorage.getItem('pendingRef');
-            if(pendingRef && pendingRef !== uid) {
+            if(pendingRef && pendingRef !== uidKey) {
                 database.ref('users/' + pendingRef).once('value').then(function(snap) {
                     var refUser = snap.val();
                     if(refUser) {
@@ -325,11 +389,11 @@
                 });
             }
 
-            database.ref('users/' + uid).set(newUser, function(error) {
+            database.ref('users/' + uidKey).set(newUser, function(error) {
                 if(!error) {
-                    localStorage.setItem('takaEranUserUid', uid);
-                    alert('রেজিস্ট্রেশন সফল হয়েছে!');
-                    loadUserData(uid);
+                    localStorage.setItem('takaEranUserUid', uidKey);
+                    alert('রেজিস্ট্রেশন সফল হয়েছে! আপনার ইউনিক ইউআইডি: ' + numericUid);
+                    loadUserData(uidKey);
                 } else {
                     alert('ত্রুটি: ' + error.message);
                 }
@@ -347,18 +411,18 @@
 
             database.ref('users').once('value').then(function(snapshot) {
                 var users = snapshot.val();
-                var foundUid = null;
-                for(var uid in users) {
-                    if(users[uid].email === email && users[uid].pass === pass) {
-                        foundUid = uid;
+                var foundKey = null;
+                for(var key in users) {
+                    if(users[key].email === email && users[key].pass === pass) {
+                        foundKey = key;
                         break;
                     }
                 }
 
-                if(foundUid) {
-                    localStorage.setItem('takaEranUserUid', foundUid);
+                if(foundKey) {
+                    localStorage.setItem('takaEranUserUid', foundKey);
                     alert('লগইন সফল হয়েছে!');
-                    loadUserData(foundUid);
+                    loadUserData(foundKey);
                 } else {
                     alert('ভুল জিমেইল অথবা পাসওয়ার্ড!');
                 }
@@ -370,13 +434,14 @@
             location.reload();
         }
 
-        function loadUserData(uid) {
-            database.ref('users/' + uid).on('value', function(snapshot) {
+        function loadUserData(uidKey) {
+            database.ref('users/' + uidKey).on('value', function(snapshot) {
                 var user = snapshot.val();
                 if(user) {
                     currentBalance = user.balance || 0;
                     totalAdsWatched = user.adsWatched || 0;
                     totalReferrals = user.referrals || 0;
+                    totalWithdrawn = user.totalWithdrawn || 0;
                     ad1Count = user.ad1Daily || 0;
                     ad2Count = user.ad2Daily || 0;
                     specialAdCount = user.specialAdDaily || 0;
@@ -384,42 +449,205 @@
                     currentUserName = user.name;
                     watchedReels = user.watchedReels || {};
 
+                    var today = new Date().toDateString();
+                    lastSpinDate = user.lastSpinDate || "";
+                    if(lastSpinDate === today) {
+                        dailySpinCount = user.spinCount || 0;
+                    } else {
+                        dailySpinCount = 0;
+                    }
+
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
 
                     document.getElementById('userBalance').innerText = "৳ " + currentBalance.toFixed(2);
                     document.getElementById('profileName').innerText = user.name;
-                    document.getElementById('profileUsername').innerText = "@" + user.username;
-                    document.getElementById('profileEmailPhone').innerText = user.email;
-                    document.getElementById('profileUid').innerText = user.uid;
-                    document.getElementById('profileAvatar').innerText = user.name.charAt(0).toUpperCase();
+                    document.getElementById('profileUidText').innerText = "UID: " + (user.uid || '125978');
+                    document.getElementById('profileBioText').innerText = user.bio || "বায়ো যোগ করা হয়নি...";
+                    
                     document.getElementById('profileAdsCount').innerText = totalAdsWatched;
                     document.getElementById('profileRefCount').innerText = totalReferrals;
+                    document.getElementById('profileTotalWithdrawn').innerText = "৳ " + totalWithdrawn.toFixed(2);
 
-                    var refLink = window.location.origin + window.location.pathname + "?ref=" + user.uid;
+                    if(user.profilePic) {
+                        document.getElementById('profileAvatarImg').src = user.profilePic;
+                        document.getElementById('profileAvatarImg').style.display = 'block';
+                        document.getElementById('profileAvatarFallback').style.display = 'none';
+                    } else {
+                        document.getElementById('profileAvatarImg').style.display = 'none';
+                        document.getElementById('profileAvatarFallback').style.display = 'flex';
+                        document.getElementById('profileAvatarFallback').innerText = user.name.charAt(0).toUpperCase();
+                    }
+
+                    var refLink = window.location.origin + window.location.pathname + "?ref=" + uidKey;
                     document.getElementById('refLinkInput').value = refLink;
 
                     document.getElementById('adCount1').innerText = ad1Count;
                     document.getElementById('adCount2').innerText = ad2Count;
                     document.getElementById('specialAdCount').innerText = specialAdCount;
 
-                    var today = new Date().toDateString();
                     var checkinBtn = document.getElementById('checkinBtn');
                     if(lastCheckinDate === today) {
                         checkinBtn.innerText = "আজকের চেক-ইন সম্পন্ন হয়েছে ✅";
                         checkinBtn.style.backgroundColor = "#4B5563";
                         checkinBtn.disabled = true;
                     } else {
-                        checkinBtn.innerText = "আজকের চেক-ইন করুন (৳১)";
+                        checkinBtn.innerText = "আজকের চেক-ইন করুন (৳২)";
                         checkinBtn.style.backgroundColor = "#10B981";
                         checkinBtn.disabled = false;
                     }
 
+                    updateSpinUI();
                     loadUserSubmissions();
                 }
             });
         }
 
+        function uploadProfilePicture(event) {
+            var file = event.target.files[0];
+            if(file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var base64Img = e.target.result;
+                    database.ref('users/' + currentUserUid).update({ profilePic: base64Img }, function(err) {
+                        if(!err) alert('প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!');
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function editBioPrompt() {
+            var newBio = prompt('আপনার নতুন বায়ো বা স্ট্যাটাস লিখুন:');
+            if(newBio !== null) {
+                database.ref('users/' + currentUserUid).update({ bio: newBio.trim() }, function(err) {
+                    if(!err) alert('বায়ো সফলভাবে আপডেট হয়েছে!');
+                });
+            }
+        }
+
+        /* SPIN & LUDO FUNCTIONS */
+        function updateSpinUI() {
+            var remainingSpins = 3 - dailySpinCount;
+            document.getElementById('spinCountText').innerText = remainingSpins > 0 ? remainingSpins : 0;
+            document.getElementById('spinAdProgressText').innerText = "অ্যাড দেখার অগ্রগতি: " + currentSpinAdCount + "/2";
+
+            var spinBtn = document.getElementById('spinPlayBtn');
+            var adBtn = document.getElementById('spinAdBtn');
+
+            if(remainingSpins <= 0) {
+                adBtn.classList.add('btn-disabled');
+                adBtn.innerText = "আজকের স্পিন লিমিট শেষ!";
+                spinBtn.classList.add('btn-disabled');
+                spinBtn.disabled = true;
+            } else {
+                if(currentSpinAdCount >= 2) {
+                    spinBtn.classList.remove('btn-disabled');
+                    spinBtn.style.backgroundColor = "#10B981";
+                    spinBtn.innerText = "🎡 স্পিন করুন (আনলকড!)";
+                    spinBtn.disabled = false;
+                    adBtn.innerText = "অ্যাড দেখা শেষ ✅";
+                } else {
+                    spinBtn.classList.add('btn-disabled');
+                    spinBtn.innerText = "🎡 স্পিন করুন (লকড)";
+                    spinBtn.disabled = true;
+                    adBtn.innerText = "📺 অ্যাড দেখুন (" + (currentSpinAdCount + 1) + "/২)";
+                }
+            }
+        }
+
+        function watchSpinAd() {
+            if(dailySpinCount >= 3) { alert('আজকের ৩টি স্পিনের লিমিট শেষ!'); return; }
+            if(currentSpinAdCount >= 2) { alert('২টি অ্যাড ইতিমধ্যে দেখা শেষ!'); return; }
+
+            window.open('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', '_blank');
+            currentSpinAdCount++;
+            totalAdsWatched++;
+            database.ref('users/' + currentUserUid).update({ adsWatched: totalAdsWatched });
+            updateSpinUI();
+        }
+
+        function playSpinWheel() {
+            if(currentSpinAdCount < 2) { alert('আগে ২টি অ্যাড দেখুন!'); return; }
+
+            var rewardArr = [0.50, 1.00, 1.50, 2.00];
+            var randomReward = rewardArr[Math.floor(Math.random() * rewardArr.length)];
+
+            currentBalance += randomReward;
+            dailySpinCount++;
+            currentSpinAdCount = 0;
+            var today = new Date().toDateString();
+
+            database.ref('users/' + currentUserUid).update({
+                balance: currentBalance,
+                spinCount: dailySpinCount,
+                lastSpinDate: today
+            }, function(err) {
+                if(!err) {
+                    alert('🎉 অভিনন্দন! স্পিন করে আপনি ৳' + randomReward.toFixed(2) + ' জিতে নিয়েছেন!');
+                    updateSpinUI();
+                }
+            });
+        }
+
+        function startLudoGame() {
+            if(currentBalance < 5.00) { alert('লুডু খেলার জন্য ব্যালেন্স কমপক্ষে ৳৫ থাকতে হবে!'); return; }
+
+            if(confirm('বট লুডু খেলতে ৳৫ এন্ট্রি ফি কাটা হবে। জিতলে ৳৭ পাবেন, হারলে ৳৫ কাটা যাবে!')) {
+                currentBalance -= 5.00;
+                userLudoScore = 0;
+                botLudoScore = 0;
+                isLudoActive = true;
+
+                database.ref('users/' + currentUserUid).update({ balance: currentBalance });
+
+                document.getElementById('ludoSetup').style.display = 'none';
+                document.getElementById('ludoPlayArea').style.display = 'block';
+                document.getElementById('userPoints').innerText = '0';
+                document.getElementById('botPoints').innerText = '0';
+                document.getElementById('rollDiceBtn').disabled = false;
+            }
+        }
+
+        function rollLudoDice() {
+            if(!isLudoActive) return;
+            var diceBtn = document.getElementById('rollDiceBtn');
+            diceBtn.disabled = true;
+
+            var userRoll = Math.floor(Math.random() * 6) + 1;
+            userLudoScore += userRoll;
+            document.getElementById('diceDisplay').innerText = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][userRoll - 1];
+            document.getElementById('diceScoreText').innerText = "আপনি চেলেছেন: " + userRoll;
+            document.getElementById('userPoints').innerText = userLudoScore;
+
+            if(userLudoScore >= 30) { endLudoGame(true); return; }
+
+            setTimeout(function() {
+                var botRoll = Math.floor(Math.random() * 6) + 1;
+                botLudoScore += botRoll;
+                document.getElementById('diceDisplay').innerText = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][botRoll - 1];
+                document.getElementById('diceScoreText').innerText = "বট চেলেছে: " + botRoll;
+                document.getElementById('botPoints').innerText = botLudoScore;
+
+                if(botLudoScore >= 30) { endLudoGame(false); }
+                else { diceBtn.disabled = false; }
+            }, 1000);
+        }
+
+        function endLudoGame(userWon) {
+            isLudoActive = false;
+            if(userWon) {
+                currentBalance += 7.00;
+                alert('🎉 অভিনন্দন! আপনি বটকে হারিয়ে ৳৭ পুরষ্কার পেয়েছেন!');
+            } else {
+                alert('💔 দুঃখিত! বট জিতে গেছে। আপনার ৳৫ এন্ট্রি ফি কেটে নেওয়া হলো।');
+            }
+            database.ref('users/' + currentUserUid).update({ balance: currentBalance });
+            document.getElementById('ludoSetup').style.display = 'block';
+            document.getElementById('ludoPlayArea').style.display = 'none';
+        }
+
+        /* EXISTING APP FUNCTIONS */
         function loadUserSubmissions() {
             database.ref('taskSubmissions').on('value', function(snapshot) {
                 var subs = snapshot.val();
@@ -430,7 +658,7 @@
                     for(var sKey in subs) {
                         var sub = subs[sKey];
                         if(sub.userUid === currentUserUid) {
-                            completedTasks[sub.taskId] = sub.status; // 'Pending' or 'Approved'
+                            completedTasks[sub.taskId] = sub.status;
                             if(sub.status === 'Approved') {
                                 approvedTaskTitles.push(sub.taskTitle);
                             }
@@ -438,7 +666,6 @@
                     }
                 }
 
-                // Render approved tasks in profile page
                 var profileCompletedDiv = document.getElementById('profileCompletedTasksList');
                 if(approvedTaskTitles.length > 0) {
                     var pHtml = "";
@@ -456,88 +683,53 @@
 
         function claimDailyCheckin() {
             var today = new Date().toDateString();
-            if(lastCheckinDate === today) {
-                alert('আজকে ইতিমধ্যে চেক-ইন করা হয়েছে!');
-                return;
-            }
+            if(lastCheckinDate === today) { alert('আজকে ইতিমধ্যে চেক-ইন করা হয়েছে!'); return; }
 
             currentBalance += 2.00;
             lastCheckinDate = today;
-
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({
-                    balance: currentBalance,
-                    lastCheckin: today
-                }, function(error) {
-                    if(!error) {
-                        alert('অভিনন্দন! সফলভাবে দৈনিক চেক-ইন বোনাস ৳১ পেয়ে গেছেন।');
-                    }
-                });
-            }
+            database.ref('users/' + currentUserUid).update({ balance: currentBalance, lastCheckin: today }, function(error) {
+                if(!error) alert('অভিনন্দন! সফলভাবে দৈনিক চেক-ইন বোনাস ৳২ পেয়ে গেছেন।');
+            });
         }
 
         function watchSquareAd(adNumber, adUrl) {
-            if(adNumber === 1) {
-                if(ad1Count >= 10) { alert('আজকের লিমিট শেষ!'); return; }
-                ad1Count++;
-            } else if(adNumber === 2) {
-                if(ad2Count >= 10) { alert('আজকের লিমিট শেষ!'); return; }
-                ad2Count++;
-            }
+            if(adNumber === 1) { if(ad1Count >= 10) { alert('আজকের লিমিট শেষ!'); return; } ad1Count++; }
+            else if(adNumber === 2) { if(ad2Count >= 10) { alert('আজকের লিমিট শেষ!'); return; } ad2Count++; }
 
             window.open(adUrl, '_blank');
-            addRewardDirect(0.40);
-
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({ ad1Daily: ad1Count, ad2Daily: ad2Count });
-            }
+            addRewardDirect(0.50);
+            database.ref('users/' + currentUserUid).update({ ad1Daily: ad1Count, ad2Daily: ad2Count });
         }
 
         function watchSpecialAd(adUrl) {
-            if(specialAdCount >= 5) {
-                alert('আজকের জন্য ৫টি স্পেশাল অ্যাড দেখার লিমিট শেষ!');
-                return;
-            }
+            if(specialAdCount >= 5) { alert('আজকের জন্য ৫টি স্পেশাল অ্যাড দেখার লিমিট শেষ!'); return; }
             specialAdCount++;
             window.open(adUrl, '_blank');
-            addRewardDirect(0.60);
-
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({ specialAdDaily: specialAdCount });
-            }
+            addRewardDirect(1.00);
+            database.ref('users/' + currentUserUid).update({ specialAdDaily: specialAdCount });
         }
 
         function watchReelAd(taskId, rewardAmount, adUrl) {
-            if(watchedReels[taskId]) {
-                alert('আপনি এই ভিডিওটি ইতিমধ্যে দেখেছেন এবং রিওয়ার্ড গ্রহণ করেছেন।');
-                return;
-            }
+            if(watchedReels[taskId]) { alert('আপনি এই ভিডিওটি ইতিমধ্যে দেখেছেন!'); return; }
 
             window.open(adUrl, '_blank');
             watchedReels[taskId] = true;
             currentBalance += rewardAmount;
             totalAdsWatched += 1;
 
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({
-                    balance: currentBalance,
-                    adsWatched: totalAdsWatched,
-                    watchedReels: watchedReels
-                }, function(error) {
-                    if(!error) {
-                        alert('অভিনন্দন! সফলভাবে ভিডিও দেখে রিওয়ার্ড পেয়ে গেছেন।');
-                        loadUserSubmissions();
-                    }
-                });
-            }
+            database.ref('users/' + currentUserUid).update({
+                balance: currentBalance,
+                adsWatched: totalAdsWatched,
+                watchedReels: watchedReels
+            }, function(error) {
+                if(!error) { alert('অভিনন্দন! সফলভাবে ভিডিও দেখে রিওয়ার্ড পেয়ে গেছেন।'); loadUserSubmissions(); }
+            });
         }
 
         function addRewardDirect(amount) {
             currentBalance += amount;
             totalAdsWatched += 1;
-            if(currentUserUid) {
-                database.ref('users/' + currentUserUid).update({ balance: currentBalance, adsWatched: totalAdsWatched });
-            }
+            database.ref('users/' + currentUserUid).update({ balance: currentBalance, adsWatched: totalAdsWatched });
         }
 
         function submitTaskProof(taskId, taskTitle, reward) {
@@ -550,29 +742,20 @@
             document.getElementById('proofModal').style.display = 'flex';
         }
 
-        function closeProofModal() {
-            document.getElementById('proofModal').style.display = 'none';
-        }
+        function closeProofModal() { document.getElementById('proofModal').style.display = 'none'; }
 
         document.getElementById('proofFile').addEventListener('change', function(event) {
             var file = event.target.files[0];
             if(file) {
                 var reader = new FileReader();
-                reader.onload = function(e) {
-                    uploadedProofImage = e.target.result;
-                    alert('স্ক্রিনশট সফলভাবে সিলেক্ট করা হয়েছে!');
-                };
+                reader.onload = function(e) { uploadedProofImage = e.target.result; alert('স্ক্রিনশট সিলেক্ট করা হয়েছে!'); };
                 reader.readAsDataURL(file);
             }
         });
 
         function confirmSubmitProof() {
             var proofText = document.getElementById('proofText').value.trim();
-
-            if(!proofText && !uploadedProofImage) {
-                alert('দয়া করে কাজের বিবরণ অথবা ফাইল ম্যানেজার থেকে একটি স্ক্রিনশট দিন!');
-                return;
-            }
+            if(!proofText && !uploadedProofImage) { alert('প্রুফ নোট অথবা স্ক্রিনশট দিন!'); return; }
 
             var submissionData = {
                 taskId: selectedTaskKey,
@@ -586,12 +769,7 @@
             };
 
             database.ref('taskSubmissions').push().set(submissionData, function(error) {
-                if(!error) {
-                    alert('টাস্কের প্রুফ সফলভাবে জমা দেওয়া হয়েছে! অ্যাডমিন অ্যাপ্রুভ করলে টাকা যোগ হবে।');
-                    closeProofModal();
-                } else {
-                    alert('ত্রুটি: ' + error.message);
-                }
+                if(!error) { alert('টাস্কের প্রুফ জমা দেওয়া হয়েছে!'); closeProofModal(); }
             });
         }
 
@@ -625,13 +803,12 @@
 
                 for(var key in data) {
                     var task = data[key];
-                    
                     if(task.type === 'Video') {
                         if(!watchedReels[key]) {
                             reelsHtml += `<div class="reel-card">
                                 <div class="reel-ad-badge">
-                                    <span>📢 স্পন্সরড অ্যাড (উপরে)</span>
-                                    <button class="btn btn-ad" style="padding: 3px 8px; font-size: 10px;" onclick="watchReelAd('${key}', ${task.reward}, '${task.link}')">অ্যাড দেখুন ও রিওয়ার্ড নিন (৳${task.reward})</button>
+                                    <span>📢 স্পন্সরড অ্যাড</span>
+                                    <button class="btn btn-ad" style="padding: 3px 8px; font-size: 10px;" onclick="watchReelAd('${key}', ${task.reward}, '${task.link}')">অ্যাড দেখুন (৳${task.reward})</button>
                                 </div>
                                 <h4 style="font-size:14px; color:#fff; margin-bottom:8px; text-align:left;">🎬 ${task.title}</h4>
                                 <video class="reel-video" controls src="${task.link}"></video>
@@ -641,27 +818,19 @@
                     } else if(task.type === 'Sponsor') {
                         var sponsorContent = "";
                         if(task.link && task.link.startsWith('data:image')) {
-                            sponsorContent = `<div style="margin-bottom:8px;"><img src="${task.link}" style="width:100%; max-height:150px; border-radius:8px; object-fit:cover;" alt="Sponsor Image"></div>`;
+                            sponsorContent = `<div style="margin-bottom:8px;"><img src="${task.link}" style="width:100%; max-height:150px; border-radius:8px; object-fit:cover;" alt="Sponsor"></div>`;
                         }
-
                         sponsorHtml += `<div class="task-card">
                             ${sponsorContent}
-                            <div class="task-info">
-                                <h4>${task.title}</h4>
-                                <p>${task.subtitle || ''}</p>
-                            </div>
+                            <div class="task-info"><h4>${task.title}</h4><p>${task.subtitle || ''}</p></div>
                             ${task.link && !task.link.startsWith('data:image') ? `<a class="btn" href="${task.link}" target="_blank">ভিজিট করুন</a>` : ''}
                         </div>`;
                     } else {
                         var submissionStatus = completedTasks[key];
-                        if(submissionStatus === 'Approved') {
-                            continue;
-                        } else if(submissionStatus === 'Pending') {
+                        if(submissionStatus === 'Approved') { continue; }
+                        else if(submissionStatus === 'Pending') {
                             taskHtml += `<div class="task-card" style="border-color:#F59E0B;">
-                                <div class="task-info">
-                                    <h4>[${task.type}] ${task.title}</h4>
-                                    <p style="color:#F59E0B;">⏳ প্রুফ জমা দেওয়া হয়েছে, অ্যাডমিন পর্যালোচনার অপেক্ষায়...</p>
-                                </div>
+                                <div class="task-info"><h4>[${task.type}] ${task.title}</h4><p style="color:#F59E0B;">⏳ প্রুফ জমা দেওয়া হয়েছে, অপেক্ষমাণ...</p></div>
                             </div>`;
                         } else {
                             taskHtml += `<div class="task-card">
@@ -678,10 +847,9 @@
                         }
                     }
                 }
-
-                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো নতুন সোশ্যাল টাস্ক নেই।</p>";
+                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো সোশ্যাল টাস্ক নেই।</p>";
                 homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
-                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো রিলস ভিডিও নেই বা আপনি সব ভিডিও দেখে ফেলেছেন!</p>";
+                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো রিলস ভিডিও নেই!</p>";
             });
         }
 
@@ -707,7 +875,8 @@
             database.ref('withdrawRequests').push().set(withdrawData, function(error) {
                 if(!error) {
                     currentBalance -= amount;
-                    database.ref('users/' + currentUserUid).update({ balance: currentBalance });
+                    totalWithdrawn += amount;
+                    database.ref('users/' + currentUserUid).update({ balance: currentBalance, totalWithdrawn: totalWithdrawn });
                     alert('উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!');
                     document.getElementById('payAccount').value = '';
                     document.getElementById('payAmount').value = '';
