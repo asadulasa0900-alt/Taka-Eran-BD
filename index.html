@@ -71,14 +71,12 @@
 
         <!-- 1. HOME PAGE -->
         <div id="page-home" class="page-content active">
-            <!-- Daily Check-in Card -->
             <div class="card" style="text-align: center; background: linear-gradient(135deg, #1F2937, #111827);">
                 <h5 style="color: #10B981; font-size: 14px; margin-bottom: 5px;">🎁 দৈনিক চেক-ইন (Daily Check-in)</h5>
                 <p style="font-size: 11px; color: #94A3B8; margin-bottom: 10px;">প্রতিদিন একবার চেক-ইন করে ফ্রি রিওয়ার্ড নিন!</p>
                 <button class="btn" id="checkinBtn" onclick="claimDailyCheckin()" style="width: 100%;">আজকের চেক-ইন করুন (৳২)</button>
             </div>
 
-            <!-- Top 2 Ads Grid (10 Limit Each, 0.50 BDT Reward) -->
             <div class="top-ads-grid">
                 <div class="square-ad-card">
                     <h5>অ্যাড অপশন ১</h5>
@@ -92,7 +90,6 @@
                 </div>
             </div>
 
-            <!-- Special Ads Card (5 Limit) -->
             <div class="card" style="border: 1px dashed #10B981;">
                 <h5 style="color: #10B981; font-size: 14px; margin-bottom: 5px;">⭐ স্পেশাল অ্যাড অপশন</h5>
                 <p style="font-size: 11px; color: #94A3B8; margin-bottom: 8px;">আজ দেখা: <span id="specialAdCount">0</span>/5 বার (প্রতি অ্যাড ৳১)</p>
@@ -153,6 +150,12 @@
                     <input type="text" id="refLinkInput" readonly style="margin-top: 5px; font-size: 11px; padding: 8px;" onclick="this.select(); document.execCommand('copy'); alert('রেফারেল লিংক কপি করা হয়েছে!');">
                 </div>
 
+                <!-- Completed Tasks Section in Profile -->
+                <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
+                    <div style="color: #10B981; font-weight: bold; margin-bottom: 8px;">✅ আপনার সম্পন্নকৃত টাস্কসমূহ:</div>
+                    <div id="profileCompletedTasksList"><p style="color: #94A3B8; font-size: 12px;">কোনো কাজ সম্পন্ন হয়নি।</p></div>
+                </div>
+
                 <button class="btn" style="background-color: #EF4444; width: 100%;" onclick="logoutUser()">লগ আউট করুন</button>
             </div>
         </div>
@@ -195,7 +198,7 @@
         </div>
     </div>
 
-    <!-- Custom Proof Upload Modal (Supports File Manager / Gallery Image Upload) -->
+    <!-- Custom Proof Upload Modal -->
     <div id="proofModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
         <div style="background:#121829; padding:20px; border-radius:16px; width:90%; max-width:400px; border:1px solid #1E293B; text-align:center;">
             <h3 style="color:#10B981; margin-bottom:10px; font-size:16px;">📸 কাজের প্রুফ বা স্ক্রিনশট জমা দিন</h3>
@@ -241,8 +244,9 @@
         let lastCheckinDate = "";
         let currentUserName = "";
         let watchedReels = {};
+        let completedTasks = {}; 
+        let approvedTaskTitles = [];
         
-        // Proof upload variables
         let selectedTaskKey = "";
         let selectedTaskTitle = "";
         let selectedTaskReward = 0;
@@ -411,8 +415,42 @@
                         checkinBtn.disabled = false;
                     }
 
-                    loadAdminTasksLive();
+                    loadUserSubmissions();
                 }
+            });
+        }
+
+        function loadUserSubmissions() {
+            database.ref('taskSubmissions').on('value', function(snapshot) {
+                var subs = snapshot.val();
+                completedTasks = {};
+                approvedTaskTitles = [];
+                
+                if(subs) {
+                    for(var sKey in subs) {
+                        var sub = subs[sKey];
+                        if(sub.userUid === currentUserUid) {
+                            completedTasks[sub.taskId] = sub.status; // 'Pending' or 'Approved'
+                            if(sub.status === 'Approved') {
+                                approvedTaskTitles.push(sub.taskTitle);
+                            }
+                        }
+                    }
+                }
+
+                // Render approved tasks in profile page
+                var profileCompletedDiv = document.getElementById('profileCompletedTasksList');
+                if(approvedTaskTitles.length > 0) {
+                    var pHtml = "";
+                    for(var i = 0; i < approvedTaskTitles.length; i++) {
+                        pHtml += `<div style="padding: 6px 0; border-bottom: 1px solid #1E293B; color: #10B981; font-size: 12px;">✅ ${approvedTaskTitles[i]} (সম্পন্ন হয়েছে)</div>`;
+                    }
+                    profileCompletedDiv.innerHTML = pHtml;
+                } else {
+                    profileCompletedDiv.innerHTML = `<p style="color: #94A3B8; font-size: 12px;">এখনো কোনো কাজ সম্পন্ন হয়নি।</p>`;
+                }
+
+                loadAdminTasksLive();
             });
         }
 
@@ -488,7 +526,7 @@
                 }, function(error) {
                     if(!error) {
                         alert('অভিনন্দন! সফলভাবে ভিডিও দেখে রিওয়ার্ড পেয়ে গেছেন।');
-                        loadAdminTasksLive();
+                        loadUserSubmissions();
                     }
                 });
             }
@@ -502,7 +540,6 @@
             }
         }
 
-        // Open custom modal for uploading screenshot / task proof
         function submitTaskProof(taskId, taskTitle, reward) {
             selectedTaskKey = taskId;
             selectedTaskTitle = taskTitle;
@@ -602,29 +639,47 @@
                             </div>`;
                         }
                     } else if(task.type === 'Sponsor') {
+                        var sponsorContent = "";
+                        if(task.link && task.link.startsWith('data:image')) {
+                            sponsorContent = `<div style="margin-bottom:8px;"><img src="${task.link}" style="width:100%; max-height:150px; border-radius:8px; object-fit:cover;" alt="Sponsor Image"></div>`;
+                        }
+
                         sponsorHtml += `<div class="task-card">
+                            ${sponsorContent}
                             <div class="task-info">
                                 <h4>${task.title}</h4>
                                 <p>${task.subtitle || ''}</p>
                             </div>
-                            <a class="btn" href="${task.link}" target="_blank">ভিজিট করুন</a>
+                            ${task.link && !task.link.startsWith('data:image') ? `<a class="btn" href="${task.link}" target="_blank">ভিজিট করুন</a>` : ''}
                         </div>`;
                     } else {
-                        taskHtml += `<div class="task-card">
-                            <div class="task-info">
-                                <h4>[${task.type}] ${task.title}</h4>
-                                <p>${task.subtitle || 'নিয়ম মেনে সাবস্ক্রাইব/ফলো করুন'}</p>
-                                <p style="color:#10B981; font-weight:bold;">রিওয়ার্ড: ৳${task.reward}</p>
-                            </div>
-                            <div style="display: flex; gap: 6px; margin-top: 8px;">
-                                <a class="btn" href="${task.link}" target="_blank">লিংকে যান</a>
-                                <button class="btn btn-ad" onclick="submitTaskProof('${key}', '${task.title}', ${task.reward})">প্রুফ জমা দিন</button>
-                            </div>
-                        </div>`;
+                        var submissionStatus = completedTasks[key];
+                        if(submissionStatus === 'Approved') {
+                            continue;
+                        } else if(submissionStatus === 'Pending') {
+                            taskHtml += `<div class="task-card" style="border-color:#F59E0B;">
+                                <div class="task-info">
+                                    <h4>[${task.type}] ${task.title}</h4>
+                                    <p style="color:#F59E0B;">⏳ প্রুফ জমা দেওয়া হয়েছে, অ্যাডমিন পর্যালোচনার অপেক্ষায়...</p>
+                                </div>
+                            </div>`;
+                        } else {
+                            taskHtml += `<div class="task-card">
+                                <div class="task-info">
+                                    <h4>[${task.type}] ${task.title}</h4>
+                                    <p>${task.subtitle || 'নিয়ম মেনে সাবস্ক্রাইব/ফলো করুন'}</p>
+                                    <p style="color:#10B981; font-weight:bold;">রিওয়ার্ড: ৳${task.reward}</p>
+                                </div>
+                                <div style="display: flex; gap: 6px; margin-top: 8px;">
+                                    <a class="btn" href="${task.link}" target="_blank">লিংকে যান</a>
+                                    <button class="btn btn-ad" onclick="submitTaskProof('${key}', '${task.title}', ${task.reward})">প্রুফ জমা দিন</button>
+                                </div>
+                            </div>`;
+                        }
                     }
                 }
 
-                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>সোশ্যাল টাস্ক নেই।</p>";
+                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো নতুন সোশ্যাল টাস্ক নেই।</p>";
                 homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
                 reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো রিলস ভিডিও নেই বা আপনি সব ভিডিও দেখে ফেলেছেন!</p>";
             });
