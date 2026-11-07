@@ -24,7 +24,8 @@
     <!-- 1. LOGIN BOX -->
     <div id="loginBox" class="card">
         <div class="title">🔐 এডমিন লগইন</div>
-        <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন">
+        <!-- পাসওয়ার্ড যেন আগে থেকে দৃশ্যমান না থাকে এবং ডট আকারে দেখায়, তার জন্য type="password" নিশ্চিত করা হয়েছে -->
+        <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" autocomplete="new-password" value="">
         <button class="btn" onclick="checkLogin()">লগইন করুন</button>
     </div>
 
@@ -95,13 +96,15 @@
         let allTasksData = {}; 
 
         function checkLogin() {
-            var pass = document.getElementById('adminPass').value;
+            var passField = document.getElementById('adminPass');
+            var pass = passField.value;
             if(pass === "Asadul123@AR") {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 loadAdminTasks();
             } else {
                 alert('ভুল পাসওয়ার্ড!');
+                passField.value = ''; // ভুল হলে পাসওয়ার্ড ফিল্ড ফাকা করে দেওয়া
             }
         }
 
@@ -194,13 +197,12 @@
             });
         }
 
-        // Delete Task
+        // Delete Task (Fully functional for any video/task)
         function deleteTask(key) {
             if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্কটি ডিলিট করতে চান?')) {
                 database.ref('customTasks/' + key).remove(function(error) {
                     if(!error) {
                         alert('সফলভাবে মুছে ফেলা হয়েছে!');
-                        resetForm();
                     } else {
                         alert('ত্রুটি: ' + error.message);
                     }
