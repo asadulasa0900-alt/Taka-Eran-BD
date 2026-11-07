@@ -7,16 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0A0E1A; color: #E1E7EF; padding: 20px; max-width: 600px; margin: 0 auto; }
+        body { background-color: #0A0E1A; color: #E1E7EF; padding: 20px; max-width: 650px; margin: 0 auto; }
         .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
         .title { font-size: 18px; font-weight: bold; color: #10B981; margin-bottom: 15px; }
         input, select, textarea { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
-        .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; width: 100%; font-size: 14px; text-align: center; }
+        .btn { padding: 10px 16px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; width: 100%; font-size: 14px; text-align: center; }
         .btn-danger { background-color: #EF4444; padding: 6px 12px; font-size: 12px; width: auto; }
         .btn-edit { background-color: #3B82F6; padding: 6px 12px; font-size: 12px; width: auto; margin-right: 5px; }
+        .btn-approve { background-color: #10B981; padding: 6px 12px; font-size: 12px; width: auto; margin-right: 5px; }
         .task-item { background: #0A0E1A; border: 1px solid #334155; padding: 14px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 10px; background: #121829; border: 1px solid #1E293B; color: #94A3B8; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; }
+        .tab-menu { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; padding: 10px; background: #121829; border: 1px solid #1E293B; color: #94A3B8; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; font-size: 13px; min-width: 120px; }
         .tab-btn.active { background: #10B981; color: #fff; border-color: #10B981; }
         .panel-section { display: none; }
         .panel-section.active { display: block; }
@@ -43,7 +44,8 @@
         <!-- Tab Navigation Buttons -->
         <div class="tab-menu">
             <div class="tab-btn active" onclick="switchTab('create', this)">➕ টাস্ক বা ভিডিও পোস্ট</div>
-            <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট ও ডিলিট প্যানেল</div>
+            <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট ও ডিলিট</div>
+            <div class="tab-btn" onclick="switchTab('proofs', this)">✅ টাস্ক প্রুফ অ্যাপ্রুভ</div>
         </div>
 
         <!-- SECTION 1: ADD & EDIT TASK FORM -->
@@ -53,22 +55,21 @@
                 <input type="hidden" id="editTaskId">
                 
                 <select id="taskType">
-                    <option value="Video">🎬 রিলস ভিডিও কাজ</option>
-                    <option value="Facebook">👍 ফেসবুক টাস্ক</option>
+                    <option value="YouTube">▶️ ইউটিউব টাস্ক (সাবস্ক্রাইব/লাইক)</option>
+                    <option value="Facebook">👍 ফেসবুক টাস্ক (ফলো/লাইক)</option>
                     <option value="TikTok">🎵 টিকটক টাস্ক</option>
                     <option value="Instagram">📸 ইনস্টাগ্রাম টাস্ক</option>
-                    <option value="YouTube">▶️ ইউটিউব টাস্ক</option>
                     <option value="Telegram">📢 টেলিগ্রাম টাস্ক</option>
+                    <option value="Video">🎬 রিলস ভিডিও কাজ</option>
                     <option value="AppDownload">📱 অ্যাপ ডাউনলোড টাস্ক</option>
                     <option value="Sponsor">🔥 স্পন্সার পোস্ট</option>
                 </select>
 
-                <input type="text" id="taskTitle" placeholder="শিরোনাম (যেমন: নতুন রিলস ভিডিও বা পেজ ফলো)">
-                <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: ভিডিও সম্পূর্ণ দেখুন)">
-                <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক বা ভিডিও সোর্স">
-                <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 1.50)">
+                <input type="text" id="taskTitle" placeholder="শিরোনাম (যেমন: ইউটিউব চ্যানেল সাবস্ক্রাইব করুন)">
+                <input type="text" id="taskSubtitle" placeholder="বিবরণ বা নিয়ম (যেমন: সাবস্ক্রাইব করে স্ক্রিনশট দিন)">
+                <input type="text" id="taskLink" placeholder="সংশ্লিষ্ট লিংক (যেমন: ইউটিউব চ্যানেল লিংক)">
+                <input type="number" id="taskReward" placeholder="টাকার পরিমাণ (যেমন: 2.00)">
 
-                <!-- File Manager Video/Media Upload -->
                 <div style="margin-bottom: 12px;">
                     <label style="font-size: 13px; color: #94A3B8; display: block; margin-bottom: 5px;">📁 ফাইল ম্যানেজার থেকে সরাসরি ভিডিও/ফাইল আপলোড:</label>
                     <input type="file" id="mediaFile" accept="video/*,image/*" style="padding: 8px; background: #0A0E1A;" onchange="handleFileUpload(event)">
@@ -83,8 +84,16 @@
         <div id="section-manage" class="panel-section">
             <div class="card">
                 <div class="title">📋 বিদ্যমান টাস্ক ও রিলস ম্যানেজমেন্ট (এডিট / ডিলিট)</div>
-                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">যে টাস্ক বা ভিডিওতে সমস্যা মনে হবে, নিচের 'ডিলিট' বাটনে ক্লিক করে তা মুছে ফেলতে পারবেন।</p>
                 <div id="adminTaskList">টাস্ক লোড হচ্ছে...</div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: PENDING TASK PROOFS APPROVAL -->
+        <div id="section-proofs" class="panel-section">
+            <div class="card">
+                <div class="title">✅ ইউজারের জমা দেওয়া টাস্ক প্রুফসমূহ</div>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">ইউজাররা টাস্ক সম্পন্ন করে যে প্রুফ ও স্ক্রিনশট জমা দিয়েছে তা এখানে দেখা যাবে। 'অ্যাপ্রুভ' করলে ইউজারের ব্যালেন্সে টাকা যোগ হয়ে যাবে।</p>
+                <div id="adminProofList">প্রুফ লোড হচ্ছে...</div>
             </div>
         </div>
     </div>
@@ -112,29 +121,24 @@
 
         function checkLogin() {
             var passField = document.getElementById('adminPass');
-            var pass = passField.value;
-            if(pass === "Asadul123@AR") {
+            if(passField.value === "Asadul123@AR") {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 loadAdminTasks();
+                loadAdminProofs();
             } else {
                 alert('ভুল পাসওয়ার্ড!');
                 passField.value = '';
             }
         }
 
-        // Switch between Create and Manage tabs
         function switchTab(tabName, element) {
             var sections = document.getElementsByClassName('panel-section');
-            for(var i = 0; i < sections.length; i++) {
-                sections[i].classList.remove('active');
-            }
+            for(var i = 0; i < sections.length; i++) sections[i].classList.remove('active');
             document.getElementById('section-' + tabName).classList.add('active');
 
             var tabs = document.getElementsByClassName('tab-btn');
-            for(var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove('active');
-            }
+            for(var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
             element.classList.add('active');
         }
 
@@ -145,7 +149,7 @@
                 reader.onload = function(e) {
                     uploadedMediaUrl = e.target.result;
                     document.getElementById('taskLink').value = uploadedMediaUrl;
-                    alert('ফাইল ম্যানেজার থেকে ভিডিও সফলভাবে লোড হয়েছে!');
+                    alert('ফাইল সফলভাবে লোড হয়েছে!');
                 };
                 reader.readAsDataURL(file);
             }
@@ -160,14 +164,14 @@
             var reward = parseFloat(document.getElementById('taskReward').value);
 
             if(!title || !link || isNaN(reward)) {
-                alert('অনুগ্রহ করে শিরোনাম, লিংক/ভিডিও এবং টাকার পরিমাণ সঠিকভাবে দিন!');
+                alert('সকল তথ্য সঠিকভাবে পূরণ করুন!');
                 return;
             }
 
             var taskData = {
                 type: type,
                 title: title,
-                subtitle: subtitle || 'নিয়ম মেনে কাজ সম্পন্ন করুন',
+                subtitle: subtitle || 'নিয়ম মেনে সম্পন্ন করুন',
                 link: link,
                 reward: reward
             };
@@ -185,7 +189,7 @@
             } else {
                 database.ref('customTasks').push().set(taskData, function(error) {
                     if(!error) {
-                        alert('সফলভাবে নতুন টাস্ক বা রিলস যুক্ত করা হয়েছে!');
+                        alert('সফলভাবে নতুন টাস্ক যুক্ত করা হয়েছে!');
                         resetForm();
                         switchTab('manage', document.getElementsByClassName('tab-btn')[1]);
                     } else {
@@ -202,7 +206,7 @@
                 var taskListDiv = document.getElementById('adminTaskList');
                 
                 if(!data) {
-                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক বা রিলস নেই।</p>";
+                    taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো টাস্ক নেই।</p>";
                     return;
                 }
 
@@ -224,14 +228,73 @@
             });
         }
 
-        function deleteTask(key) {
-            if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্ক বা ভিডিওটি ডিলিট করতে চান?')) {
-                database.ref('customTasks/' + key).remove(function(error) {
-                    if(!error) {
-                        alert('সফলভাবে মুছে ফেলা হয়েছে!');
-                    } else {
-                        alert('ত্রুটি: ' + error.message);
+        function loadAdminProofs() {
+            database.ref('taskSubmissions').on('value', function(snapshot) {
+                var data = snapshot.val();
+                var proofListDiv = document.getElementById('adminProofList');
+
+                if(!data) {
+                    proofListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো পেন্ডিং প্রুফ নেই।</p>";
+                    return;
+                }
+
+                var html = "";
+                for(var key in data) {
+                    var sub = data[key];
+                    if(sub.status === 'Pending') {
+                        html += `<div class="task-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div>
+                                <h4 style="font-size:14px; color:#10B981;">টাস্ক: ${sub.taskTitle}</h4>
+                                <p style="font-size:12px; color:#fff; margin-top:2px;">ইউজার: <b>${sub.userName || 'User'}</b></p>
+                                <p style="font-size:12px; color:#C084FC; margin-top:2px;">প্রুফ/স্ক্রিনশট: <a href="${sub.proof}" target="_blank" style="color:#38BDF8; word-break:break-all;">${sub.proof}</a></p>
+                                <p style="font-size:12px; color:#94A3B8; margin-top:2px;">রিওয়ার্ড: ৳${sub.reward}</p>
+                            </div>
+                            <div style="display:flex; gap:6px; align-self: flex-end;">
+                                <button class="btn btn-approve" onclick="approveProof('${key}', '${sub.userUid}', ${sub.reward})">অ্যাপ্রুভ করুন (টাকা দিন)</button>
+                                <button class="btn btn-danger" onclick="rejectProof('${key}')">রিজেক্ট</button>
+                            </div>
+                        </div>`;
                     }
+                }
+                proofListDiv.innerHTML = html || "<p style='color:#94A3B8; text-align:center;'>সব প্রুফ অ্যাপ্রুভ করা হয়েছে।</p>";
+            });
+        }
+
+        function approveProof(subKey, userUid, reward) {
+            database.ref('users/' + userUid).once('value').then(function(snap) {
+                var user = snap.val();
+                if(user) {
+                    var newBalance = (user.balance || 0) + reward;
+                    var newAdsWatched = (user.adsWatched || 0) + 1;
+
+                    database.ref('users/' + userUid).update({
+                        balance: newBalance,
+                        adsWatched: newAdsWatched
+                    });
+
+                    database.ref('taskSubmissions/' + subKey).update({ status: 'Approved' }, function(err) {
+                        if(!err) {
+                            alert('টাস্ক অ্যাপ্রুভ করা হয়েছে এবং ইউজারের অ্যাকাউন্টে ৳' + reward + ' জমা হয়েছে!');
+                        }
+                    });
+                } else {
+                    alert('ইউজার খুঁজে পাওয়া যায়নি!');
+                }
+            });
+        }
+
+        function rejectProof(subKey) {
+            if(confirm('প্রুফটি রিজেক্ট করতে চান?')) {
+                database.ref('taskSubmissions/' + subKey).update({ status: 'Rejected' }, function(err) {
+                    if(!err) alert('প্রুফ রিজেক্ট করা হয়েছে।');
+                });
+            }
+        }
+
+        function deleteTask(key) {
+            if(confirm('আপনি কি নিশ্চিতভাবে এই টাস্কটি ডিলিট করতে চান?')) {
+                database.ref('customTasks/' + key).remove(function(error) {
+                    if(!error) alert('সফলভাবে মুছে ফেলা হয়েছে!');
                 });
             }
         }
@@ -241,7 +304,7 @@
             if(!task) return;
 
             document.getElementById('editTaskId').value = key;
-            document.getElementById('taskType').value = task.type || 'Video';
+            document.getElementById('taskType').value = task.type || 'YouTube';
             document.getElementById('taskTitle').value = task.title || '';
             document.getElementById('taskSubtitle').value = task.subtitle || '';
             document.getElementById('taskLink').value = task.link || '';
@@ -252,7 +315,6 @@
             document.getElementById('saveBtn').innerText = 'আপডেট করুন';
             document.getElementById('cancelEditBtn').style.display = 'block';
 
-            // Switch automatically to the create/edit form tab
             switchTab('create', document.getElementsByClassName('tab-btn')[0]);
         }
 
@@ -271,4 +333,3 @@
     </script>
 </body>
 </html>
- 
