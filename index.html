@@ -22,18 +22,15 @@
         .btn-ad { background-color: #8B5CF6; }
         input, select { width: 100%; padding: 12px; background-color: #0A0E1A; border: 1px solid #1E293B; border-radius: 10px; color: #ffffff; margin-bottom: 12px; font-size: 14px; outline: none; }
         
-        /* Small Square Ad Grid at Top with Limits */
         .top-ads-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .square-ad-card { background: #121829; border: 1px dashed #8B5CF6; border-radius: 12px; padding: 12px; text-align: center; }
         .square-ad-card h5 { font-size: 13px; color: #C084FC; margin-bottom: 3px; }
         .square-ad-card p { font-size: 11px; color: #94A3B8; margin-bottom: 8px; }
 
-        /* Reels Video Card Styling */
         .reel-card { background: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 12px; margin-bottom: 15px; text-align: center; }
         .reel-video { width: 100%; max-height: 350px; border-radius: 10px; background: #000; object-fit: cover; margin-bottom: 10px; }
         .reel-footer { display: flex; justify-content: space-between; align-items: center; background: #0A0E1A; padding: 10px; border-radius: 10px; }
 
-        /* Bottom Navigation Bar */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 10px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
         .nav-item { text-align: center; color: #94A3B8; font-size: 11px; cursor: pointer; text-decoration: none; }
         .nav-item.active { color: #10B981; font-weight: bold; }
@@ -49,19 +46,21 @@
     <div id="authContainer">
         <div class="header" style="background:none; border:none; margin-bottom:15px;">💎 টাকা আর্ন বিডি - পোর্টাল</div>
         
+        <!-- Register Form -->
         <div id="registerForm">
             <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">নতুন অ্যাকাউন্ট রেজিস্ট্রেশন</h3>
             <input type="text" id="regName" placeholder="আপনার পূর্ণ নাম">
             <input type="text" id="regUsername" placeholder="ইউজারনেম (যেমন: asadul99)">
-            <input type="text" id="regEmailPhone" placeholder="ইমেল বা ফোন নম্বর">
+            <input type="email" id="regEmail" placeholder="জিমেইল অ্যাকাউন্ট (Email)">
             <input type="password" id="regPass" placeholder="পাসওয়ার্ড দিন">
             <button class="btn" style="width:100%; padding:12px;" onclick="registerUser()">রেজিস্ট্রেশন করুন</button>
             <p style="text-align:center; font-size:12px; color:#94A3B8; margin-top:12px; cursor:pointer;" onclick="toggleAuthMode()">আগে থেকেই অ্যাকাউন্ট আছে? <b>লগইন করুন</b></p>
         </div>
 
+        <!-- Login Form (Only Gmail & Password) -->
         <div id="loginForm" style="display: none;">
             <h3 style="color:#10B981; margin-bottom:15px; font-size:16px; text-align:center;">অ্যাকাউন্ট লগইন</h3>
-            <input type="text" id="logEmailPhone" placeholder="ইমেল বা ফোন নম্বর">
+            <input type="email" id="logEmail" placeholder="আপনার জিমেইল (Email)">
             <input type="password" id="logPass" placeholder="পাসওয়ার্ড দিন">
             <button class="btn" style="width:100%; padding:12px;" onclick="loginUser()">লগইন করুন</button>
             <p style="text-align:center; font-size:12px; color:#94A3B8; margin-top:12px; cursor:pointer;" onclick="toggleAuthMode()">অ্যাকাউন্ট নেই? <b>রেজিস্ট্রেশন করুন</b></p>
@@ -74,7 +73,6 @@
 
         <!-- 1. HOME PAGE -->
         <div id="page-home" class="page-content active">
-            <!-- 2 Square Ad Options with 10 Daily Limit Each -->
             <div class="top-ads-grid">
                 <div class="square-ad-card">
                     <h5>অ্যাড অপশন ১</h5>
@@ -146,13 +144,13 @@
             </div>
         </div>
 
-        <!-- 4. PROFILE PAGE (With Referral & UID) -->
+        <!-- 4. PROFILE PAGE -->
         <div id="page-profile" class="page-content">
             <div class="card" style="text-align: center;">
                 <div style="width: 70px; height: 70px; background: #10B981; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; margin: 0 auto 10px;" id="profileAvatar">A</div>
                 <h3 id="profileName" style="color: #fff; font-size: 18px;">নাম লোড হচ্ছে...</h3>
                 <p id="profileUsername" style="font-size: 13px; color: #10B981; margin-bottom: 5px;">@username</p>
-                <p id="profileEmailPhone" style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">email/phone</p>
+                <p id="profileEmailPhone" style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">email</p>
                 
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
                     🔑 <b>ইউনিক ইউআইডি (UID):</b> <span id="profileUid" style="color: #10B981; word-break: break-all;">-</span><br><br>
@@ -230,15 +228,23 @@
         let ad2Count = 0;
 
         window.onload = function() {
-            // Check if URL has ref parameter for referral bonus (৳10)
             const urlParams = new URLSearchParams(window.location.search);
             const refBy = urlParams.get('ref');
             if(refBy && !localStorage.getItem('referredDone')) {
                 localStorage.setItem('pendingRef', refBy);
             }
 
+            // Safe Auto-Login Check
             if(currentUserUid) {
-                loadUserData(currentUserUid);
+                database.ref('users/' + currentUserUid).once('value').then(function(snapshot) {
+                    if(snapshot.exists()) {
+                        loadUserData(currentUserUid);
+                    } else {
+                        localStorage.removeItem('takaEranUserUid');
+                    }
+                }).catch(function(err) {
+                    console.error(err);
+                });
             }
         };
 
@@ -257,16 +263,11 @@
         function registerUser() {
             var name = document.getElementById('regName').value.trim();
             var username = document.getElementById('regUsername').value.trim();
-            var emailPhone = document.getElementById('regEmailPhone').value.trim();
+            var email = document.getElementById('regEmail').value.trim();
             var pass = document.getElementById('regPass').value;
 
-            if(!name || !username || !emailPhone || !pass) {
+            if(!name || !username || !email || !pass) {
                 alert('সকল ঘর সঠিকভাবে পূরণ করুন!');
-                return;
-            }
-
-            if(localStorage.getItem('deviceRegistered')) {
-                alert('এই ডিভাইস থেকে ইতিমধ্যেই একটি অ্যাকাউন্ট তৈরি করা হয়েছে!');
                 return;
             }
 
@@ -275,7 +276,7 @@
                 uid: uid,
                 name: name,
                 username: username,
-                emailPhone: emailPhone,
+                email: email,
                 pass: pass,
                 balance: 0,
                 adsWatched: 0,
@@ -284,14 +285,13 @@
                 ad2Daily: 0
             };
 
-            // Check if registered via referral link
             var pendingRef = localStorage.getItem('pendingRef');
             if(pendingRef && pendingRef !== uid) {
                 database.ref('users/' + pendingRef).once('value').then(function(snap) {
                     var refUser = snap.val();
                     if(refUser) {
                         var newRefCnt = (refUser.referrals || 0) + 1;
-                        var newRefBal = (refUser.balance || 0) + 10; // 10 BDT per referral
+                        var newRefBal = (refUser.balance || 0) + 10;
                         database.ref('users/' + pendingRef).update({
                             referrals: newRefCnt,
                             balance: newRefBal
@@ -304,7 +304,6 @@
             database.ref('users/' + uid).set(newUser, function(error) {
                 if(!error) {
                     localStorage.setItem('takaEranUserUid', uid);
-                    localStorage.setItem('deviceRegistered', 'true');
                     alert('রেজিস্ট্রেশন সফল হয়েছে!');
                     loadUserData(uid);
                 } else {
@@ -313,12 +312,13 @@
             });
         }
 
+        // Login Function using only Gmail and Password
         function loginUser() {
-            var emailPhone = document.getElementById('logEmailPhone').value.trim();
+            var email = document.getElementById('logEmail').value.trim();
             var pass = document.getElementById('logPass').value;
 
-            if(!emailPhone || !pass) {
-                alert('ইমেল/ফোন এবং পাসওয়ার্ড দিন!');
+            if(!email || !pass) {
+                alert('জিমেইল এবং পাসওয়ার্ড দিন!');
                 return;
             }
 
@@ -326,7 +326,7 @@
                 var users = snapshot.val();
                 var foundUid = null;
                 for(var uid in users) {
-                    if(users[uid].emailPhone === emailPhone && users[uid].pass === pass) {
+                    if(users[uid].email === email && users[uid].pass === pass) {
                         foundUid = uid;
                         break;
                     }
@@ -334,12 +334,13 @@
 
                 if(foundUid) {
                     localStorage.setItem('takaEranUserUid', foundUid);
-                    localStorage.setItem('deviceRegistered', 'true');
                     alert('লগইন সফল হয়েছে!');
                     loadUserData(foundUid);
                 } else {
-                    alert('ভুল তথ্য! অ্যাকাউন্ট খুঁজে পাওয়া যায়নি।');
+                    alert('ভুল জিমেইল অথবা পাসওয়ার্ড! অ্যাকাউন্ট খুঁজে পাওয়া যায়নি।');
                 }
+            }).catch(function(error) {
+                alert('লগইন করতে সমস্যা হচ্ছে: সিস্টেমে সংযোগ ত্রুটি।');
             });
         }
 
@@ -364,17 +365,15 @@
                     document.getElementById('userBalance').innerText = "৳ " + currentBalance.toFixed(2);
                     document.getElementById('profileName').innerText = user.name;
                     document.getElementById('profileUsername').innerText = "@" + user.username;
-                    document.getElementById('profileEmailPhone').innerText = user.emailPhone;
+                    document.getElementById('profileEmailPhone').innerText = user.email;
                     document.getElementById('profileUid').innerText = user.uid;
                     document.getElementById('profileAvatar').innerText = user.name.charAt(0).toUpperCase();
                     document.getElementById('profileAdsCount').innerText = totalAdsWatched;
                     document.getElementById('profileRefCount').innerText = totalReferrals;
 
-                    // Generate Referral Link
                     var refLink = window.location.origin + window.location.pathname + "?ref=" + user.uid;
                     document.getElementById('refLinkInput').value = refLink;
 
-                    // Update Daily Ad Counts display
                     document.getElementById('adCount1').innerText = ad1Count;
                     document.getElementById('adCount2').innerText = ad2Count;
 
@@ -383,7 +382,6 @@
             });
         }
 
-        // Square Ad Watch with 10 Daily Limit Each
         function watchSquareAd(adNumber, adUrl) {
             if(adNumber === 1) {
                 if(ad1Count >= 10) {
@@ -400,12 +398,29 @@
             }
 
             window.open(adUrl, '_blank');
-            addReward(1); // 1 BDT per ad
+            addReward(1);
 
             if(currentUserUid) {
                 database.ref('users/' + currentUserUid).update({
                     ad1Daily: ad1Count,
                     ad2Daily: ad2Count
+                });
+            }
+        }
+
+        function openAdLink(url, rewardAmount) {
+            window.open(url, '_blank');
+            addReward(rewardAmount);
+        }
+
+        function addReward(amount) {
+            currentBalance += amount;
+            totalAdsWatched += 1;
+
+            if(currentUserUid) {
+                database.ref('users/' + currentUserUid).update({
+                    balance: currentBalance,
+                    adsWatched: totalAdsWatched
                 });
             }
         }
@@ -444,5 +459,86 @@
 
                 for(var key in data) {
                     var task = data[key];
+                    
                     var itemCard = `<div class="task-card">
-                        <div class="
+                        <div class="task-info">
+                            <h4>[${task.type}] ${task.title}</h4>
+                            <p>${task.subtitle || ''}</p>
+                            <p style="color:#10B981; margin-top:3px;">রিওয়ার্ড: ৳${task.reward}</p>
+                        </div>
+                        <button class="btn" onclick="openAdLink('${task.link}', ${task.reward})">কাজ করুন</button>
+                    </div>`;
+
+                    if(task.type === 'Video') {
+                        reelsHtml += `<div class="reel-card">
+                            <h4 style="font-size:14px; color:#fff; margin-bottom:8px; text-align:left;">🎬 ${task.title}</h4>
+                            <video class="reel-video" controls src="${task.link}"></video>
+                            <p style="font-size:12px; color:#94A3B8; margin-bottom:8px; text-align:left;">${task.subtitle || ''}</p>
+                            <div class="reel-footer">
+                                <span style="font-size:12px; color:#10B981; font-weight:bold;">রিওয়ার্ড: ৳${task.reward}</span>
+                                <button class="btn" onclick="addReward(${task.reward})">সম্পন্ন করুন</button>
+                            </div>
+                        </div>`;
+                    } else if(task.type === 'Sponsor') {
+                        sponsorHtml += itemCard;
+                    } else {
+                        taskHtml += itemCard;
+                    }
+                }
+
+                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>অন্যান্য টাস্ক নেই।</p>";
+                homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
+                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো রিলস ভিডিও নেই।</p>";
+            });
+        }
+
+        function requestWithdraw() {
+            var method = document.getElementById('payMethod').value;
+            var account = document.getElementById('payAccount').value.trim();
+            var amount = parseFloat(document.getElementById('payAmount').value);
+
+            if(!account || isNaN(amount)) {
+                alert('অ্যাকাউন্ট নম্বর এবং টাকার পরিমাণ সঠিকভাবে দিন!');
+                return;
+            }
+
+            if(amount < 100) {
+                alert('সর্বনিম্ন উইথড্র ১০০ টাকা!');
+                return;
+            }
+
+            if(currentBalance < amount) {
+                alert('আপনার পর্যাপ্ত ব্যালেন্স নেই!');
+                return;
+            }
+
+            if(totalAdsWatched < 100 || totalReferrals < 10) {
+                alert('উইথড্র করার শর্ত পূরণ হয়নি! কমপক্ষে ১০০টি অ্যাড দেখা এবং ১০টি রেফার করা বাধ্যতামূলক।');
+                return;
+            }
+
+            var withdrawData = {
+                uid: currentUserUid,
+                method: method,
+                account: account,
+                amount: amount,
+                status: 'Pending',
+                time: Date.now()
+            };
+
+            database.ref('withdrawRequests').push().set(withdrawData, function(error) {
+                if(!error) {
+                    currentBalance -= amount;
+                    database.ref('users/' + currentUserUid).update({ balance: currentBalance });
+                    alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+                    document.getElementById('payAccount').value = '';
+                    document.getElementById('payAmount').value = '';
+                } else {
+                    alert('ত্রুটি: ' + error.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+w
