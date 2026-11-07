@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আর্ন বিডি - রিলস, স্পিন ও লুডু অ্যাপ</title>
+    <title>টাকা আর্ন বিডি - ইউজার অ্যাপ</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
@@ -17,7 +17,7 @@
         .title { font-size: 16px; font-weight: bold; color: #10B981; margin-bottom: 10px; }
         .task-card { background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 10px; margin-bottom: 12px; }
         .task-info h4 { font-size: 14px; color: #fff; }
-        .task-info p { font-size: 12px; color: #94A3B8; margin-bottom: 8px; }
+        .task-info p { font-size: 12px; color: #94A3B8; margin-bottom: 6px; }
         .btn { padding: 8px 14px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; background-color: #10B981; color: #fff; text-decoration: none; font-size: 12px; display: inline-block; text-align: center; }
         .btn-ad { background-color: #8B5CF6; }
         .btn-disabled { background-color: #4B5563 !important; cursor: not-allowed; }
@@ -32,6 +32,8 @@
         .reel-ad-badge { background: linear-gradient(135deg, #8B5CF6, #6D28D9); color: #fff; font-size: 11px; padding: 6px 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
         .reel-video { width: 100%; max-height: 350px; border-radius: 10px; background: #000; object-fit: cover; margin-bottom: 10px; }
         
+        .app-posted-image { width: 100%; max-height: 250px; object-fit: contain; background-color: #0A0E1A; border-radius: 10px; border: 1px solid #1E293B; margin-bottom: 8px; }
+
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 8px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
         .nav-item { text-align: center; color: #94A3B8; font-size: 10px; cursor: pointer; text-decoration: none; flex: 1; }
         .nav-item.active { color: #10B981; font-weight: bold; }
@@ -106,9 +108,10 @@
                 <div class="title">✨ গুরুত্বপূর্ণ নিয়মাবলী</div>
                 <div class="criteria-box">
                     📌 <b>উইথড্র করার ক্রাইটেরিয়া:</b><br>
-                    • সর্বনিম্ন উইথড্র: <b>১০০ টাকা</b><br>
+                    • সর্বনিম্ন উইথড্র: <b>১১০ টাকা</b> (ফি ১০ টাকা, পাবেন ১০০ টাকা)<br>
+                    • সর্বোচ্চ উইথড্র: <b>৫১০ টাকা</b> (ফি ১০ টাকা, পাবেন ৫০০ টাকা)<br>
                     • প্রয়োজনীয় অ্যাড দেখা: <b>কমপক্ষে ১০০টি</b><br>
-                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ১০টি (প্রতি রেফারে ৳১০)</b>
+                    • প্রয়োজনীয় রেফার: <b>কমপক্ষে ৩টি</b>
                 </div>
             </div>
 
@@ -195,7 +198,7 @@
                 <div style="background: #0A0E1A; padding: 12px; border-radius: 10px; text-align: left; font-size: 13px; margin-bottom: 15px; border: 1px solid #334155;">
                     💳 <b>মোট উত্তোলিত টাকা:</b> <span id="profileTotalWithdrawn" style="color: #F59E0B;">৳ 0.00</span><br><br>
                     👁️ <b>দেখা মোট অ্যাড:</b> <span id="profileAdsCount">0</span><br><br>
-                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span><br><br>
+                    👥 <b>মোট রেফার:</b> <span id="profileRefCount">0</span> (কমপক্ষে ৩টি প্রয়োজন)<br><br>
                     🔗 <b>আপনার রেফারেল লিংক:</b><br>
                     <input type="text" id="refLinkInput" readonly style="margin-top: 5px; font-size: 11px; padding: 8px;" onclick="this.select(); document.execCommand('copy'); alert('রেফারেল লিংক কপি করা হয়েছে!');">
                 </div>
@@ -214,16 +217,28 @@
             <div class="card">
                 <div class="title">💳 টাকা উত্তোলন (Withdraw)</div>
                 <div class="criteria-box" style="font-size: 12px;">
-                    ⚠️ টাকা তুলতে হলে আপনার ব্যালেন্সে কমপক্ষে <b>১০০ টাকা</b>, আপনি অন্তত <b>১০০টি অ্যাড</b> দেখেছেন এবং কমপক্ষে <b>১০টি রেফার</b> করেছেন—এমন শর্ত পূরণ হতে হবে।
+                    ⚠️ প্রতিটি উইথড্রতে <b>১০ টাকা ফি</b> কাটা হবে। আপনার সুবিধা অনুযায়ী নিচের ধাপগুলো থেকে যেকোনো একটি সিলেক্ট করুন:<br>
+                    • অন্তত <b>১০০টি অ্যাড</b> দেখা এবং কমপক্ষে <b>৩টি রেফার</b> করা বাধ্যতামূলক।
                 </div>
+                
                 <select id="payMethod">
                     <option value="bKash">বিকাশ (bKash)</option>
                     <option value="Nagad">নগদ (Nagad)</option>
                     <option value="Recharge">মোবাইল রিচার্জ</option>
                 </select>
+
                 <input type="text" id="payAccount" placeholder="আপনার অ্যাকাউন্ট নম্বর দিন">
-                <input type="number" id="payAmount" placeholder="টাকার পরিমাণ (সর্বনিম্ন ১০০ টাকা)">
-                <button class="btn" style="width: 100%; padding: 12px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+
+                <label style="font-size: 12px; color: #10B981; display: block; margin-bottom: 5px;">উইথড্র অ্যামাউন্ট সিলেক্ট করুন (১০ টাকা ফি সহ):</label>
+                <select id="payAmountSelect">
+                    <option value="110">৳ ১১০ (উত্তোলন: ১০০ টাকা + ফি ১০ টাকা)</option>
+                    <option value="210">৳ ২১০ (উত্তোলন: ২০০ টাকা + ফি ১০ টাকা)</option>
+                    <option value="310">৳ ৩১০ (উত্তোলন: ৩০০ টাকা + ফি ১০ টাকা)</option>
+                    <option value="410">৳ ৪১০ (উত্তোলন: ৪০০ টাকা + ফি ১০ টাকা)</option>
+                    <option value="510">৳ ৫১০ (উত্তোলন: ৫০০ টাকা + ফি ১০ টাকা)</option>
+                </select>
+
+                <button class="btn" style="width: 100%; padding: 12px; margin-top: 10px;" onclick="requestWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
             </div>
         </div>
 
@@ -296,6 +311,7 @@
         let watchedReels = {};
         let completedTasks = {}; 
         let approvedTaskTitles = [];
+        let allTaskSubmissions = {};
         
         let dailySpinCount = 0;
         let currentSpinAdCount = 0;
@@ -350,7 +366,6 @@
                 return;
             }
 
-            // Generate unique 6-digit numeric UID (e.g. 125978)
             var numericUid = Math.floor(100000 + Math.random() * 900000);
             var uidKey = 'UID_' + numericUid;
 
@@ -498,7 +513,7 @@
                     }
 
                     updateSpinUI();
-                    loadUserSubmissions();
+                    loadAllSubmissionsAndTasks();
                 }
             });
         }
@@ -526,7 +541,6 @@
             }
         }
 
-        /* SPIN & LUDO FUNCTIONS */
         function updateSpinUI() {
             var remainingSpins = 3 - dailySpinCount;
             document.getElementById('spinCountText').innerText = remainingSpins > 0 ? remainingSpins : 0;
@@ -647,16 +661,20 @@
             document.getElementById('ludoPlayArea').style.display = 'none';
         }
 
-        /* EXISTING APP FUNCTIONS */
-        function loadUserSubmissions() {
+        function loadAllSubmissionsAndTasks() {
             database.ref('taskSubmissions').on('value', function(snapshot) {
                 var subs = snapshot.val();
                 completedTasks = {};
                 approvedTaskTitles = [];
+                allTaskSubmissions = {};
                 
                 if(subs) {
                     for(var sKey in subs) {
                         var sub = subs[sKey];
+                        if(sub.status === 'Approved') {
+                            allTaskSubmissions[sub.taskId] = (allTaskSubmissions[sub.taskId] || 0) + 1;
+                        }
+
                         if(sub.userUid === currentUserUid) {
                             completedTasks[sub.taskId] = sub.status;
                             if(sub.status === 'Approved') {
@@ -722,7 +740,7 @@
                 adsWatched: totalAdsWatched,
                 watchedReels: watchedReels
             }, function(error) {
-                if(!error) { alert('অভিনন্দন! সফলভাবে ভিডিও দেখে রিওয়ার্ড পেয়ে গেছেন।'); loadUserSubmissions(); }
+                if(!error) { alert('অভিনন্দন! সফলভাবে ভিডিও দেখে রিওয়ার্ড পেয়ে গেছেন।'); loadAllSubmissionsAndTasks(); }
             });
         }
 
@@ -800,9 +818,18 @@
                 var taskHtml = "";
                 var sponsorHtml = "";
                 var reelsHtml = "";
+                const maxTaskLimit = 100;
 
                 for(var key in data) {
                     var task = data[key];
+                    var completedCount = allTaskSubmissions[key] || 0;
+                    var remainingCount = maxTaskLimit - completedCount;
+                    if(remainingCount < 0) remainingCount = 0;
+
+                    if(completedCount >= maxTaskLimit) {
+                        continue;
+                    }
+
                     if(task.type === 'Video') {
                         if(!watchedReels[key]) {
                             reelsHtml += `<div class="reel-card">
@@ -818,19 +845,25 @@
                     } else if(task.type === 'Sponsor') {
                         var sponsorContent = "";
                         if(task.link && task.link.startsWith('data:image')) {
-                            sponsorContent = `<div style="margin-bottom:8px;"><img src="${task.link}" style="width:100%; max-height:150px; border-radius:8px; object-fit:cover;" alt="Sponsor"></div>`;
+                            sponsorContent = `<div style="margin-bottom:8px; text-align:center;">
+                                                <img src="${task.link}" class="app-posted-image" alt="Admin Posted Image">
+                                              </div>`;
                         }
                         sponsorHtml += `<div class="task-card">
                             ${sponsorContent}
-                            <div class="task-info"><h4>${task.title}</h4><p>${task.subtitle || ''}</p></div>
-                            ${task.link && !task.link.startsWith('data:image') ? `<a class="btn" href="${task.link}" target="_blank">ভিজিট করুন</a>` : ''}
+                            <div class="task-info"><h4 style="color:#fff; font-size:14px; margin-bottom:4px;">${task.title}</h4><p style="color:#94A3B8; font-size:12px;">${task.subtitle || ''}</p></div>
+                            ${task.link && !task.link.startsWith('data:image') ? `<a class="btn" href="${task.link}" target="_blank" style="margin-top:8px; display:inline-block;">ভিজিট করুন</a>` : ''}
                         </div>`;
                     } else {
                         var submissionStatus = completedTasks[key];
                         if(submissionStatus === 'Approved') { continue; }
                         else if(submissionStatus === 'Pending') {
                             taskHtml += `<div class="task-card" style="border-color:#F59E0B;">
-                                <div class="task-info"><h4>[${task.type}] ${task.title}</h4><p style="color:#F59E0B;">⏳ প্রুফ জমা দেওয়া হয়েছে, অপেক্ষমাণ...</p></div>
+                                <div class="task-info">
+                                    <h4>[${task.type}] ${task.title}</h4>
+                                    <p style="color:#F59E0B;">⏳ প্রুফ জমা দেওয়া হয়েছে, অপেক্ষমাণ...</p>
+                                    <p style="font-size: 11px; color: #94A3B8;">সর্বোচ্চ লিমিট: ${maxTaskLimit} | সম্পন্ন হয়েছে: ${completedCount} জন | বাকি আছে: ${remainingCount}টি</p>
+                                </div>
                             </div>`;
                         } else {
                             taskHtml += `<div class="task-card">
@@ -838,6 +871,7 @@
                                     <h4>[${task.type}] ${task.title}</h4>
                                     <p>${task.subtitle || 'নিয়ম মেনে সাবস্ক্রাইব/ফলো করুন'}</p>
                                     <p style="color:#10B981; font-weight:bold;">রিওয়ার্ড: ৳${task.reward}</p>
+                                    <p style="font-size: 11px; color: #38BDF8; margin-top: 4px;">📊 সর্বোচ্চ লিমিট: ${maxTaskLimit} | সম্পন্ন করেছে: ${completedCount} জন | বাকি আছে: ${remainingCount}টি</p>
                                 </div>
                                 <div style="display: flex; gap: 6px; margin-top: 8px;">
                                     <a class="btn" href="${task.link}" target="_blank">লিংকে যান</a>
@@ -847,27 +881,30 @@
                         }
                     }
                 }
-                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো সোশ্যাল টাস্ক নেই।</p>";
-                homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সার পোস্ট নেই।</p>";
-                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>নতুন কোনো রিলস ভিডিও নেই!</p>";
+                taskListDiv.innerHTML = taskHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো নতুন সোশ্যাল টাস্ক নেই বা সবগুলো টাস্কের লিমিট শেষ!</p>";
+                homeSponsorDiv.innerHTML = sponsorHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো স্পন্সর পোস্ট নেই।</p>";
+                reelsContainerDiv.innerHTML = reelsHtml || "<p style='color:#94A3B8; text-align:center;'>কোনো নতুন রিলস ভিডিও নেই!</p>";
             });
         }
 
         function requestWithdraw() {
             var method = document.getElementById('payMethod').value;
             var account = document.getElementById('payAccount').value.trim();
-            var amount = parseFloat(document.getElementById('payAmount').value);
+            var amount = parseFloat(document.getElementById('payAmountSelect').value);
 
-            if(!account || isNaN(amount)) { alert('অ্যাকাউন্ট এবং পরিমাণ দিন!'); return; }
-            if(amount < 100) { alert('সর্বনিম্ন উইথড্র ১০০ টাকা!'); return; }
-            if(currentBalance < amount) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
-            if(totalAdsWatched < 100 || totalReferrals < 10) { alert('শর্ত পূরণ হয়নি (১০০টি অ্যাড ও ১০টি রেফার প্রয়োজন)!'); return; }
+            if(!account) { alert('আপনার অ্যাকাউন্ট নম্বর দিন!'); return; }
+            if(isNaN(amount) || amount < 110) { alert('সঠিক উইথড্র পরিমাণ সিলেক্ট করুন!'); return; }
+            if(currentBalance < amount) { alert('আপনার পর্যাপ্ত ব্যালেন্স নেই!'); return; }
+            if(totalAdsWatched < 100 || totalReferrals < 3) { alert('শর্ত পূরণ হয়নি (১০০টি অ্যাড ও কমপক্ষে ৩টি রেফার প্রয়োজন)!'); return; }
+
+            var netReceive = amount - 10; // ১০ টাকা ফি বাদ দিয়ে ইউজার পাবে
 
             var withdrawData = {
                 uid: currentUserUid,
                 method: method,
                 account: account,
                 amount: amount,
+                netAmount: netReceive,
                 status: 'Pending',
                 time: Date.now()
             };
@@ -877,9 +914,8 @@
                     currentBalance -= amount;
                     totalWithdrawn += amount;
                     database.ref('users/' + currentUserUid).update({ balance: currentBalance, totalWithdrawn: totalWithdrawn });
-                    alert('উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!');
+                    alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে! ১০ টাকা ফি কেটে আপনাকে ৳' + netReceive + ' প্রদান করা হবে।');
                     document.getElementById('payAccount').value = '';
-                    document.getElementById('payAmount').value = '';
                 }
             });
         }
