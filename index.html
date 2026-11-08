@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAKE ERAN BD</title>
+    <title>টাকা আনবিডি - Taka Earn BD</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -13,107 +13,55 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
         .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        
-        /* 🚀 স্প্ল্যাশ স্ক্রিন ফুল স্ক্রিন স্টাইল */
-        #splashScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-            transition: opacity 0.4s ease;
-        }
-        .splash-logo {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #8e24aa;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .splash-title {
-            font-size: 26px;
-            font-weight: bold;
-            color: #8e24aa;
-            margin-bottom: 8px;
-        }
-        .splash-loading {
-            font-size: 15px;
-            color: #555;
-            font-weight: bold;
-        }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #8e24aa;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            animation: spin 0.8s linear infinite;
-            margin-top: 15px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .header { background: #8e24aa; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
-        .balance-card { background: #f3e5f5; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 18px; color: #4a148c; }
-        .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; background: #eee; padding: 5px; border-radius: 5px; }
+        .header { background: #28a745; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
+        .balance-card { background: #e9ecef; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 16px; display: flex; justify-content: space-around; }
+        .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; background: #eee; padding: 5px; border-radius: 5px; flex-wrap: wrap; gap: 5px; }
         .tab-btn { border: none; background: none; padding: 8px 10px; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .tab-btn.active { background: #8e24aa; color: white; border-radius: 5px; }
+        .tab-btn.active { background: #28a745; color: white; border-radius: 5px; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; }
+        .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
         .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
-        .btn-success { background: #8e24aa; }
+        .btn-success { background: #28a745; }
         .btn-warning { background: #ffc107; color: #000; }
         input, select { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* Tap Tap Styles */
+        .taptap-circle { width: 140px; height: 140px; background: linear-gradient(145deg, #28a745, #218838); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; margin: 20px auto; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); user-select: none; transition: transform 0.1s; }
+        .taptap-circle:active { transform: scale(0.95); }
+        .taptap-circle.disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-    <!-- 🚀 স্প্ল্যাশ স্ক্রিন ও লোগো -->
-    <div id="splashScreen">
-        <img src="https://i.ibb.co.com/example-logo.png" alt="Logo" class="splash-logo" id="splashImg">
-        <div class="splash-title">TAKE ERAN BD</div>
-        <div class="splash-loading">অ্যাপ লোড হচ্ছে, দয়া করে অপেক্ষা করুন...</div>
-        <div class="spinner"></div>
-    </div>
-
 <div class="container">
     <!-- Auth Screen -->
-    <div id="authScreen" style="display:none;">
-        <div class="header"><h2>TAKE ERAN BD</h2><p>লগইন বা অ্যাকাউন্ট তৈরি করুন</p></div>
+    <div id="authScreen">
+        <div class="header"><h2>টাকা আনবিডি</h2><p>লগইন বা রেজিস্ট্রেশন করুন</p></div>
         <input type="email" id="authEmail" placeholder="জিমেইল এড্রেস">
         <input type="password" id="authPass" placeholder="পাসওয়ার্ড">
         <button class="btn btn-success" onclick="login()">লগইন করুন</button>
-        <button class="btn" onclick="register()" style="margin-top:8px; background:#6c757d;">নতুন অ্যাকাউন্ট খুলুন</button>
+        <button class="btn" onclick="register()" style="margin-top:8px;">নতুন অ্যাকাউন্ট খুলুন</button>
     </div>
 
     <!-- Main App Screen -->
     <div id="appScreen" style="display:none;">
         <div class="header">
-            <h3>TAKE ERAN BD</h3>
-            <p id="userEmailText">User Account</p>
+            <h3>টাকা আনবিডি</h3>
+            <p id="userEmailText">User</p>
         </div>
 
         <div class="balance-card">
-            বর্তমান ব্যালেন্স: ৳<span id="userBalance">0.00</span>
+            <div>টাকা: ৳<span id="userBalance">0.00</span></div>
+            <div>এআর টোকেন: <span id="userToken">0</span></div>
         </div>
 
         <!-- Navigation Tabs -->
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('spinTab')">স্পিন অ্যাড</button>
-            <button class="tab-btn" onclick="switchTab('taskTab')">টাস্ক</button>
-            <button class="tab-btn" onclick="switchTab('specialTab')">স্পেশাল অ্যাড</button>
-            <button class="tab-btn" onclick="switchTab('withdrawTab')">উইথড্র</button>
+            <button class="tab-btn active" onclick="switchTab('spinTab', event)">স্পিন অ্যাড</button>
+            <button class="tab-btn" onclick="switchTab('taskTab', event)">টাস্ক</button>
+            <button class="tab-btn" onclick="switchTab('hillsTab', event)">হিলস (Tap Tap)</button>
+            <button class="tab-btn" onclick="switchTab('withdrawTab', event)">উইথড্র</button>
         </div>
 
         <!-- 1. Spin & Regular Ads Tab -->
@@ -121,12 +69,12 @@
             <div class="card">
                 <h4>স্কয়ার অ্যাড ১ (৳০.৫০)</h4>
                 <p>দৈনিক লিমিট: <span id="ad1CountText">০</span>/১০</p>
-                <button class="btn btn-success" onclick="watchSquareAd(1)">অ্যাড দেখুন (১০ সে.)</button>
+                <button class="btn" onclick="watchSquareAd(1)">অ্যাড দেখুন (১০ সে.)</button>
             </div>
             <div class="card">
                 <h4>স্কয়ার অ্যাড ২ (৳০.৫০)</h4>
                 <p>দৈনিক লিমিট: <span id="ad2CountText">০</span>/১০</p>
-                <button class="btn btn-success" onclick="watchSquareAd(2)">অ্যাড দেখুন (১০ সে.)</button>
+                <button class="btn" onclick="watchSquareAd(2)">অ্যাড দেখুন (১০ সে.)</button>
             </div>
         </div>
 
@@ -134,24 +82,39 @@
         <div id="taskTab" class="tab-content">
             <h4>উপলব্ধ টাস্কসমূহ</h4>
             <div id="taskList" style="margin-top:10px;">
-                <!-- ফায়ারবেজ থেকে টাস্কগুলো এখানে ডাইনামিক্যালি লোড হবে -->
+                <div class="card">
+                    <h4>ইউটিউব চ্যানেল সাবস্ক্রাইব (৳২.০০)</h4>
+                    <p>চ্যানেল সাবস্ক্রাইব করে স্ক্রিনশট প্রুফ দিন।</p>
+                    <button class="btn btn-warning" onclick="executeTask('https://youtube.com', 2.00)">কাজ শুরু করুন</button>
+                </div>
             </div>
         </div>
 
-        <!-- 3. Special Ads Tab -->
-        <div id="specialTab" class="tab-content">
-            <div class="card" style="border: 2px solid #ffc107;">
-                <h4>🔥 স্পেশাল অ্যাড (৳০.৮০)</h4>
-                <p>প্রতি অ্যাডে পাবেন ৮০ পয়সা!</p>
-                <p>দৈনিক লিমিট: <span id="specialAdCountText">০</span>/৩</p>
-                <button class="btn btn-warning" onclick="watchSpecialAd()">স্পেশাল অ্যাড দেখুন (১০ সে.)</button>
+        <!-- 3. Hills (Tap Tap) Tab -->
+        <div id="hillsTab" class="tab-content">
+            <div class="card">
+                <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
+                <p>ট্যাপ করে এআর টোকেন আয় করুন! (২৫ ও ৫০ ট্যাপে অ্যাড)</p>
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">দৈনিক লিমিট: <span id="tapCountToday">0</span>/1000</p>
+                
+                <!-- Tap Circle -->
+                <div id="tapButton" class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
+                
+                <p id="tapStatusText" style="font-weight: bold; color: #007bff; margin: 10px 0;">চার্জ ফুল আছে</p>
+                <div id="timerDisplay" style="color: #dc3545; font-weight: bold; font-size: 14px; margin-bottom: 10px;"></div>
+
+                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+
+                <h5>টোকেন এক্সচেঞ্জ</h5>
+                <p style="font-size: 13px; margin: 5px 0;">১০০০ এআর টোকেন = ৫ টাকা</p>
+                <button class="btn btn-success" onclick="exchangeTokens()">টোকেন এক্সচেঞ্জ করুন</button>
             </div>
         </div>
 
         <!-- 4. Withdraw Tab -->
         <div id="withdrawTab" class="tab-content">
-            <div class="card">
-                <h4>টাকা উত্তোলন (উইথড্র)</h4>
+            <div class="card" style="text-align: left;">
+                <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
                 <select id="withdrawMethod">
                     <option value="bkash">বিকাশ (মিনিমাম ৳৫০)</option>
                     <option value="nagad">নগদ (মিনিমাম ৳৫০)</option>
@@ -167,13 +130,305 @@
 
 <script>
     // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION (রিয়েল ডাটাবেজ কনফিগারেশন)
+    // ⚙️ FIREBASE CONFIGURATION
     // -------------------------------------------------------------
     const firebaseConfig = {
-        apiKey: "AIzaSyD-TakaEarnBD-RealAPIKeyPlaceholder",
-        authDomain: "taka-earn-bd.firebaseapp.com",
-        databaseURL: "https://taka-earn-bd-default-rtdb.firebaseio.com",
-        projectId: "taka-earn-bd",
-        storageBucket: "taka-earn-bd.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:12
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+        projectId: "YOUR_PROJECT",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // আপনার দেওয়া অ্যাডস্টাররা লিংকগুলোর অ্যারে (Randomly রোটেশন হবে)
+    const adLinks = [
+        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
+        "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
+        "https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679",
+        "https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927",
+        "https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f",
+        "https://auctionr.org/4/cbbcf8888f80dad51ee68b6825a71afd"
+    ];
+
+    function getRandomAdLink() {
+        const randomIndex = Math.floor(Math.random() * adLinks.length);
+        return adLinks[randomIndex];
+    }
+
+    let currentUserUid = null;
+    let currentBalance = 0.00;
+    let currentToken = 0;
+    let ad1Count = 0;
+    let ad2Count = 0;
+    
+    // Tap Tap Variables
+    let sessionTapCount = 0; 
+    let totalDailyTaps = 0;   
+    let isRecharging = false; 
+
+    // -------------------------------------------------------------
+    // 🔐 AUTHENTICATION LOGIC
+    // -------------------------------------------------------------
+    function login() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        auth.signInWithEmailAndPassword(email, pass)
+            .then(() => { triggerAutoAd(); })
+            .catch(err => alert("লগইন ব্যর্থ: " + err.message));
+    }
+
+    function register() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then(res => {
+                database.ref('users/' + res.user.uid).set({
+                    email: email,
+                    balance: 0.00,
+                    arToken: 0,
+                    ad1Daily: 0,
+                    ad2Daily: 0,
+                    dailyTaps: 0,
+                    adsWatched: 0
+                });
+                triggerAutoAd();
+            })
+            .catch(err => alert("রেজিস্ট্রেশন ব্যর্থ: " + err.message));
+    }
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUserUid = user.uid;
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            document.getElementById('userEmailText').innerText = user.email;
+
+            database.ref('users/' + user.uid).on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    currentBalance = data.balance || 0.00;
+                    currentToken = data.arToken || 0;
+                    ad1Count = data.ad1Daily || 0;
+                    ad2Count = data.ad2Daily || 0;
+                    totalDailyTaps = data.dailyTaps || 0;
+
+                    document.getElementById('userBalance').innerText = currentBalance.toFixed(2);
+                    document.getElementById('userToken').innerText = currentToken;
+                    document.getElementById('ad1CountText').innerText = ad1Count;
+                    document.getElementById('ad2CountText').innerText = ad2Count;
+                    document.getElementById('tapCountToday').innerText = totalDailyTaps;
+                }
+            });
+
+            // অ্যাপ চালুর সাথে সাথে অ্যাড
+            triggerAutoAd();
+
+            // প্রতি ৫ মিনিট পর পর অটোমেটিক অ্যাড
+            setInterval(() => {
+                triggerAutoAd();
+            }, 300000);
+
+        } else {
+            document.getElementById('authScreen').style.display = 'block';
+            document.getElementById('appScreen').style.display = 'none';
+        }
+    });
+
+    function triggerAutoAd() {
+        const link = getRandomAdLink();
+        window.open(link, '_blank');
+    }
+
+    function watchSquareAd(adNumber) {
+        if(adNumber === 1 && ad1Count >= 10) { alert('আজকের এই অপশনের ১০টি অ্যাড দেখার লিমিট শেষ!'); return; }
+        if(adNumber === 2 && ad2Count >= 10) { alert('আজকের এই অপশনের ১০টি অ্যাড দেখার লিমিট শেষ!'); return; }
+
+        const link = getRandomAdLink();
+        window.open(link, '_blank');
+        alert('অ্যাড চালু হয়েছে! দয়া করে ১০ সেকেন্ড অপেক্ষা করুন।');
+
+        setTimeout(() => {
+            if(adNumber === 1) ad1Count++;
+            if(adNumber === 2) ad2Count++;
+
+            addRewardSecure(0.50);
+
+            database.ref('users/' + currentUserUid).update({
+                ad1Daily: ad1Count,
+                ad2Daily: ad2Count
+            });
+
+            alert('অভিনন্দন! ১০ সেকেন্ড সফলভাবে অতিক্রম করায় আপনার অ্যাকাউন্টে ৳০.৫০ যোগ হয়েছে।');
+        }, 10000);
+    }
+
+    // -------------------------------------------------------------
+    // 🕹️ HILLS (TAP TAP) LOGIC (25 & 50 Taps Ad Triggers)
+    // -------------------------------------------------------------
+    function handleTap() {
+        if (isRecharging) {
+            alert('চার্জ শেষ! অনুগ্রহ করে ১ মিনিট অপেক্ষা করুন।');
+            return;
+        }
+
+        if (totalDailyTaps >= 1000) {
+            alert('আজকের জন্য আপনার ১০০০ ট্যাপ করার লিমিট শেষ!');
+            return;
+        }
+
+        sessionTapCount++;
+        totalDailyTaps++;
+        currentToken += 1; 
+
+        database.ref('users/' + currentUserUid).update({
+            arToken: currentToken,
+            dailyTaps: totalDailyTaps
+        });
+
+        // ২৫ এবং ৫০ নম্বর ট্যাপের শর্ত
+        if (sessionTapCount === 25 || sessionTapCount === 50) {
+            let tapNum = sessionTapCount;
+            if (sessionTapCount === 50) {
+                sessionTapCount = 0; // ৫০ ট্যাপ পূর্ণ হলে সেশন রিসেট হবে
+            }
+            startRechargeTimer(tapNum);
+        }
+    }
+
+    function startRechargeTimer(tapNum) {
+        isRecharging = true;
+        const tapBtn = document.getElementById('tapButton');
+        const tapStatus = document.getElementById('tapStatusText');
+        const timerDisplay = document.getElementById('timerDisplay');
+
+        tapBtn.classList.add('disabled');
+        tapStatus.innerText = `${tapNum} তম ট্যাপ! অ্যাড শো হচ্ছে...`;
+        
+        const link = getRandomAdLink();
+        window.open(link, '_blank');
+
+        let timeLeft = 60; // ১ মিনিট = ৬০ সেকেন্ড
+        timerDisplay.innerText = `রিচার্জ হতে সময় বাকি: ${timeLeft} সেকেন্ড`;
+
+        let countdown = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = `রিচার্জ হতে সময় বাকি: ${timeLeft} সেকেন্ড`;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                isRecharging = false;
+                tapBtn.classList.remove('disabled');
+                tapStatus.innerText = "চার্জ ফুল হয়েছে! আবার ট্যাপ করুন।";
+                timerDisplay.innerText = "";
+            }
+        }, 1000);
+    }
+
+    function exchangeTokens() {
+        if (currentToken < 1000) {
+            alert('আপনার অ্যাকাউন্টে পর্যাপ্ত টোকেন নেই! সর্বনিম্ন ১০০০ টোকেন লাগবে।');
+            return;
+        }
+
+        let exchangeableSets = Math.floor(currentToken / 1000);
+        let tokensToDeduct = exchangeableSets * 1000;
+        let moneyToAdd = exchangeableSets * 5.00;
+
+        currentToken -= tokensToDeduct;
+        currentBalance += moneyToAdd;
+
+        database.ref('users/' + currentUserUid).update({
+            arToken: currentToken,
+            balance: currentBalance
+        });
+
+        alert(`অভিনন্দন! সফলভাবে ${tokensToDeduct} টি এআর টোকেন এক্সচেঞ্জ করে ৳${moneyToAdd.toFixed(2)} মূল ব্যালেন্সে যোগ করা হয়েছে।`);
+    }
+
+    function executeTask(taskTargetUrl, rewardAmount) {
+        const link = getRandomAdLink();
+        window.open(link, '_blank');
+        alert('কাজের বিবরণ খুলছে! অ্যাড পেজে এবং কাজের পেজে অন্তত ১০ সেকেন্ড সময় অতিবাহিত করুন।');
+
+        setTimeout(() => {
+            window.open(taskTargetUrl, '_blank');
+        }, 1500);
+
+        setTimeout(() => {
+            addRewardSecure(rewardAmount);
+            alert('অভিনন্দন! সফলভাবে কাজটি সম্পন্ন করায় ৳' + rewardAmount.toFixed(2) + ' আপনার ব্যালেন্সে যোগ হয়েছে।');
+        }, 10000);
+    }
+
+    function addRewardSecure(amount) {
+        currentBalance += amount;
+        database.ref('users/' + currentUserUid).update({
+            balance: currentBalance
+        });
+    }
+
+    // -------------------------------------------------------------
+    // 💸 WITHDRAWAL LOGIC
+    // -------------------------------------------------------------
+    function requestWithdrawal() {
+        const method = document.getElementById('withdrawMethod').value;
+        const amount = parseFloat(document.getElementById('withdrawAmount').value);
+        const account = document.getElementById('withdrawAccount').value;
+
+        let minAmount = (method === 'recharge') ? 20 : 50;
+
+        if (!amount || amount < minAmount) {
+            alert(method + '-এর জন্য সর্বনিম্ন উইথড্র ৳' + minAmount);
+            return;
+        }
+
+        if (amount > currentBalance) {
+            alert('আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!');
+            return;
+        }
+
+        if (!account || account.length < 11) {
+            alert('সঠিক মোবাইল/হিসাব নম্বর প্রদান করুন!');
+            return;
+        }
+
+        const newBalance = currentBalance - amount;
+        database.ref('users/' + currentUserUid).update({ balance: newBalance });
+
+        database.ref('withdrawals').push({
+            uid: currentUserUid,
+            email: document.getElementById('userEmailText').innerText,
+            method: method,
+            amount: amount,
+            account: account,
+            status: 'pending',
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('withdrawAccount').value = '';
+        });
+    }
+
+    // -------------------------------------------------------------
+    // 📱 UI NAVIGATION
+    // -------------------------------------------------------------
+    function switchTab(tabId, event) {
+        const contents = document.querySelectorAll('.tab-content');
+        const buttons = document.querySelectorAll('.tab-btn');
+        
+        contents.forEach(content => content.classList.remove('active'));
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+</body>
+</html>
