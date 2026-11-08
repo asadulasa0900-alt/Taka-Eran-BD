@@ -13,7 +13,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
-        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 70px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 75px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
         .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 5px; }
         
@@ -23,8 +23,8 @@
         .nav-item.active { color: #28a745; }
         .nav-item div { font-size: 16px; margin-bottom: 2px; }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .page-content { display: none; }
+        .page-content.active { display: block; }
         .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
         .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
         .btn-success { background: #28a745; }
@@ -53,7 +53,7 @@
     </div>
 
     <!-- ================= 1. HOME PAGE ================= -->
-    <div id="pageHome" class="tab-content active">
+    <div id="pageHome" class="page-content active">
         <div class="card">
             <h4>চাকা ঘোরান (Spin & Win)</h4>
             <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
@@ -78,9 +78,67 @@
     </div>
 
     <!-- ================= 2. TASKS PAGE (YT, FB, TG, WA) ================= -->
-    <div id="pageTasks" class="tab-content">
-        <h4 style="margin-bottom: 10px;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
+    <div id="pageTasks" class="page-content">
+        <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
         
         <!-- YouTube Task -->
         <div class="card" style="text-align: left;">
-            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব সাব
+            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব সাবস্ক্রাইব টাস্ক (৳২.০০)</h4>
+            <p style="font-size: 12px; margin: 5px 0;">চ্যানেল সাবস্ক্রাইব করে স্ক্রিনশট প্রুফ দিন।</p>
+            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task1Count">0</span>/1000</p>
+            <input type="file" id="task1File" accept="image/*" onchange="previewImage(event, 'task1Preview')">
+            <img id="task1Preview" class="task-proof-img" alt="Proof Preview">
+            <button class="btn btn-warning" onclick="submitTask(1, 2.00, 'task1File', 'task1Preview')">কাজ জমা দিন</button>
+        </div>
+
+        <!-- Facebook Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #3b5998; font-size: 14px;">👥 ফেসবুক পেজ লাইক টাস্ক (৳১.৫০)</h4>
+            <p style="font-size: 12px; margin: 5px 0;">পেজ লাইক দিয়ে স্ক্রিনশট প্রুফ দিন।</p>
+            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task2Count">0</span>/1000</p>
+            <input type="file" id="task2File" accept="image/*" onchange="previewImage(event, 'task2Preview')">
+            <img id="task2Preview" class="task-proof-img" alt="Proof Preview">
+            <button class="btn btn-warning" onclick="submitTask(2, 1.50, 'task2File', 'task2Preview')">কাজ জমা দিন</button>
+        </div>
+
+        <!-- Telegram Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #0088cc; font-size: 14px;">✈️ টেলিগ্রাম চ্যানেল জয়েন (৳১.০০)</h4>
+            <p style="font-size: 12px; margin: 5px 0;">চ্যানেলে জয়েন করে স্ক্রিনশট প্রুফ দিন।</p>
+            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task3Count">0</span>/1000</p>
+            <input type="file" id="task3File" accept="image/*" onchange="previewImage(event, 'task3Preview')">
+            <img id="task3Preview" class="task-proof-img" alt="Proof Preview">
+            <button class="btn btn-warning" onclick="submitTask(3, 1.00, 'task3File', 'task3Preview')">কাজ জমা দিন</button>
+        </div>
+
+        <!-- WhatsApp Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #25d366; font-size: 14px;">💬 হোয়াটসঅ্যাপ গ্রুপ জয়েন (৳১.০০)</h4>
+            <p style="font-size: 12px; margin: 5px 0;">গ্রুপে জয়েন করে স্ক্রিনশট প্রুফ দিন।</p>
+            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task4Count">0</span>/1000</p>
+            <input type="file" id="task4File" accept="image/*" onchange="previewImage(event, 'task4Preview')">
+            <img id="task4Preview" class="task-proof-img" alt="Proof Preview">
+            <button class="btn btn-warning" onclick="submitTask(4, 1.00, 'task4File', 'task4Preview')">কাজ জমা দিন</button>
+        </div>
+    </div>
+
+    <!-- ================= 3. PROFILE & REFER PAGE ================= -->
+    <div id="pageProfile" class="page-content">
+        <div class="card">
+            <h4>ইউজার প্রোফাইল ও রেফার</h4>
+            <img id="profileDisplayImg" src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">ইউজার আইডি: <span id="profileUidText" style="color: #007bff;">---</span></p>
+            
+            <div style="text-align: left; font-size: 13px; margin-top: 10px;">
+                <label>ছবির ডাইরেক্ট লিংক:</label>
+                <input type="text" id="inputProfileImg" placeholder="https://...">
+                <label>বায়ো (Bio):</label>
+                <textarea id="inputBio" placeholder="আপনার সম্পর্কে লিখুন..." rows="2"></textarea>
+                <button class="btn btn-success" onclick="saveProfile()">প্রোফাইল আপডেট</button>
+            </div>
+
+            <hr style="margin: 12px 0;">
+            
+            <div style="text-align: left; font-size: 13px;">
+                <h4>বন্ধুদের রেফার করুন</h4>
+                <p style="
