@@ -12,6 +12,47 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
+        
+        /* স্প্ল্যাশ বা লোডিং স্ক্রিন স্টাইল */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        .splash-logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .splash-sub {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { background: #28a745; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
         .balance-card { background: #e9ecef; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 18px; }
@@ -49,6 +90,7 @@
         .btn-success { background: #28a745; }
         .btn-warning { background: #ffc107; color: #000; }
         .btn-purple { background: #6f42c1; color: white; }
+        .btn-danger { background: #dc3545; margin-top: 15px; }
         input, select { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 4px; }
 
         /* ট্যাপ ট্যাপ গেম স্টাইল */
@@ -83,9 +125,16 @@
 </head>
 <body>
 
+    <!-- 🚀 অ্যাপের নাম ও লোগোসহ স্প্ল্যাশ স্ক্রিন -->
+    <div id="splashScreen">
+        <div class="splash-logo">টাকা আনবিডি</div>
+        <div class="splash-sub">Taka Earn BD - লোড হচ্ছে...</div>
+        <div class="spinner"></div>
+    </div>
+
 <div class="container">
-    <!-- Auth Screen -->
-    <div id="authScreen">
+    <!-- Auth Screen (শুরুতে হাইড থাকবে, ইউজার লগইন করা না থাকলে দেখাবে) -->
+    <div id="authScreen" style="display:none;">
         <div class="header"><h2>টাকা আনবিডি</h2><p>লগইন বা রেজিস্ট্রেশন করুন</p></div>
         <input type="email" id="authEmail" placeholder="জিমেইল এড্রেস">
         <input type="password" id="authPass" placeholder="পাসওয়ার্ড">
@@ -93,7 +142,7 @@
         <button class="btn" onclick="register()" style="margin-top:8px;">নতুন অ্যাকাউন্ট খুলুন</button>
     </div>
 
-    <!-- Main App Screen -->
+    <!-- Main App Screen (শুরুতে হাইড থাকবে, ইউজার লগইন করা থাকলে ডাইরেক্ট ঢুকে যাবে) -->
     <div id="appScreen" style="display:none;">
         <div class="header">
             <h3>টাকা আনবিডি</h3>
@@ -146,7 +195,7 @@
             </div>
         </div>
 
-        <!-- 3. Tap Tap & AR Token Exchange Tab (UPDATED) -->
+        <!-- 3. Tap Tap & AR Token Exchange Tab -->
         <div id="tapTab" class="tab-content">
             <div class="card">
                 <h4 style="color: #6f42c1;">🪙 AR Token Tap Game</h4>
@@ -200,6 +249,9 @@
                 <button class="btn btn-success" onclick="requestWithdrawal()">উইথড্র রিকোয়েস্ট পাঠান</button>
             </div>
         </div>
+
+        <!-- লজআউট বাটন -->
+        <button class="btn btn-danger" onclick="logout()">লগআউট করুন</button>
     </div>
 </div>
 
@@ -231,19 +283,20 @@
     let specialAdCount = 0;
     let totalAdsWatched = 0;
 
-    // ট্যাপ ও কুলডাউন ভেরিয়েবলসমূহ (৫০ ট্যাপ এবং ৬০ সেকেন্ড বা ১ মিনিট চার্জ)
     let currentEnergy = 50; 
     let isCooldown = false;
     let cooldownTimer = null;
 
     // -------------------------------------------------------------
-    // 🔐 AUTHENTICATION LOGIC
+    // 🔐 AUTHENTICATION & AUTO LOGIN LOGIC
     // -------------------------------------------------------------
     function login() {
         const email = document.getElementById('authEmail').value;
         const pass = document.getElementById('authPass').value;
         auth.signInWithEmailAndPassword(email, pass)
-            .then(() => { triggerAutoAd(); })
+            .then(() => { 
+                triggerAutoAd(); 
+            })
             .catch(err => alert("লগইন ব্যর্থ: " + err.message));
     }
 
@@ -266,8 +319,18 @@
             .catch(err => alert("রেজিস্ট্রেশন ব্যর্থ: " + err.message));
     }
 
+    function logout() {
+        auth.signOut().then(() => {
+            alert('লগআউট সফল হয়েছে!');
+        });
+    }
+
+    // ফায়ারবেজ চেক করবে ইউজার কি আগে থেকেই লগইন করা নাকি নতুন
     auth.onAuthStateChanged(user => {
+        const splash = document.getElementById('splashScreen');
+
         if (user) {
+            // ইউজার ইতিমধ্যে লগইন করা থাকলে ডাইরেক্ট অ্যাপ স্ক্রিনে ঢুকবে
             currentUserUid = user.uid;
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
@@ -291,20 +354,27 @@
                 }
             });
 
-            triggerAutoAd();
-
-            setInterval(() => {
-                triggerAutoAd();
-            }, 300000);
+            // স্প্ল্যাশ স্ক্রিন হাইড করা
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }, 1000);
 
         } else {
+            // ইউজার লগইন করা না থাকলে লগইন/রেজিস্ট্রেশন স্ক্রিন দেখাবে
             document.getElementById('authScreen').style.display = 'block';
             document.getElementById('appScreen').style.display = 'none';
+
+            // স্প্ল্যাশ স্ক্রিন হাইড করা
+            setTimeout(() => {
+                splash.style.opacity = '0';
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
+            }, 1000);
         }
     });
 
     // -------------------------------------------------------------
-    // 🪙 TAP TAP, AUTO AD REDIRECT & COOLDOWN SYSTEM (50 Taps -> Ad -> 1 Min Charge)
+    // 🪙 TAP TAP, AUTO AD REDIRECT & COOLDOWN SYSTEM
     // -------------------------------------------------------------
     function handleTapToken() {
         if (isCooldown) return;
@@ -313,27 +383,21 @@
             currentEnergy--;
             arTokens++;
 
-            // UI আপডেট
             document.getElementById('arTokenText').innerText = arTokens;
             document.getElementById('energyCountText').innerText = currentEnergy;
 
-            // ফায়ারবেজে টোকেন আপডেট
             database.ref('users/' + currentUserUid).update({
                 arTokens: arTokens
             });
 
-            // যদি ৫০টি ট্যাপ শেষ হয়ে যায়, তবে অটো অ্যাড ওপেন হবে এবং ১ মিনিটের কুলডাউন শুরু হবে
             if (currentEnergy === 0) {
-                // সরাসরি অ্যাডে রিডাইরেক্ট করা
                 window.open(DIRECT_AD_URL, '_blank');
                 alert('৫০টি ট্যাপ সম্পন্ন! আপনার জন্য একটি স্পন্সরড অ্যাড ওপেন হয়েছে। এখন ১ মিনিট চার্জ সময় নেওয়া হবে।');
-                
                 startCooldown();
             }
         }
     }
 
-    // ১ মিনিট (৬০ সেকেন্ড) চার্জিং বা কুলডাউন ফাংশন
     function startCooldown() {
         isCooldown = true;
         const tapBtn = document.getElementById('tapBtn');
@@ -343,7 +407,7 @@
         tapBtn.disabled = true;
         cooldownNotice.style.display = 'block';
 
-        let timeLeft = 60; // ৬০ সেকেন্ড = ১ মিনিট
+        let timeLeft = 60; 
         timerText.innerText = timeLeft;
 
         cooldownTimer = setInterval(() => {
@@ -353,7 +417,7 @@
             if (timeLeft <= 0) {
                 clearInterval(cooldownTimer);
                 isCooldown = false;
-                currentEnergy = 50; // এনার্জি রিফিল বা চার্জ ফুল
+                currentEnergy = 50; 
 
                 tapBtn.disabled = false;
                 cooldownNotice.style.display = 'none';
@@ -362,7 +426,6 @@
         }, 1000);
     }
 
-    // ১০০০ AR Token এক্সচেঞ্জ করে ৫ টাকা নেওয়া
     function exchangeTokens() {
         if (arTokens < 1000) {
             alert('আপনার অ্যাকাউন্টে পর্যাপ্ত এআর টোকেন নেই! সর্বনিম্ন ১০০০ টোকেন প্রয়োজন।');
