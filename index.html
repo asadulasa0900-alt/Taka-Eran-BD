@@ -3,38 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>টাকা আনবিডি - Taka Earn BD</title>
+    <title>টাকা আনবিডি</title>
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <!-- Telegram WebApp SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
-        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 80px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 90px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
-        .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 5px; }
+        .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; }
         
-        /* 5 Pages Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 10px; font-weight: bold; color: #666; flex: 1; outline: none; }
+        /* Bottom Navigation Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 9999; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; color: #666; flex: 1; outline: none; }
         .nav-item.active { color: #28a745; }
         .nav-item div { font-size: 16px; margin-bottom: 2px; }
 
-        .app-page { display: none; }
-        .app-page.active { display: block; }
+        /* Page Display Control */
+        .page-box { display: none; }
+        .page-box.active-page { display: block; }
+
         .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
         .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
         .btn-success { background: #28a745; }
         .btn-warning { background: #ffc107; color: #000; }
         input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
-        
         .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; margin: 0 auto 10px; display: block; background: #ddd; }
-        .taptap-circle { width: 130px; height: 130px; background: linear-gradient(145deg, #28a745, #218838); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; margin: 15px auto; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); user-select: none; transition: transform 0.1s; }
-        .taptap-circle:active { transform: scale(0.95); }
-        .taptap-circle.disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        .taptap-circle { width: 130px; height: 130px; background: linear-gradient(145deg, #28a745, #218838); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; margin: 15px auto; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); user-select: none; }
         .task-proof-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 4px; margin-top: 8px; border: 1px solid #ddd; display: none; }
     </style>
 </head>
@@ -43,7 +40,7 @@
 <div class="container">
     <div class="header">
         <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
-        <p id="userEmailText" style="font-size: 12px;">User</p>
+        <p id="userNameText" style="font-size: 12px;">User</p>
     </div>
 
     <div class="balance-card">
@@ -52,56 +49,146 @@
         <div>স্পিন: <span id="spinLeft">3</span>টি</div>
     </div>
 
-    <!-- ================= PAGE 1: HOME ================= -->
-    <div id="page1" class="app-page active">
+    <!-- ================= পেজ ১: হোম পেজ ================= -->
+    <div id="page1" class="page-box active-page">
         <div class="card">
             <h4>চাকা ঘোরান (Spin & Win)</h4>
             <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
             <button class="btn btn-warning" onclick="spinWheel()">স্পিন করুন</button>
-            <hr style="margin: 10px 0;">
-            <p style="font-size: 12px;">স্পিন শেষ হলে ২টি অ্যাড দেখে ১টি স্পিন নিন:</p>
-            <button class="btn btn-success" onclick="unlockExtraSpin()">অ্যাড দেখে স্পিন নিন</button>
         </div>
-
         <div class="card">
             <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
-            <p>দেখা হয়েছে: <span id="adRound1Count">০</span>/১০</p>
-            <button class="btn" onclick="watchTimedAd(1)">অ্যাড দেখুন (১০ সে.)</button>
-        </div>
-
-        <div class="card" id="round2Card" style="background: #e9ecef;">
-            <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৫০)</h4>
-            <p id="round2StatusText" style="color: #d9534f; font-weight: bold; font-size: 12px;">প্রথম রাউন্ড শেষ করার ৩-৫ ঘণ্টা পর আনলক হবে</p>
-            <p>দেখা হয়েছে: <span id="adRound2Count">০</span>/১০</p>
-            <button class="btn btn-warning" id="round2Btn" onclick="watchTimedAd(2)" disabled style="opacity: 0.6;">অ্যাড দেখুন (লক আছে)</button>
+            <button class="btn" onclick="watchAd()">অ্যাড দেখুন (১০ সে.)</button>
         </div>
     </div>
 
-    <!-- ================= PAGE 2: TASKS (YT, FB, TG, WA) ================= -->
-    <div id="page2" class="app-page">
+    <!-- ================= পেজ ২: সোশ্যাল টাস্ক পেজ ================= -->
+    <div id="page2" class="page-box">
         <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
-        
         <div class="card" style="text-align: left;">
-            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব সাবস্ক্রাইব (৳২.০০)</h4>
-            <p style="font-size: 12px; margin: 5px 0;">চ্যানেল সাবস্ক্রাইব করে স্ক্রিনশট দিন।</p>
-            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task1Count">0</span>/1000</p>
-            <input type="file" id="task1File" accept="image/*" onchange="previewImage(event, 'task1Preview')">
-            <img id="task1Preview" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask(1, 2.00, 'task1File', 'task1Preview')">কাজ জমা দিন</button>
+            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক / টেলিগ্রাম টাস্ক</h4>
+            <p style="font-size: 12px; margin: 5px 0;">স্ক্রিনশট প্রুফ আপলোড করুন:</p>
+            <input type="file" id="taskFile" accept="image/*" onchange="previewImg(event, 'previewBox')">
+            <img id="previewBox" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন (৳২.০০)</button>
         </div>
+    </div>
 
-        <div class="card" style="text-align: left;">
-            <h4 style="color: #3b5998; font-size: 14px;">👥 ফেসবুক পেজ লাইক (৳১.৫০)</h4>
-            <p style="font-size: 12px; margin: 5px 0;">পেজ লাইক দিয়ে স্ক্রিনশট দিন।</p>
-            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task2Count">0</span>/1000</p>
-            <input type="file" id="task2File" accept="image/*" onchange="previewImage(event, 'task2Preview')">
-            <img id="task2Preview" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask(2, 1.50, 'task2File', 'task2Preview')">কাজ জমা দিন</button>
+    <!-- ================= পেজ ৩: প্রোফাইল ও রেফার পেজ ================= -->
+    <div id="page3" class="page-box">
+        <div class="card">
+            <h4>ইউজার প্রোফাইল ও রেফারেন্স</h4>
+            <img id="profileImg" src="https://via.placeholder.com/80" class="profile-img">
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">ইউজার আইডি: <span id="uidText">---</span></p>
+            
+            <div style="text-align: left; font-size: 13px;">
+                <label>রেফার লিংক:</label>
+                <input type="text" id="referInput" readonly style="text-align: center; background: #eee;">
+                <button class="btn btn-success" onclick="copyRefer()">রেফার লিংক কপি করুন</button>
+                <p style="margin-top: 10px; font-size: 12px;">মোট রেফার: <span id="totalRefers">0</span> জন</p>
+            </div>
         </div>
+    </div>
 
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
+    <div id="page4" class="page-box">
+        <div class="card">
+            <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
+            <p style="font-size: 12px;">ট্যাপ করে টোকেন আয় করুন!</p>
+            <div class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
+            <p style="font-size: 13px; font-weight: bold;">টোকেন: <span id="tapTokenShow">0</span></p>
+            <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ করুন</button>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
+    <div id="page5" class="page-box">
         <div class="card" style="text-align: left;">
-            <h4 style="color: #0088cc; font-size: 14px;">✈️ টেলিগ্রাম জয়েন (৳১.০০)</h4>
-            <p style="font-size: 12px; margin: 5px 0;">চ্যানেলে জয়েন করে স্ক্রিনশট দিন।</p>
-            <p style="font-size: 11px; color: #666;">কমপ্লিট: <span id="task3Count">0</span>/1000</p>
-            <input type="file" id="task3File" accept="image/*" onchange="previewImage(event, 'task3Preview')">
-            <img id="task3
+            <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
+            <label style="font-size: 12px; font-weight: bold;">উইথড্র মাধ্যম:</label>
+            <select id="wMethod">
+                <option value="bkash">বিকাশ</option>
+                <option value="nagad">নগদ</option>
+                <option value="recharge">মোবাইল রিচার্জ</option>
+            </select>
+            <label style="font-size: 12px; font-weight: bold;">নম্বর:</label>
+            <input type="text" id="wAcc" placeholder="আপনার অ্যাকাউন্ট নম্বর">
+            <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
+
+    <!-- ================= বটম নেভিগেশন বার ================= -->
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab(1)"><div>🏠</div>হোম</button>
+        <button class="nav-item" onclick="switchTab(2)"><div>📋</div>টাস্ক</button>
+        <button class="nav-item" onclick="switchTab(3)"><div>👤</div>প্রোফাইল</button>
+        <button class="nav-item" onclick="switchTab(4)"><div>⚡</div>ট্যাপ</button>
+        <button class="nav-item" onclick="switchTab(5)"><div>💸</div>উইথড্র</button>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
+        authDomain: "taka-rane-bd.firebaseapp.com",
+        databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
+        projectId: "taka-rane-bd",
+        storageBucket: "taka-rane-bd.appspot.com",
+        messagingSenderId: "1017127718075",
+        appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.database();
+
+    let uid = localStorage.getItem('taka_uid');
+    if (!uid) {
+        uid = 'user_' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('taka_uid', uid);
+    }
+
+    document.getElementById('userNameText').innerText = "User_" + uid.substring(5, 10);
+    document.getElementById('uidText').innerText = uid;
+    document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
+
+    // পেজ পরিবর্তনের শতভাগ কার্যকরী ফাংশন
+    function switchTab(pageNo) {
+        // সব পেজ লুকিয়ে ফেলা
+        for (let i = 1; i <= 5; i++) {
+            const page = document.getElementById('page' + i);
+            if (page) {
+                page.classList.remove('active-page');
+            }
+        }
+
+        // কাঙ্ক্ষিত পেজটি দেখানো
+        const targetPage = document.getElementById('page' + pageNo);
+        if (targetPage) {
+            targetPage.classList.add('active-page');
+        }
+
+        // নেভিগেশন আইকনের একটিভ ক্লাস আপডেট করা
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach((item, idx) => {
+            if (idx + 1 === pageNo) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        window.scrollTo(0, 0);
+    }
+
+    db.ref('users/' + uid).on('value', snap => {
+        const d = snap.val() || {};
+        document.getElementById('userBalance').innerText = (d.balance || 0).toFixed(2);
+        document.getElementById('userToken').innerText = d.token || 0;
+        document.getElementById('tapTokenShow').innerText = d.token || 0;
+    });
+
+    function spinWheel() {
+        alert('স্পিন সফল হয়েছে!');
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {balance:0, token:0};
+            u.balance
