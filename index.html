@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>টাকা আনবিডি - Taka Earn BD</title>
-    <!-- Firebase SDKs -->
+    <!-- Firebase Realtime Database SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -38,15 +37,8 @@
 <body>
 
 <div class="container">
-    <!-- Loading Screen with Manual Force Login Button -->
-    <div id="authScreen" style="text-align:center; padding: 40px 20px;">
-        <div class="header"><h2>টাকা আনবিডি</h2><p>অটো লগইন হচ্ছে...</p></div>
-        <div style="font-size: 15px; color: #555; margin: 20px 0;">⏳ সার্ভারের সাথে সংযোগ স্থাপন করা হচ্ছে...</div>
-        <button class="btn btn-success" onclick="forceLogin()" style="margin-top: 20px;">সরাসরি প্রবেশ করুন (Force Enter)</button>
-    </div>
-
-    <!-- Main App Screen -->
-    <div id="appScreen" style="display:none;">
+    <!-- Main App Screen (Directly Loaded without any login screen) -->
+    <div id="appScreen">
         <div class="header">
             <h3>টাকা আনবিডি</h3>
             <p id="userEmailText">User</p>
@@ -106,4 +98,122 @@
                     <p style="font-size: 13px; margin: 5px 0;">চ্যানেল সাবস্ক্রাইব করে স্ক্রিনশট প্রুফ দিন।</p>
                     <p style="font-size: 12px; color: #666;">কমপ্লিট হয়েছে: <span id="task1Count">0</span>/1000 বার</p>
                     
-                    <input type="file" id="task1File" accept="image
+                    <input type="file" id="task1File" accept="image/*" onchange="previewImage(event, 'task1Preview')">
+                    <img id="task1Preview" class="task-proof-img" alt="Proof Preview">
+                    
+                    <button class="btn btn-warning" onclick="submitTask(1, 2.00, 'task1File', 'task1Preview')">কাজ জমা দিন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Hills Tab -->
+        <div id="hillsTab" class="tab-content">
+            <div class="card">
+                <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
+                <p>ট্যাপ করে টোকেন আয় করুন! (২৫ ও ৫০ ট্যাপে অ্যাড)</p>
+                <p style="font-size: 12px; color: #666; margin-top: 5px;">আজকের ট্যাপ: <span id="tapCountToday">0</span>/1000</p>
+                
+                <div id="tapButton" class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
+                
+                <p id="tapStatusText" style="font-weight: bold; color: #007bff; margin: 5px 0;">চার্জ ফুল আছে</p>
+                <div id="timerDisplay" style="color: #dc3545; font-weight: bold; font-size: 13px; margin-bottom: 5px;"></div>
+
+                <hr style="margin: 10px 0;">
+                <h5>টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</h5>
+                <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 5px;">এক্সচেঞ্জ করুন</button>
+            </div>
+        </div>
+
+        <!-- 4. AI Ludo Tab -->
+        <div id="ludoTab" class="tab-content">
+            <div class="card">
+                <h4>🎲 এআই বট লুডু যুদ্ধ</h4>
+                <p>এন্ট্রি ফি: <b>৳৫.০০</b> | জিতলে প্রাইজ: <b>৳৮.০০</b></p>
+                <button class="btn btn-warning" onclick="playAILudo()" style="margin-top: 15px;">লুডু খেলুন (৳৫ এন্ট্রি)</button>
+                <div id="ludoResult" style="margin-top: 15px; font-weight: bold; font-size: 14px;"></div>
+            </div>
+        </div>
+
+        <!-- 5. Refer Tab -->
+        <div id="referTab" class="tab-content">
+            <div class="card">
+                <h4>বন্ধুদের রেফার করুন</h4>
+                <p style="font-size: 13px; margin: 5px 0;">প্রতি রেফারে পাবেন ১০ টাকা বোনাস!</p>
+                <input type="text" id="referLinkInput" readonly style="text-align: center; background: #eee;">
+                <button class="btn btn-success" onclick="copyReferLink()">রেফার লিংক কপি করুন</button>
+                <p style="margin-top: 10px; font-size: 13px;">মোট রেফার: <span id="totalReferCount">0</span> জন</p>
+            </div>
+        </div>
+
+        <!-- 6. Withdraw Tab -->
+        <div id="withdrawTab" class="tab-content">
+            <div class="card" style="text-align: left;">
+                <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
+                <p style="font-size: 11px; color: #e74c3c; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। ১০ টাকা ফি কাটা হবে।</p>
+                
+                <label style="font-size: 12px; font-weight: bold;">উইথড্র মাধ্যম:</label>
+                <select id="withdrawMethod">
+                    <option value="bkash">বিকাশ</option>
+                    <option value="nagad">নগদ</option>
+                    <option value="recharge">মোবাইল রিচার্জ</option>
+                </select>
+
+                <label style="font-size: 12px; font-weight: bold;">টাকার পরিমাণ:</label>
+                <select id="withdrawAmount">
+                    <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
+                    <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
+                    <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
+                    <option value="510">৫১০ টাকা (পাবেন ৫০০ টাকা)</option>
+                    <option value="1010">১০১০ টাকা (পাবেন ১০০০ টাকা)</option>
+                </select>
+
+                <input type="text" id="withdrawAccount" placeholder="নম্বর দিন">
+                <button class="btn btn-success" onclick="requestWithdrawal()">উইথড্র রিকোয়েস্ট পাঠান</button>
+            </div>
+        </div>
+
+        <!-- 7. Profile Tab -->
+        <div id="profileTab" class="tab-content">
+            <div class="card">
+                <h4>ইউজার প্রোফাইল</h4>
+                <img id="profileDisplayImg" src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
+                
+                <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">ইউজার আইডি (UID): <span id="profileUidText" style="color: #007bff;">---</span></p>
+                
+                <div style="text-align: left; font-size: 13px; margin-top: 10px;">
+                    <label>প্রোফাইল ছবির লিংক:</label>
+                    <input type="text" id="inputProfileImg" placeholder="ছবির ডাইরেক্ট লিংক দিন">
+
+                    <label>বায়ো (Bio):</label>
+                    <textarea id="inputBio" placeholder="আপনার সম্পর্কে কিছু লিখুন..." rows="2"></textarea>
+
+                    <label>ব্যক্তিগত লিংক:</label>
+                    <input type="text" id="inputLink" placeholder="https://yourwebsite.com">
+
+                    <button class="btn btn-success" onclick="saveProfile()" style="margin-top: 5px;">প্রোফাইল আপডেট করুন</button>
+                </div>
+
+                <hr style="margin: 15px 0;">
+                
+                <div style="text-align: left; font-size: 13px; background: #e9ecef; padding: 10px; border-radius: 5px;">
+                    <p><b>মোট দেখা অ্যাড:</b> <span id="profileAdsCount">0</span> টি</p>
+                    <p style="margin-top: 5px;"><b>সম্পন্ন টাস্ক:</b> <span id="profileTasksCount">0</span> টি</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // -------------------------------------------------------------
+    // ⚙️ FIREBASE CONFIGURATION
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
+        authDomain: "taka-rane-bd.firebaseapp.com",
+        databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
+        projectId: "taka-rane-bd",
+        storageBucket: "taka-rane-bd.appspot.com",
+        messagingSenderId: "1017127718075",
+        appId: "1:10171277180
