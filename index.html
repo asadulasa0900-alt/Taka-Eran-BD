@@ -215,7 +215,7 @@
 
 <script>
     // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION (আপনার স্ক্রিনশটের আসল ডেটা দিয়ে যুক্ত)
+    // ⚙️ FIREBASE CONFIGURATION (সঠিক Web App কনফিগারেশন)
     // -------------------------------------------------------------
     const firebaseConfig = {
         apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
@@ -235,5 +235,57 @@
         "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
         "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
         "https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679",
-        "
-w
+        "https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927",
+        "https://auctionr.org/4/9f8700c4f7c49432643592c7afa8554f",
+        "https://auctionr.org/4/cbbcf8888f80dad51ee68b6825a71afd"
+    ];
+
+    function getRandomAdLink() {
+        return adLinks[Math.floor(Math.random() * adLinks.length)];
+    }
+
+    let currentUserUid = null;
+    let currentBalance = 0.00;
+    let currentToken = 0;
+    let spinLeft = 3;
+    let totalAdsWatched = 0;
+    let totalTasksCompleted = 0;
+    let totalRefers = 0;
+    
+    let round1Count = 0;
+    let round2Count = 0;
+    let round1FinishedTime = 0;
+    let round2FinishedTime = 0;
+
+    let sessionTapCount = 0; 
+    let totalDailyTaps = 0;   
+    let isRecharging = false; 
+
+    function login() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
+        auth.signInWithEmailAndPassword(email, pass)
+            .then(() => { triggerAutoAd(); })
+            .catch(err => alert("লগইন ব্যর্থ: " + err.message));
+    }
+
+    function register() {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
+        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
+        auth.createUserWithEmailAndPassword(email, pass)
+            .then(res => {
+                database.ref('users/' + res.user.uid).set({
+                    email: email,
+                    balance: 0.00,
+                    arToken: 0,
+                    spins: 3,
+                    adsWatched: 0,
+                    tasksCompleted: 0,
+                    refers: 0,
+                    dailyTaps: 0,
+                    round1Ads: 0,
+                    round2Ads: 0,
+                    round1Time: 0,
+                    round2Time: 
