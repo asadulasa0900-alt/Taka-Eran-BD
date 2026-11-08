@@ -216,10 +216,10 @@
 
 <script>
     // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION
+    // ⚙️ FIREBASE CONFIGURATION (এখানে সম্পূর্ণ API Key বসানো হয়েছে)
     // -------------------------------------------------------------
     const firebaseConfig = {
-        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W...", 
+        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
         authDomain: "taka-rane-bd.firebaseapp.com",
         databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
         projectId: "taka-rane-bd",
@@ -265,6 +265,7 @@
     function login() {
         const email = document.getElementById('authEmail').value;
         const pass = document.getElementById('authPass').value;
+        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
         auth.signInWithEmailAndPassword(email, pass)
             .then(() => { triggerAutoAd(); })
             .catch(err => alert("লগইন ব্যর্থ: " + err.message));
@@ -273,6 +274,7 @@
     function register() {
         const email = document.getElementById('authEmail').value;
         const pass = document.getElementById('authPass').value;
+        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
         auth.createUserWithEmailAndPassword(email, pass)
             .then(res => {
                 database.ref('users/' + res.user.uid).set({
@@ -349,7 +351,7 @@
 
             loadTaskCounts();
             triggerAutoAd();
-            setInterval(() => { triggerAutoAd(); }, 300000);
+            setInterval(() => { triggerAutoAd(); }, 300000)[span_0](start_span)[span_0](end_span);
 
         } else {
             document.getElementById('authScreen').style.display = 'block';
@@ -360,10 +362,11 @@
     function triggerAutoAd() {
         window.open(getRandomAdLink(), '_blank');
         totalAdsWatched++;
-        database.ref('users/' + currentUserUid).update({ adsWatched: totalAdsWatched });
+        if(currentUserUid) {
+            database.ref('users/' + currentUserUid).update({ adsWatched: totalAdsWatched });
+        }
     }
 
-    // 🕒 টাইম লজিক চেকার (রাউন্ড ২ এবং টাস্ক রিলোড)
     function checkAdAndTaskTimers() {
         const currentTime = Date.now();
         const threeHours = 3 * 60 * 60 * 1000;
@@ -374,7 +377,6 @@
         const round2Status = document.getElementById('round2StatusText');
         const taskLockNotice = document.getElementById('taskLockNotice');
 
-        // রাউন্ড ১ শেষ হলে ৩-৫ ঘণ্টা পর রাউন্ড ২ আনলক
         if (round1Count >= 10 && round1FinishedTime > 0) {
             let elapsedTime = currentTime - round1FinishedTime;
             if (elapsedTime >= threeHours && elapsedTime <= fiveHours) {
@@ -383,12 +385,10 @@
                 round2Status.innerText = "রাউন্ড ২ অ্যাড দেখার সময় হয়েছে!";
                 round2Status.style.color = "#28a745";
             } else if (elapsedTime > fiveHours && round2Count < 10) {
-                // সময় পার হয়ে গেলে রিসেট বা লক রাখতে পারেন
                 round2Status.innerText = "রাউন্ড ২ এর সময়সীমা পার হয়ে গেছে।";
             }
         }
 
-        // রাউন্ড ২ শেষ হওয়ার ৩-৪ ঘণ্টা পর টাস্ক ও পুরো সিস্টেম রিফ্রেশ
         if (round2Count >= 10 && round2FinishedTime > 0) {
             let elapsedRound2 = currentTime - round2FinishedTime;
             if (elapsedRound2 < threeHours) {
@@ -399,7 +399,6 @@
         }
     }
 
-    // টাইমড অ্যাড দেখার লজিক (১০ সেকেন্ড টাইমার)
     function watchTimedAd(round) {
         if (round === 1 && round1Count >= 10) { alert('রাউন্ড ১ এর ১০টি অ্যাড দেখা শেষ!'); return; }
         if (round === 2 && round2Count >= 10) { alert('রাউন্ড ২ এর ১০টি অ্যাড দেখা শেষ!'); return; }
@@ -598,4 +597,47 @@
                 currentBalance += 8.00;
                 totalTasksCompleted++;
                 database.ref('users/' + currentUserUid).update({ balance: currentBalance, tasksCompleted: totalTasksCompleted });
-                document.getElementById('ludoResult').innerHTML = "<span style='color:green;'>অভিন
+                document.getElementById('ludoResult').innerHTML = "<span style='color:green;'>অভিনন্দন! আপনি ৮ টাকা জিতেছেন!</span>";
+            }
+        }, 2500);
+    }
+
+    function copyReferLink() {
+        const copyText = document.getElementById('referLinkInput');
+        copyText.select();
+        document.execCommand('copy');
+        alert('রেফার লিংক কপি হয়েছে!');
+    }
+
+    function requestWithdrawal() {
+        const method = document.getElementById('withdrawMethod').value;
+        const amount = parseFloat(document.getElementById('withdrawAmount').value);
+        const account = document.getElementById('withdrawAccount').value;
+
+        if (totalRefers < 3 || totalAdsWatched < 120) {
+            alert(`শর্ত পূরণ হয়নি!\n* রেফার: ${totalRefers}/3\n* অ্যাড: ${totalAdsWatched}/120`);
+            return;
+        }
+        if (amount > currentBalance) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
+        if (!account || account.length < 11) { alert('সঠিক নম্বর দিন!'); return; }
+
+        let actualPayout = amount - 10;
+        database.ref('users/' + currentUserUid).update({ balance: currentBalance - amount });
+        database.ref('withdrawals').push({
+            uid: currentUserUid, email: document.getElementById('userEmailText').innerText,
+            method, requestedAmount: amount, fee: 10, payoutAmount: actualPayout, account, status: 'pending', timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).then(() => {
+            alert(`উইথড্র রিকোয়েস্ট সফল! ১০ টাকা ফি কেটে ৳${actualPayout} পাঠানো হবে।`);
+            document.getElementById('withdrawAccount').value = '';
+        });
+    }
+
+    function switchTab(tabId, event) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+</body>
+</html>
