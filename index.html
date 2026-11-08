@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>টাকা আনবিডি - Taka Earn BD</title>
-    <!-- Firebase Realtime Database SDK -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <!-- Telegram WebApp SDK -->
@@ -37,7 +37,6 @@
 <body>
 
 <div class="container">
-    <!-- Main App Screen (Directly Loaded without any login screen) -->
     <div id="appScreen">
         <div class="header">
             <h3>টাকা আনবিডি</h3>
@@ -72,14 +71,12 @@
                 <button class="btn btn-success" onclick="unlockExtraSpin()">অ্যাড দেখে স্পিন নিন (২টি অ্যাড)</button>
             </div>
 
-            <!-- রাউন্ড ১ অ্যাড -->
             <div class="card">
                 <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
                 <p>দেখা হয়েছে: <span id="adRound1Count">০</span>/১০</p>
                 <button class="btn" onclick="watchTimedAd(1)">অ্যাড দেখুন (১০ সে.)</button>
             </div>
 
-            <!-- রাউন্ড ২ অ্যাড -->
             <div class="card" id="round2Card" style="background: #e9ecef;">
                 <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৫০)</h4>
                 <p id="round2StatusText" style="color: #d9534f; font-weight: bold; font-size: 13px;">প্রথম রাউন্ড শেষ করার ৩-৫ ঘণ্টা পর আনলক হবে</p>
@@ -206,9 +203,6 @@
 </div>
 
 <script>
-    // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION
-    // -------------------------------------------------------------
     const firebaseConfig = {
         apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
         authDomain: "taka-rane-bd.firebaseapp.com",
@@ -216,4 +210,15 @@
         projectId: "taka-rane-bd",
         storageBucket: "taka-rane-bd.appspot.com",
         messagingSenderId: "1017127718075",
-        appId: "1:10171277180
+        appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+
+    const database = firebase.database();
+
+    const adLinks = [
+        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
+        "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
