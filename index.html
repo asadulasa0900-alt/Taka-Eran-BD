@@ -7,9 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind Siliguri', sans-serif; }
-        body { background-color: #0A0E1A; color: #E1E7EF; padding-bottom: 70px; max-width: 500px; margin: 0 auto; }
+        html, body { background-color: #0A0E1A !important; color: #E1E7EF; min-height: 100vh; }
+        body { padding-bottom: 70px; max-width: 500px; margin: 0 auto; }
         .header { background: #121829; padding: 15px; text-align: center; border-bottom: 1px solid #1E293B; font-size: 18px; font-weight: bold; color: #10B981; }
-        .page-content { padding: 15px; display: none; }
+        .page-content { padding: 15px; display: none; background-color: #0A0E1A; min-height: calc(100vh - 120px); }
         .page-content.active { display: block; }
         .card { background-color: #121829; border: 1px solid #1E293B; border-radius: 16px; padding: 15px; margin-bottom: 15px; }
         .balance-box { text-align: center; background: linear-gradient(135deg, #10B981, #059669); color: #fff; padding: 20px; border-radius: 16px; margin-bottom: 15px; }
@@ -38,7 +39,7 @@
         .task-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #0A0E1A; padding: 5px; border-radius: 12px; border: 1px solid #1E293B; }
         .task-tab-btn { flex: 1; padding: 8px 5px; font-size: 11px; font-weight: bold; background: transparent; border: none; color: #94A3B8; border-radius: 8px; cursor: pointer; text-align: center; }
         .task-tab-btn.active { background: #10B981; color: #fff; }
-        .task-category-content { display: none; }
+        .task-category-content { display: none; background-color: #0A0E1A; }
         .task-category-content.active { display: block; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #121829; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 8px 0; max-width: 500px; margin: 0 auto; z-index: 1000; }
@@ -153,7 +154,7 @@
 
             <div class="card" style="border: 1px dashed #10B981;">
                 <h5 style="color: #10B981; font-size: 14px; margin-bottom: 5px;">⭐ স্পেশাল অ্যাড অপশন</h5>
-                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 8px;">আজ দেখা: <span id="specialAdCount">0</span>/5 বার (প্রতি অ্যাড ৳১)</p>
+                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 8px;">আজ দেখা: <span id="specialAdCount">0</span>/3 বার (প্রতি অ্যাড ৳১)</p>
                 <button class="btn btn-ad" style="width: 100%;" onclick="watchSpecialAd('https://auctionr.org/4/9a5c7b554d5eb6baf0f960b61bcfc927')">স্পেশাল অ্যাড দেখুন</button>
             </div>
 
@@ -208,7 +209,7 @@
         <div id="page-games" class="page-content">
             <div class="card">
                 <div class="title">🎡 লাকি স্পিন (প্রতিদিন ৩টি)</div>
-                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 10px;">১টি স্পিন করতে আপনাকে টানা ২টি অ্যাডস্টার অ্যাড দেখতে হবে।</p>
+                <p style="font-size: 11px; color: #94A3B8; margin-bottom: 10px;">প্রতি স্পিনে পাবেন ৳০.৫০। ১টি স্পিন করতে আপনাকে টানা ২টি অ্যাড দেখতে হবে।</p>
                 <div class="game-box">
                     <p style="font-size: 13px; color: #10B981; font-weight: bold; margin-bottom: 8px;">আজকের অবশিষ্ট স্পিন: <span id="spinCountText">3</span>/3</p>
                     <p style="font-size: 12px; color: #F59E0B; margin-bottom: 12px;" id="spinAdProgressText">অ্যাড দেখার অগ্রগতি: 0/2</p>
@@ -307,7 +308,7 @@
                 <label style="font-size: 12px; color: #10B981; display: block; margin-bottom: 5px;">উইথড্র অ্যামাউন্ট সিলেক্ট করুন (১০ টাকা ফি সহ):</label>
                 <select id="payAmountSelect">
                     <option value="110">৳ ১১০ (উত্তোলন: ১০০ টাকা + ফি ১০ টাকা)</option>
-                    <option value="210">৳ ২শিরোনাম (উত্তোলন: ২০০ টাকা + ফি ১০ টাকা)</option>
+                    <option value="210">৳ ২১০ (উত্তোলন: ২০০ টাকা + ফি ১০ টাকা)</option>
                     <option value="310">৳ ৩১০ (উত্তোলন: ৩০০ টাকা + ফি ১০ টাকা)</option>
                     <option value="410">৳ ৪১০ (উত্তোলন: ৪০০ টাকা + ফি ১০ টাকা)</option>
                     <option value="510">৳ ৫১০ (উত্তোলন: ৫০০ টাকা + ফি ১০ টাকা)</option>
@@ -401,6 +402,11 @@
         let selectedTaskReward = 0;
         let uploadedProofImage = "";
 
+        // 🕒 অ্যাপে ঢোকার সাথে সাথে এবং প্রতি ৫ মিনিট পর পর অটো অ্যাড ওপেন হওয়ার ফাংশন
+        function triggerAutoAd() {
+            window.open('https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679', '_blank');
+        }
+
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const refBy = urlParams.get('ref');
@@ -408,7 +414,6 @@
                 localStorage.setItem('pendingRef', refBy);
             }
 
-            // ⏱️ স্প্ল্যাশ স্ক্রিন ২ সেকেন্ড দেখানোর পর সঠিকভাবে অ্যাপ কন্টেন্ট ওপেন হবে
             setTimeout(function() {
                 var splash = document.getElementById('splashScreen');
                 if(splash) {
@@ -416,11 +421,14 @@
                     setTimeout(function() {
                         splash.style.display = 'none';
 
-                        // চেক করা হচ্ছে ইউজার আগে থেকেই লগইন করা আছে কিনা
                         if(currentUserUid) {
                             database.ref('users/' + currentUserUid).once('value').then(function(snapshot) {
                                 if(snapshot.exists()) {
                                     loadUserData(currentUserUid);
+                                    // অ্যাপে ঢোকার সাথে সাথে প্রথম অটো অ্যাড
+                                    triggerAutoAd();
+                                    // প্রতি ৫ মিনিট (৩০০০০০ মিলিভিসেকেন্ড) পর পর অটো অ্যাড
+                                    setInterval(triggerAutoAd, 300000);
                                 } else {
                                     localStorage.removeItem('takaEranUserUid');
                                     document.getElementById('authContainer').style.display = 'block';
@@ -502,6 +510,8 @@
                     currentUserUid = uidKey;
                     alert('রেজিস্ট্রেশন সফল হয়েছে! আপনার ইউনিক ইউআইডি: ' + numericUid);
                     loadUserData(uidKey);
+                    triggerAutoAd();
+                    setInterval(triggerAutoAd, 300000);
                 } else {
                     alert('ত্রুটি: ' + error.message);
                 }
@@ -532,6 +542,8 @@
                     currentUserUid = foundKey;
                     alert('লগইন সফল হয়েছে!');
                     loadUserData(foundKey);
+                    triggerAutoAd();
+                    setInterval(triggerAutoAd, 300000);
                 } else {
                     alert('ভুল জিমেইল অথবা পাসওয়ার্ড!');
                 }
@@ -678,10 +690,10 @@
         function playSpinWheel() {
             if(currentSpinAdCount < 2) { alert('আগে ২টি অ্যাড দেখুন!'); return; }
 
-            var rewardArr = [0.50, 1.00, 1.50, 2.00];
-            var randomReward = rewardArr[Math.floor(Math.random() * rewardArr.length)];
+            // প্রতি স্পিনে ঠিক ৫০ পয়সা (৳০.৫০) রিওয়ার্ড
+            var fixedReward = 0.50;
 
-            currentBalance += randomReward;
+            currentBalance += fixedReward;
             dailySpinCount++;
             currentSpinAdCount = 0;
             var today = new Date().toDateString();
@@ -692,7 +704,7 @@
                 lastSpinDate: today
             }, function(err) {
                 if(!err) {
-                    alert('🎉 অভিনন্দন! স্পিন করে আপনি ৳' + randomReward.toFixed(2) + ' জিতে নিয়েছেন!');
+                    alert('🎉 অভিনন্দন! স্পিন করে আপনি ৳' + fixedReward.toFixed(2) + ' জিতে নিয়েছেন!');
                     updateSpinUI();
                 }
             });
@@ -814,7 +826,7 @@
         }
 
         function watchSpecialAd(adUrl) {
-            if(specialAdCount >= 5) { alert('আজকের জন্য ৫টি স্পেশাল অ্যাড দেখার লিমিট শেষ!'); return; }
+            if(specialAdCount >= 3) { alert('আজকের জন্য ৩টি স্পেশাল অ্যাড দেখার লিমিট শেষ!'); return; }
             specialAdCount++;
             window.open(adUrl, '_blank');
             addRewardDirect(1.00);
@@ -1044,7 +1056,7 @@
                     totalWithdrawn += amount;
                     database.ref('users/' + currentUserUid).update({ balance: currentBalance, totalWithdrawn: totalWithdrawn });
                     alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে! ১০ টাকা ফি কেটে আপনাকে ৳' + netReceive + ' প্রদান করা হবে।');
-                    document.getElementById('payAccount').value = '';
+                    document.getElementById('payAccount'.value) = '';
                 }
             });
         }
