@@ -10,16 +10,20 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding-bottom: 130px; }
+        body { background-color: #f4f6f9; color: #333; padding-bottom: 90px; }
         .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
         .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; }
         
         /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 50px; left: 0; width: 100%; background: #ffffff; border-top: 2px solid #28a745; display: flex; justify-content: space-around; padding: 12px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #555; flex: 1; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 2px solid #28a745; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #555; flex: 1; outline: none; }
         .nav-item.active { color: #28a745; font-size: 13px; }
-        .nav-item div { font-size: 20px; margin-bottom: 2px; }
+        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+
+        /* Page Display Management */
+        .app-page { display: none; }
+        .app-page.active-page { display: block; }
 
         .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
         .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
@@ -29,24 +33,24 @@
         .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; margin: 0 auto 10px; display: block; background: #ddd; }
         
         /* Live Spinning Wheel */
-        .wheel-container { position: relative; width: 160px; height: 160px; margin: 15px auto; }
+        .wheel-container { position: relative; width: 150px; height: 150px; margin: 15px auto; }
         .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #28a745; background: conic-gradient(#ffc107 0deg 90deg, #28a745 90deg 180deg, #007bff 180deg 270deg, #dc3545 270deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.15, 0.90, 0.15, 1); }
         .wheel-center { position: absolute; width: 35px; height: 35px; background: #fff; border-radius: 50%; border: 3px solid #333; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
         .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #333; z-index: 10; }
 
         /* 3D Press Effect for Tap-Tap Circle */
         .taptap-circle-3d { 
-            width: 140px; height: 140px; 
+            width: 130px; height: 130px; 
             background: linear-gradient(145deg, #28a745, #1e7e34); 
             color: white; border-radius: 50%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 18px; font-weight: bold; margin: 20px auto; cursor: pointer; 
-            box-shadow: 0 9px #1c6b2a, 0 15px 20px rgba(0,0,0,0.2); 
+            font-size: 16px; font-weight: bold; margin: 15px auto; cursor: pointer; 
+            box-shadow: 0 8px #1c6b2a, 0 12px 15px rgba(0,0,0,0.2); 
             user-select: none; transition: all 0.05s ease; 
         }
         .taptap-circle-3d:active { 
-            transform: translateY(6px); 
-            box-shadow: 0 3px #1c6b2a, 0 8px 10px rgba(0,0,0,0.2); 
+            transform: translateY(5px); 
+            box-shadow: 0 3px #1c6b2a, 0 6px 8px rgba(0,0,0,0.2); 
         }
     </style>
 </head>
@@ -64,17 +68,109 @@
         <div>স্পিন: <span id="spinLeft">3</span>টি</div>
     </div>
 
-    <!-- Dynamic Content Area -->
-    <div id="mainContent"></div>
+    <!-- ================= পেজ ১: হোম পেজ ================= -->
+    <div id="page1" class="app-page active-page">
+        <div class="card">
+            <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৪০)</h4>
+            <p>দেখা হয়েছে: <span id="ad1Show">0</span>/১০</p>
+            <button class="btn" onclick="watchHomeAd(1)">অ্যাড দেখুন (রাউন্ড ১)</button>
+        </div>
+        <div class="card">
+            <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৪০)</h4>
+            <p>দেখা হয়েছে: <span id="ad2Show">0</span>/১০</p>
+            <button class="btn btn-warning" onclick="watchHomeAd(2)">অ্যাড দেখুন (রাউন্ড ২)</button>
+        </div>
+        <div class="card">
+            <h4>🎁 ডেইলি চেকিং (৳১.০০)</h4>
+            <button class="btn btn-success" onclick="claimDailyCheckIn()">আজকের বোনাস নিন</button>
+        </div>
+        <div class="card">
+            <h4>⭐ স্পেশাল অ্যাড (৩টি অ্যাড দেখতে হবে)</h4>
+            <button class="btn btn-warning" onclick="watchSpecialAd()">স্পেশাল অ্যাড শুরু করুন</button>
+        </div>
+        <div class="card">
+            <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
+            <p>স্পিন বাকি: <span id="spinCountText">3</span>টি</p>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div class="wheel" id="liveWheel"><div class="wheel-center">SPIN</div></div>
+            </div>
+            <button class="btn btn-success" id="spinBtn" onclick="spinWheel()">স্পিন করুন</button>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ২: টাস্ক পেজ ================= -->
+    <div id="page2" class="app-page">
+        <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক টাস্ক (৳২.০০)</h4>
+            <input type="file" id="taskFile" accept="image/*">
+            <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন</button>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ৩: প্রোফাইল ও রেফার পেজ ================= -->
+    <div id="page3" class="app-page">
+        <div class="card">
+            <h4>ইউজার প্রোফাইল ও রেফার</h4>
+            <img src="https://via.placeholder.com/80" class="profile-img">
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">আইডি: <span id="uidDisplay" style="color: #007bff;">---</span></p>
+            <div style="text-align: left; font-size: 13px;">
+                <label>রেফার লিংক:</label>
+                <input type="text" id="referInput" readonly style="text-align: center; background: #eee;">
+                <button class="btn btn-success" onclick="copyRefer()">লিংক কপি</button>
+                <p style="margin-top: 8px; font-size: 12px;">মোট রেফার: <span id="refCountShow">0</span> জন | মোট অ্যাড: <span id="adCountShow">0</span> টি</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
+    <div id="page4" class="app-page">
+        <div class="card">
+            <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
+            <p style="font-size: 12px; margin-bottom: 5px;">ট্যাপ করে এআর টোকেন আয় করুন</p>
+            
+            <div class="taptap-circle-3d" onclick="handleTap()">
+                <span>TAP</span>
+                <span style="font-size: 11px; margin-top: 2px;">AR TOKEN</span>
+            </div>
+
+            <p style="font-size: 14px; font-weight: bold; margin-top: 8px;">এআর টোকেন: <span id="tapTokenShow">0</span></p>
+            <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</button>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
+    <div id="page5" class="app-page">
+        <div class="card" style="text-align: left;">
+            <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
+            <p style="font-size: 11px; color: #e74c3c; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
+            <label style="font-size: 12px; font-weight: bold;">মাধ্যম:</label>
+            <select id="wMethod">
+                <option value="bkash">বিকাশ</option>
+                <option value="nagad">নগদ</option>
+                <option value="recharge">মোবাইল রিচার্জ</option>
+            </select>
+            <label style="font-size: 12px; font-weight: bold;">পরিমাণ:</label>
+            <select id="wAmount">
+                <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
+                <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
+                <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
+            </select>
+            <label style="font-size: 12px; font-weight: bold;">নম্বর:</label>
+            <input type="text" id="wAcc" placeholder="আপনার নম্বর">
+            <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
 </div>
 
-<!-- Bottom Navigation Bar -->
+<!-- ================= বটম নেভিগেশন বার ================= -->
 <div class="bottom-nav">
-    <button class="nav-item active" id="nav1" onclick="loadPage(1)"><div>🏠</div>হোম</button>
-    <button class="nav-item" id="nav2" onclick="loadPage(2)"><div>📋</div>টাস্ক</button>
-    <button class="nav-item" id="nav3" onclick="loadPage(3)"><div>👤</div>প্রোফাইল</button>
-    <button class="nav-item" id="nav4" onclick="loadPage(4)"><div>⚡</div>ট্যাপ</button>
-    <button class="nav-item" id="nav5" onclick="loadPage(5)"><div>💸</div>উইথড্র</button>
+    <button class="nav-item active" id="nav1" onclick="switchPage(1)"><div>🏠</div>হোম</button>
+    <button class="nav-item" id="nav2" onclick="switchPage(2)"><div>📋</div>টাস্ক</button>
+    <button class="nav-item" id="nav3" onclick="switchPage(3)"><div>👤</div>প্রোফাইল</button>
+    <button class="nav-item" id="nav4" onclick="switchPage(4)"><div>⚡</div>ট্যাপ</button>
+    <button class="nav-item" id="nav5" onclick="switchPage(5)"><div>💸</div>উইথড্র</button>
 </div>
 
 <script>
@@ -108,6 +204,8 @@
     let currentDegree = 0;
 
     document.getElementById('userNameText').innerText = "User_" + uid.substring(5, 10);
+    document.getElementById('uidDisplay').innerText = uid;
+    document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
 
     const adLinks = [
         "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
@@ -115,75 +213,159 @@
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // অ্যাপসে ঢোকার সাথে সাথে অটোমেটিক অ্যাড শো করা এবং প্রতি ৫ মিনিট পর পর শো করার ফাংশন
-    function initAutoAds() {
-        // অ্যাপসে ঢোকার সাথে সাথে প্রথম অ্যাড
-        setTimeout(() => {
-            window.open(getRandomAd(), '_blank');
-        }, 1500); // ১.৫ সেকেন্ড পর পপ-আপ হবে
-
-        // প্রতি ৫ মিনিট (৩০০,০০০ মিলিভিসেকেন্ড) পর পর অটোমেটিক অ্যাড
-        setInterval(() => {
-            window.open(getRandomAd(), '_blank');
-        }, 300000); 
+    // স্থায়ী পেজ সুইচিং ফাংশন (কখনো আটকে থাকবে না)
+    function switchPage(pageNo) {
+        for(let i=1; i<=5; i++) {
+            document.getElementById('page' + i).classList.remove('active-page');
+            document.getElementById('nav' + i).classList.remove('active');
+        }
+        document.getElementById('page' + pageNo).classList.add('active-page');
+        document.getElementById('nav' + pageNo).classList.add('active');
+        window.scrollTo(0, 0);
     }
 
-    // অ্যাপ লোড হওয়ার সাথে অটো অ্যাড ফাংশন কল করা হলো
-    window.onload = function() {
-        initAutoAds();
-    };
+    // ফায়ারবেস ডেটা সিঙ্ক (UI রিসেট করবে না, শুধু টেক্সট আপডেট করবে)
+    db.ref('users/' + uid).on('value', snap => {
+        const d = snap.val() || {};
+        globalBalance = d.balance || 0.00;
+        globalToken = d.token || 0;
+        globalSpins = d.spins !== undefined ? d.spins : 3;
+        ad1Count = d.ad1Count || 0;
+        ad2Count = d.ad2Count || 0;
+        totalAdsWatched = d.adsWatched || 0;
+        totalRefers = d.refers || 0;
+        lastCheckInDate = d.lastCheckIn || "";
 
-    function loadPage(pageNo) {
-        for(let i=1; i<=5; i++) {
-            const navEl = document.getElementById('nav' + i);
-            if(navEl) navEl.classList.remove('active');
+        if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = globalBalance.toFixed(2);
+        if(document.getElementById('userToken')) document.getElementById('userToken').innerText = globalToken;
+        if(document.getElementById('spinCountText')) document.getElementById('spinCountText').innerText = globalSpins;
+        if(document.getElementById('spinLeft')) document.getElementById('spinLeft').innerText = globalSpins;
+        if(document.getElementById('ad1Show')) document.getElementById('ad1Show').innerText = ad1Count;
+        if(document.getElementById('ad2Show')) document.getElementById('ad2Show').innerText = ad2Count;
+        if(document.getElementById('refCountShow')) document.getElementById('refCountShow').innerText = totalRefers;
+        if(document.getElementById('adCountShow')) document.getElementById('adCountShow').innerText = totalAdsWatched;
+        if(document.getElementById('tapTokenShow')) document.getElementById('tapTokenShow').innerText = globalToken;
+    });
+
+    function watchHomeAd(round) {
+        if(round === 1 && ad1Count >= 10) { alert('রাউন্ড ১ এর ১০টি অ্যাড দেখা শেষ!'); return; }
+        if(round === 2 && ad2Count >= 10) { alert('রাউন্ড ২ এর ১০টি অ্যাড দেখা শেষ!'); return; }
+
+        window.open(getRandomAd(), '_blank');
+        setTimeout(() => {
+            globalBalance += 0.40;
+            totalAdsWatched++;
+            if(round === 1) ad1Count++; else ad2Count++;
+
+            db.ref('users/' + uid).update({
+                balance: globalBalance,
+                adsWatched: totalAdsWatched,
+                ad1Count: ad1Count,
+                ad2Count: ad2Count
+            });
+            alert('অ্যাড দেখার জন্য ৳০.৪০ যোগ হয়েছে!');
+        }, 5000);
+    }
+
+    function watchSpecialAd() {
+        alert('স্পেশাল অ্যাডের জন্য পরপর ৩টি অ্যাড দেখতে হবে। প্রথমটি খুলছে...');
+        window.open(getRandomAd(), '_blank');
+        setTimeout(() => {
+            alert('দ্বিতীয় অ্যাডটি খুলছে...');
+            window.open(getRandomAd(), '_blank');
+            setTimeout(() => {
+                alert('তৃতীয় ও শেষ অ্যাডটি খুলছে...');
+                window.open(getRandomAd(), '_blank');
+                setTimeout(() => {
+                    globalBalance += 1.50;
+                    totalAdsWatched += 3;
+                    db.ref('users/' + uid).update({ balance: globalBalance, adsWatched: totalAdsWatched });
+                    alert('অভিনন্দন! ৩টি স্পেশাল অ্যাড দেখার জন্য ৳১.৫০ যোগ হয়েছে।');
+                }, 4000);
+            }, 4000);
+        }, 4000);
+    }
+
+    function claimDailyCheckIn() {
+        const today = new Date().toDateString();
+        if(lastCheckInDate === today) {
+            alert('আজকের ডেইলি চেকিং করা হয়ে গেছে! আগামীকাল আবার চেষ্টা করুন।');
+            return;
         }
-        document.getElementById('nav' + pageNo).classList.add('active');
+        globalBalance += 1.00;
+        db.ref('users/' + uid).update({ balance: globalBalance, lastCheckIn: today });
+        alert('সফল! ডেইলি চেকিং থেকে ৳১.০০ যোগ হয়েছে।');
+    }
 
-        const contentDiv = document.getElementById('mainContent');
+    function spinWheel() {
+        if (globalSpins <= 0) { alert('আজকের ফ্রি স্পিন শেষ!'); return; }
+        const wheel = document.getElementById('liveWheel');
+        const spinBtn = document.getElementById('spinBtn');
+        if(!wheel) return;
 
-        if (pageNo === 1) {
-            contentDiv.innerHTML = `
-                <div class="card">
-                    <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৪০)</h4>
-                    <p>দেখা হয়েছে: <span id="ad1Show">${ad1Count}</span>/১০</p>
-                    <button class="btn" onclick="watchHomeAd(1)">অ্যাড দেখুন (রাউন্ড ১)</button>
-                </div>
-                <div class="card">
-                    <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৪০)</h4>
-                    <p>দেখা হয়েছে: <span id="ad2Show">${ad2Count}</span>/১০</p>
-                    <button class="btn btn-warning" onclick="watchHomeAd(2)">অ্যাড দেখুন (রাউন্ড ২)</button>
-                </div>
-                <div class="card">
-                    <h4>🎁 ডেইলি চেকিং (৳১.০০)</h4>
-                    <button class="btn btn-success" onclick="claimDailyCheckIn()">আজকের বোনাস নিন</button>
-                </div>
-                <div class="card">
-                    <h4>⭐ স্পেশাল অ্যাড (৩টি অ্যাড দেখতে হবে)</h4>
-                    <button class="btn btn-warning" onclick="watchSpecialAd()">স্পেশাল অ্যাড শুরু করুন</button>
-                </div>
-                <div class="card">
-                    <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
-                    <p>স্পিন বাকি: <span id="spinCountText">${globalSpins}</span>টি</p>
-                    <div class="wheel-container">
-                        <div class="wheel-pointer"></div>
-                        <div class="wheel" id="liveWheel"><div class="wheel-center">SPIN</div></div>
-                    </div>
-                    <button class="btn btn-success" id="spinBtn" onclick="spinWheel()">স্পিন করুন</button>
-                </div>
-            `;
-        } else if (pageNo === 2) {
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
-                <div class="card" style="text-align: left;">
-                    <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক টাস্ক (৳২.০০)</h4>
-                    <input type="file" id="taskFile" accept="image/*">
-                    <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন</button>
-                </div>
-            `;
-        } else if (pageNo === 3) {
-            contentDiv.innerHTML = `
-                <div class="card">
-                    <h4>ইউজার প্রোফাইল ও রেফার</h4>
-                    <img src="https://via.placeholder.com/80" class="profile-img">
-                    <p style="font-size: 13px
+        spinBtn.setAttribute('disabled', 'true');
+        currentDegree += Math.floor(Math.random() * 360) + 1440;
+        wheel.style.transform = `rotate(${currentDegree}deg)`;
+        globalSpins--;
+
+        setTimeout(() => {
+            globalBalance += 0.50;
+            db.ref('users/' + uid).update({ balance: globalBalance, spins: globalSpins });
+            alert('স্পিন সফল! ৳০.৫০ যোগ হয়েছে।');
+            spinBtn.removeAttribute('disabled');
+        }, 3000);
+    }
+
+    function submitTask() {
+        alert('টাস্ক সফলভাবে জমা হয়েছে!');
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {balance:0};
+            u.balance = (u.balance || 0) + 2.00;
+            return u;
+        });
+    }
+
+    function handleTap() {
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {token:0};
+            u.token = (u.token || 0) + 1;
+            return u;
+        });
+    }
+
+    function exchangeTokens() {
+        if(globalToken < 1000) { alert('কমপক্ষে ১০০০ এআর টোকেন লাগবে!'); return; }
+        let sets = Math.floor(globalToken / 1000);
+        globalToken -= (sets * 1000);
+        globalBalance += (sets * 5.00);
+        db.ref('users/' + uid).update({ token: globalToken, balance: globalBalance });
+        alert('এআর টোকেন সফলভাবে এক্সচেঞ্জ করে মূল ব্যালেন্সে যোগ করা হয়েছে!');
+    }
+
+    function copyRefer() {
+        const c = document.getElementById('referInput');
+        c.select();
+        document.execCommand('copy');
+        alert('রেফার লিংক কপি হয়েছে!');
+    }
+
+    function reqWithdraw() {
+        const amount = parseFloat(document.getElementById('wAmount').value);
+        const acc = document.getElementById('wAcc').value;
+
+        if (totalRefers < 3 || totalAdsWatched < 120) {
+            alert(`শর্ত পূরণ হয়নি!\n* শর্ত: অন্তত ৩টি রেফার (আপনার আছে: ${totalRefers})\n* শর্ত: অন্তত ১২০টি অ্যাড (আপনার আছে: ${totalAdsWatched})`);
+            return;
+        }
+        if (amount > globalBalance) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
+        if (!acc || acc.length < 11) { alert('সঠিক নম্বর দিন!'); return; }
+
+        let actualPayout = amount - 10;
+        globalBalance -= amount;
+        db.ref('users/' + uid).update({ balance: globalBalance });
+        alert(`উইথড্র রিকোয়েস্ট সফল! ১০ টাকা ফি কেটে ৳${actualPayout} পাঠানো হবে।`);
+        document.getElementById('wAcc').value = '';
+    }
+</script>
+</body>
+</html>
