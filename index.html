@@ -8,6 +8,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
@@ -36,13 +38,10 @@
 <body>
 
 <div class="container">
-    <!-- Auth Screen -->
-    <div id="authScreen">
-        <div class="header"><h2>টাকা আনবিডি</h2><p>লগইন বা রেজিস্ট্রেশন করুন</p></div>
-        <input type="email" id="authEmail" placeholder="জিমেইল এড্রেস">
-        <input type="password" id="authPass" placeholder="পাসওয়ার্ড">
-        <button class="btn btn-success" onclick="login()">লগইন করুন</button>
-        <button class="btn" onclick="register()" style="margin-top:8px;">নতুন অ্যাকাউন্ট খুলুন</button>
+    <!-- Loading / Auto Auth Screen -->
+    <div id="authScreen" style="text-align:center; padding: 50px 20px;">
+        <div class="header"><h2>টাকা আনবিডি</h2><p>অটো লগইন হচ্ছে, দয়া করে অপেক্ষা করুন...</p></div>
+        <div style="font-size: 16px; color: #555; margin-top: 20px;">⏳ আপনার অ্যাকাউন্ট প্রস্তুত করা হচ্ছে...</div>
     </div>
 
     <!-- Main App Screen -->
@@ -264,57 +263,59 @@
     let totalDailyTaps = 0;   
     let isRecharging = false; 
 
-    function login() {
-        const email = document.getElementById('authEmail').value.trim();
-        const pass = document.getElementById('authPass').value.trim();
-        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
-        
-        auth.signInWithEmailAndPassword(email, pass)
-            .then(() => {
-                alert('লগইন সফল হয়েছে!');
-            })
-            .catch(err => alert("লগইন ব্যর্থ: " + err.message));
-    }
-
-    function register() {
-        const email = document.getElementById('authEmail').value.trim();
-        const pass = document.getElementById('authPass').value.trim();
-        if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
-        
-        auth.createUserWithEmailAndPassword(email, pass)
-            .then(res => {
-                database.ref('users/' + res.user.uid).set({
-                    email: email,
-                    balance: 0.00,
-                    arToken: 0,
-                    spins: 3,
-                    adsWatched: 0,
-                    tasksCompleted: 0,
-                    refers: 0,
-                    dailyTaps: 0,
-                    round1Ads: 0,
-                    round2Ads: 0,
-                    round1Time: 0,
-                    round2Time: 0,
-                    profileImg: "",
-                    bio: "",
-                    userLink: ""
-                });
-                alert('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
-            })
-            .catch(err => alert("রেজিস্ট্রেশন ব্যর্থ: " + err.message));
-    }
+    // 🚀 অটো এনামাউস এবং টেলিগ্রাম ইন্টিগ্রেটেড লগইন
+    auth.signInAnonymously().catch(error => {
+        console.error("Auto Login Error: ", error);
+    });
 
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUserUid = user.uid;
             document.getElementById('authScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
-            document.getElementById('userEmailText').innerText = user.email;
-            
+
+            let displayName = "Telegram User";
+            let tgPhoto = "";
+
+            // টেলিগ্রাম থেকে ডাটা ফেচ করা
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
+                displayName = tgUser.first_name + (tgUser.last_name ? " " + tgUser.last_name : "") + " (TG)";
+                if (tgUser.photo_url) {
+                    tgPhoto = tgUser.photo_url;
+                }
+            } else {
+                displayName = "User_" + user.uid.substring(0, 6);
+            }
+
+            document.getElementById('userEmailText').innerText = displayName;
             document.getElementById('profileUidText').innerText = user.uid.substring(0, 8);
             document.getElementById('referLinkInput').value = `https://taka-earn-bd.web.app/?ref=${user.uid}`;
 
+            // ডাটাবেস চেক বা ক্রিয়েট করা
+            database.ref('users/' + user.uid).once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    database.ref('users/' + user.uid).set({
+                        name: displayName,
+                        balance: 0.00,
+                        arToken: 0,
+                        spins: 3,
+                        adsWatched: 0,
+                        tasksCompleted: 0,
+                        refers: 0,
+                        dailyTaps: 0,
+                        round1Ads: 0,
+                        round2Ads: 0,
+                        round1Time: 0,
+                        round2Time: 0,
+                        profileImg: tgPhoto,
+                        bio: "টাকা আনবিডি অ্যাপের একজন গর্বিত ব্যবহারকারী!",
+                        userLink: ""
+                    });
+                }
+            });
+
+            // রিয়েল-টাইম ডাটা সিঙ্ক
             database.ref('users/' + user.uid).on('value', snapshot => {
                 const data = snapshot.val();
                 if (data) {
@@ -348,4 +349,17 @@
 
                     if (data.profileImg) {
                         document.getElementById('profileDisplayImg').src = data.profileImg;
-                        document.getElementById('
+                        document.getElementById('inputProfileImg').value = data.profileImg;
+                    } else if (tgPhoto) {
+                        document.getElementById('profileDisplayImg').src = tgPhoto;
+                        document.getElementById('inputProfileImg').value = tgPhoto;
+                    }
+                    if (data.bio) document.getElementById('inputBio').value = data.bio;
+                    if (data.userLink) document.getElementById('inputLink').value = data.userLink;
+                }
+            });
+
+            loadTaskCounts();
+            triggerAutoAd();
+        } else {
+            
