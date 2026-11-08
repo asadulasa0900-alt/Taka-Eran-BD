@@ -10,20 +10,16 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; }
-        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 90px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        body { background-color: #f4f6f9; color: #333; padding-bottom: 130px; }
+        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
         .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; }
         
         /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 9999; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 11px; font-weight: bold; color: #666; flex: 1; outline: none; }
-        .nav-item.active { color: #28a745; }
-        .nav-item div { font-size: 16px; margin-bottom: 2px; }
-
-        /* Page Display Control */
-        .page-box { display: none; }
-        .page-box.active-page { display: block; }
+        .bottom-nav { position: fixed; bottom: 50px; left: 0; width: 100%; background: #ffffff; border-top: 2px solid #28a745; display: flex; justify-content: space-around; padding: 12px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #555; flex: 1; }
+        .nav-item.active { color: #28a745; font-size: 13px; }
+        .nav-item div { font-size: 20px; margin-bottom: 2px; }
 
         .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
         .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
@@ -32,7 +28,6 @@
         input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
         .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; margin: 0 auto 10px; display: block; background: #ddd; }
         .taptap-circle { width: 130px; height: 130px; background: linear-gradient(145deg, #28a745, #218838); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; margin: 15px auto; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); user-select: none; }
-        .task-proof-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 4px; margin-top: 8px; border: 1px solid #ddd; display: none; }
     </style>
 </head>
 <body>
@@ -49,82 +44,19 @@
         <div>স্পিন: <span id="spinLeft">3</span>টি</div>
     </div>
 
-    <!-- ================= পেজ ১: হোম পেজ ================= -->
-    <div id="page1" class="page-box active-page">
-        <div class="card">
-            <h4>চাকা ঘোরান (Spin & Win)</h4>
-            <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
-            <button class="btn btn-warning" onclick="spinWheel()">স্পিন করুন</button>
-        </div>
-        <div class="card">
-            <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
-            <button class="btn" onclick="watchAd()">অ্যাড দেখুন (১০ সে.)</button>
-        </div>
+    <!-- Dynamic Content Area -->
+    <div id="mainContent">
+        <!-- Default Home Content Loaded Here -->
     </div>
+</div>
 
-    <!-- ================= পেজ ২: সোশ্যাল টাস্ক পেজ ================= -->
-    <div id="page2" class="page-box">
-        <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
-        <div class="card" style="text-align: left;">
-            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক / টেলিগ্রাম টাস্ক</h4>
-            <p style="font-size: 12px; margin: 5px 0;">স্ক্রিনশট প্রুফ আপলোড করুন:</p>
-            <input type="file" id="taskFile" accept="image/*" onchange="previewImg(event, 'previewBox')">
-            <img id="previewBox" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন (৳২.০০)</button>
-        </div>
-    </div>
-
-    <!-- ================= পেজ ৩: প্রোফাইল ও রেফার পেজ ================= -->
-    <div id="page3" class="page-box">
-        <div class="card">
-            <h4>ইউজার প্রোফাইল ও রেফারেন্স</h4>
-            <img id="profileImg" src="https://via.placeholder.com/80" class="profile-img">
-            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">ইউজার আইডি: <span id="uidText">---</span></p>
-            
-            <div style="text-align: left; font-size: 13px;">
-                <label>রেফার লিংক:</label>
-                <input type="text" id="referInput" readonly style="text-align: center; background: #eee;">
-                <button class="btn btn-success" onclick="copyRefer()">রেফার লিংক কপি করুন</button>
-                <p style="margin-top: 10px; font-size: 12px;">মোট রেফার: <span id="totalRefers">0</span> জন</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
-    <div id="page4" class="page-box">
-        <div class="card">
-            <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
-            <p style="font-size: 12px;">ট্যাপ করে টোকেন আয় করুন!</p>
-            <div class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
-            <p style="font-size: 13px; font-weight: bold;">টোকেন: <span id="tapTokenShow">0</span></p>
-            <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ করুন</button>
-        </div>
-    </div>
-
-    <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
-    <div id="page5" class="page-box">
-        <div class="card" style="text-align: left;">
-            <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
-            <label style="font-size: 12px; font-weight: bold;">উইথড্র মাধ্যম:</label>
-            <select id="wMethod">
-                <option value="bkash">বিকাশ</option>
-                <option value="nagad">নগদ</option>
-                <option value="recharge">মোবাইল রিচার্জ</option>
-            </select>
-            <label style="font-size: 12px; font-weight: bold;">নম্বর:</label>
-            <input type="text" id="wAcc" placeholder="আপনার অ্যাকাউন্ট নম্বর">
-            <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
-        </div>
-    </div>
-
-    <!-- ================= বটম নেভিগেশন বার ================= -->
-    <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab(1)"><div>🏠</div>হোম</button>
-        <button class="nav-item" onclick="switchTab(2)"><div>📋</div>টাস্ক</button>
-        <button class="nav-item" onclick="switchTab(3)"><div>👤</div>প্রোফাইল</button>
-        <button class="nav-item" onclick="switchTab(4)"><div>⚡</div>ট্যাপ</button>
-        <button class="nav-item" onclick="switchTab(5)"><div>💸</div>উইথড্র</button>
-    </div>
+<!-- Bottom Navigation Bar -->
+<div class="bottom-nav">
+    <button class="nav-item active" id="nav1" onclick="loadPage(1)"><div>🏠</div>হোম</button>
+    <button class="nav-item" id="nav2" onclick="loadPage(2)"><div>📋</div>টাস্ক</button>
+    <button class="nav-item" id="nav3" onclick="loadPage(3)"><div>👤</div>প্রোফাইল</button>
+    <button class="nav-item" id="nav4" onclick="loadPage(4)"><div>⚡</div>ট্যাপ</button>
+    <button class="nav-item" id="nav5" onclick="loadPage(5)"><div>💸</div>উইথড্র</button>
 </div>
 
 <script>
@@ -148,47 +80,143 @@
     }
 
     document.getElementById('userNameText').innerText = "User_" + uid.substring(5, 10);
-    document.getElementById('uidText').innerText = uid;
-    document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
 
-    // পেজ পরিবর্তনের শতভাগ কার্যকরী ফাংশন
-    function switchTab(pageNo) {
-        // সব পেজ লুকিয়ে ফেলা
-        for (let i = 1; i <= 5; i++) {
-            const page = document.getElementById('page' + i);
-            if (page) {
-                page.classList.remove('active-page');
-            }
+    // পেজ রেন্ডার করার ডাইনামিক ইঞ্জিন (টেলিগ্রাম ও অ্যাপস ফ্রেন্ডলি)
+    function loadPage(pageNo) {
+        // ন্যাভিগেশন একটিভ ক্লাস আপডেট
+        for(let i=1; i<=5; i++) {
+            document.getElementById('nav' + i).classList.remove('active');
         }
+        document.getElementById('nav' + pageNo).classList.add('active');
 
-        // কাঙ্ক্ষিত পেজটি দেখানো
-        const targetPage = document.getElementById('page' + pageNo);
-        if (targetPage) {
-            targetPage.classList.add('active-page');
+        const contentDiv = document.getElementById('mainContent');
+
+        if (pageNo === 1) {
+            contentDiv.innerHTML = `
+                <div class="card">
+                    <h4>চাকা ঘোরান (Spin & Win)</h4>
+                    <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
+                    <button class="btn btn-warning" onclick="spinWheel()">স্পিন করুন</button>
+                </div>
+                <div class="card">
+                    <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
+                    <button class="btn" onclick="watchAd()">অ্যাড দেখুন (১০ সে.)</button>
+                </div>
+            `;
+        } else if (pageNo === 2) {
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
+                <div class="card" style="text-align: left;">
+                    <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক / টেলিগ্রাম টাস্ক</h4>
+                    <p style="font-size: 12px; margin: 5px 0;">স্ক্রিনশট প্রুফ আপলোড করুন:</p>
+                    <input type="file" id="taskFile" accept="image/*">
+                    <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন (৳২.০০)</button>
+                </div>
+            `;
+        } else if (pageNo === 3) {
+            contentDiv.innerHTML = `
+                <div class="card">
+                    <h4>ইউজার প্রোফাইল ও রেফারেন্স</h4>
+                    <img src="https://via.placeholder.com/80" class="profile-img">
+                    <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">ইউজার আইডি: <span style="color: #007bff;">${uid}</span></p>
+                    <div style="text-align: left; font-size: 13px;">
+                        <label>রেফার লিংক:</label>
+                        <input type="text" id="referInput" value="https://taka-earn-bd.web.app/?ref=${uid}" readonly style="text-align: center; background: #eee;">
+                        <button class="btn btn-success" onclick="copyRefer()">রেফার লিংক কপি করুন</button>
+                    </div>
+                </div>
+            `;
+        } else if (pageNo === 4) {
+            contentDiv.innerHTML = `
+                <div class="card">
+                    <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
+                    <p style="font-size: 12px;">ট্যাপ করে টোকেন আয় করুন!</p>
+                    <div class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
+                    <p style="font-size: 13px; font-weight: bold;">টোকেন: <span id="tapTokenShow">0</span></p>
+                    <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ করুন</button>
+                </div>
+            `;
+        } else if (pageNo === 5) {
+            contentDiv.innerHTML = `
+                <div class="card" style="text-align: left;">
+                    <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
+                    <label style="font-size: 12px; font-weight: bold;">উইথড্র মাধ্যম:</label>
+                    <select id="wMethod">
+                        <option value="bkash">বিকাশ</option>
+                        <option value="nagad">নগদ</option>
+                        <option value="recharge">মোবাইল রিচার্জ</option>
+                    </select>
+                    <label style="font-size: 12px; font-weight: bold;">নম্বর:</label>
+                    <input type="text" id="wAcc" placeholder="আপনার অ্যাকাউন্ট নম্বর">
+                    <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+                </div>
+            `;
         }
-
-        // নেভিগেশন আইকনের একটিভ ক্লাস আপডেট করা
-        const items = document.querySelectorAll('.nav-item');
-        items.forEach((item, idx) => {
-            if (idx + 1 === pageNo) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
-
         window.scrollTo(0, 0);
     }
+
+    // প্রথম লোডে হোম পেজ কল করা
+    loadPage(1);
 
     db.ref('users/' + uid).on('value', snap => {
         const d = snap.val() || {};
         document.getElementById('userBalance').innerText = (d.balance || 0).toFixed(2);
         document.getElementById('userToken').innerText = d.token || 0;
-        document.getElementById('tapTokenShow').innerText = d.token || 0;
+        const tapShow = document.getElementById('tapTokenShow');
+        if(tapShow) tapShow.innerText = d.token || 0;
     });
 
     function spinWheel() {
         alert('স্পিন সফল হয়েছে!');
         db.ref('users/' + uid).transaction(u => {
             u = u || {balance:0, token:0};
-            u.balance
+            u.balance = (u.balance || 0) + 1.00;
+            return u;
+        });
+    }
+
+    function watchAd() {
+        window.open("https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91", "_blank");
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {balance:0, token:0};
+            u.balance = (u.balance || 0) + 0.50;
+            return u;
+        });
+    }
+
+    function submitTask() {
+        alert('টাস্ক সফলভাবে জমা হয়েছে!');
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {balance:0, token:0};
+            u.balance = (u.balance || 0) + 2.00;
+            return u;
+        });
+    }
+
+    function handleTap() {
+        db.ref('users/' + uid).transaction(u => {
+            u = u || {balance:0, token:0};
+            u.token = (u.token || 0) + 1;
+            return u;
+        });
+    }
+
+    function exchangeTokens() {
+        alert('টোকেন এক্সচেঞ্জ সফল!');
+    }
+
+    function copyRefer() {
+        const c = document.getElementById('referInput');
+        c.select();
+        document.execCommand('copy');
+        alert('রেফার লিংক কপি হয়েছে!');
+    }
+
+    function reqWithdraw() {
+        const acc = document.getElementById('wAcc').value;
+        if(!acc || acc.length < 11) { alert('সঠিক নম্বর দিন!'); return; }
+        alert('উইথড্র রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!');
+    }
+</script>
+</body>
+</html>
