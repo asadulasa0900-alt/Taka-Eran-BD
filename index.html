@@ -13,12 +13,16 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
-        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { background: #28a745; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 15px; }
-        .balance-card { background: #e9ecef; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 5px; }
-        .nav-tabs { display: flex; justify-content: space-around; margin-bottom: 15px; background: #eee; padding: 5px; border-radius: 5px; flex-wrap: wrap; gap: 4px; }
-        .tab-btn { border: none; background: none; padding: 7px 6px; cursor: pointer; font-weight: bold; font-size: 11px; }
-        .tab-btn.active { background: #28a745; color: white; border-radius: 5px; }
+        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; padding-bottom: 70px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
+        .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 5px; }
+        
+        /* Bottom Navigation Bar for 5 Pages */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 10px; font-weight: bold; color: #666; flex: 1; }
+        .nav-item.active { color: #28a745; }
+        .nav-item div { font-size: 16px; margin-bottom: 2px; }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
@@ -37,188 +41,46 @@
 <body>
 
 <div class="container">
-    <div id="appScreen">
-        <div class="header">
-            <h3>টাকা আনবিডি</h3>
-            <p id="userEmailText">User</p>
-        </div>
-
-        <div class="balance-card">
-            <div>টাকা: ৳<span id="userBalance">0.00</span></div>
-            <div>টোকেন: <span id="userToken">0</span></div>
-            <div>স্পিন: <span id="spinLeft">3</span>টি</div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('spinTab', event)">স্পিন ও অ্যাড</button>
-            <button class="tab-btn" onclick="switchTab('taskTab', event)">টাস্ক</button>
-            <button class="tab-btn" onclick="switchTab('hillsTab', event)">হিলস</button>
-            <button class="tab-btn" onclick="switchTab('ludoTab', event)">লুডু</button>
-            <button class="tab-btn" onclick="switchTab('referTab', event)">রেফার</button>
-            <button class="tab-btn" onclick="switchTab('withdrawTab', event)">উইথড্র</button>
-            <button class="tab-btn" onclick="switchTab('profileTab', event)">প্রোফাইল</button>
-        </div>
-
-        <!-- 1. Spin & Timed Ads Tab -->
-        <div id="spinTab" class="tab-content active">
-            <div class="card">
-                <h4>চাকা ঘোরান (Spin & Win)</h4>
-                <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
-                <button class="btn btn-warning" onclick="spinWheel()">স্পিন করুন</button>
-                <hr style="margin: 10px 0;">
-                <p style="font-size: 13px;">স্পিন শেষ হলে ২টি অ্যাড দেখে ১টি স্পিন আনলক করুন:</p>
-                <button class="btn btn-success" onclick="unlockExtraSpin()">অ্যাড দেখে স্পিন নিন (২টি অ্যাড)</button>
-            </div>
-
-            <div class="card">
-                <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
-                <p>দেখা হয়েছে: <span id="adRound1Count">০</span>/১০</p>
-                <button class="btn" onclick="watchTimedAd(1)">অ্যাড দেখুন (১০ সে.)</button>
-            </div>
-
-            <div class="card" id="round2Card" style="background: #e9ecef;">
-                <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৫০)</h4>
-                <p id="round2StatusText" style="color: #d9534f; font-weight: bold; font-size: 13px;">প্রথম রাউন্ড শেষ করার ৩-৫ ঘণ্টা পর আনলক হবে</p>
-                <p>দেখা হয়েছে: <span id="adRound2Count">০</span>/১০</p>
-                <button class="btn btn-warning" id="round2Btn" onclick="watchTimedAd(2)" disabled style="opacity: 0.6;">অ্যাড দেখুন (লক আছে)</button>
-            </div>
-        </div>
-
-        <!-- 2. Dynamic Tasks Tab -->
-        <div id="taskTab" class="tab-content">
-            <h4>উপলব্ধ টাস্কসমূহ</h4>
-            <div id="taskLockNotice" style="color: #d9534f; font-weight: bold; font-size: 12px; margin-bottom: 10px; text-align: center;"></div>
-            <div id="taskList" style="margin-top:10px;">
-                <div class="card" style="text-align: left;">
-                    <h4 style="color: #28a745;">ইউটিউব চ্যানেল সাবস্ক্রাইব (৳২.০০)</h4>
-                    <p style="font-size: 13px; margin: 5px 0;">চ্যানেল সাবস্ক্রাইব করে স্ক্রিনশট প্রুফ দিন।</p>
-                    <p style="font-size: 12px; color: #666;">কমপ্লিট হয়েছে: <span id="task1Count">0</span>/1000 বার</p>
-                    
-                    <input type="file" id="task1File" accept="image/*" onchange="previewImage(event, 'task1Preview')">
-                    <img id="task1Preview" class="task-proof-img" alt="Proof Preview">
-                    
-                    <button class="btn btn-warning" onclick="submitTask(1, 2.00, 'task1File', 'task1Preview')">কাজ জমা দিন</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Hills Tab -->
-        <div id="hillsTab" class="tab-content">
-            <div class="card">
-                <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
-                <p>ট্যাপ করে টোকেন আয় করুন! (২৫ ও ৫০ ট্যাপে অ্যাড)</p>
-                <p style="font-size: 12px; color: #666; margin-top: 5px;">আজকের ট্যাপ: <span id="tapCountToday">0</span>/1000</p>
-                
-                <div id="tapButton" class="taptap-circle" onclick="handleTap()">ট্যাপ করুন</div>
-                
-                <p id="tapStatusText" style="font-weight: bold; color: #007bff; margin: 5px 0;">চার্জ ফুল আছে</p>
-                <div id="timerDisplay" style="color: #dc3545; font-weight: bold; font-size: 13px; margin-bottom: 5px;"></div>
-
-                <hr style="margin: 10px 0;">
-                <h5>টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</h5>
-                <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 5px;">এক্সচেঞ্জ করুন</button>
-            </div>
-        </div>
-
-        <!-- 4. AI Ludo Tab -->
-        <div id="ludoTab" class="tab-content">
-            <div class="card">
-                <h4>🎲 এআই বট লুডু যুদ্ধ</h4>
-                <p>এন্ট্রি ফি: <b>৳৫.০০</b> | জিতলে প্রাইজ: <b>৳৮.০০</b></p>
-                <button class="btn btn-warning" onclick="playAILudo()" style="margin-top: 15px;">লুডু খেলুন (৳৫ এন্ট্রি)</button>
-                <div id="ludoResult" style="margin-top: 15px; font-weight: bold; font-size: 14px;"></div>
-            </div>
-        </div>
-
-        <!-- 5. Refer Tab -->
-        <div id="referTab" class="tab-content">
-            <div class="card">
-                <h4>বন্ধুদের রেফার করুন</h4>
-                <p style="font-size: 13px; margin: 5px 0;">প্রতি রেফারে পাবেন ১০ টাকা বোনাস!</p>
-                <input type="text" id="referLinkInput" readonly style="text-align: center; background: #eee;">
-                <button class="btn btn-success" onclick="copyReferLink()">রেফার লিংক কপি করুন</button>
-                <p style="margin-top: 10px; font-size: 13px;">মোট রেফার: <span id="totalReferCount">0</span> জন</p>
-            </div>
-        </div>
-
-        <!-- 6. Withdraw Tab -->
-        <div id="withdrawTab" class="tab-content">
-            <div class="card" style="text-align: left;">
-                <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
-                <p style="font-size: 11px; color: #e74c3c; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। ১০ টাকা ফি কাটা হবে।</p>
-                
-                <label style="font-size: 12px; font-weight: bold;">উইথড্র মাধ্যম:</label>
-                <select id="withdrawMethod">
-                    <option value="bkash">বিকাশ</option>
-                    <option value="nagad">নগদ</option>
-                    <option value="recharge">মোবাইল রিচার্জ</option>
-                </select>
-
-                <label style="font-size: 12px; font-weight: bold;">টাকার পরিমাণ:</label>
-                <select id="withdrawAmount">
-                    <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
-                    <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
-                    <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
-                    <option value="510">৫১০ টাকা (পাবেন ৫০০ টাকা)</option>
-                    <option value="1010">১০১০ টাকা (পাবেন ১০০০ টাকা)</option>
-                </select>
-
-                <input type="text" id="withdrawAccount" placeholder="নম্বর দিন">
-                <button class="btn btn-success" onclick="requestWithdrawal()">উইথড্র রিকোয়েস্ট পাঠান</button>
-            </div>
-        </div>
-
-        <!-- 7. Profile Tab -->
-        <div id="profileTab" class="tab-content">
-            <div class="card">
-                <h4>ইউজার প্রোফাইল</h4>
-                <img id="profileDisplayImg" src="https://via.placeholder.com/80" alt="Profile" class="profile-img">
-                
-                <p style="font-size: 13px; font-weight: bold; margin-bottom: 5px;">ইউজার আইডি (UID): <span id="profileUidText" style="color: #007bff;">---</span></p>
-                
-                <div style="text-align: left; font-size: 13px; margin-top: 10px;">
-                    <label>প্রোফাইল ছবির লিংক:</label>
-                    <input type="text" id="inputProfileImg" placeholder="ছবির ডাইরেক্ট লিংক দিন">
-
-                    <label>বায়ো (Bio):</label>
-                    <textarea id="inputBio" placeholder="আপনার সম্পর্কে কিছু লিখুন..." rows="2"></textarea>
-
-                    <label>ব্যক্তিগত লিংক:</label>
-                    <input type="text" id="inputLink" placeholder="https://yourwebsite.com">
-
-                    <button class="btn btn-success" onclick="saveProfile()" style="margin-top: 5px;">প্রোফাইল আপডেট করুন</button>
-                </div>
-
-                <hr style="margin: 15px 0;">
-                
-                <div style="text-align: left; font-size: 13px; background: #e9ecef; padding: 10px; border-radius: 5px;">
-                    <p><b>মোট দেখা অ্যাড:</b> <span id="profileAdsCount">0</span> টি</p>
-                    <p style="margin-top: 5px;"><b>সম্পন্ন টাস্ক:</b> <span id="profileTasksCount">0</span> টি</p>
-                </div>
-            </div>
-        </div>
-
+    <div class="header">
+        <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
+        <p id="userEmailText" style="font-size: 12px;">User</p>
     </div>
-</div>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
-        authDomain: "taka-rane-bd.firebaseapp.com",
-        databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
-        projectId: "taka-rane-bd",
-        storageBucket: "taka-rane-bd.appspot.com",
-        messagingSenderId: "1017127718075",
-        appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
-    };
+    <div class="balance-card">
+        <div>টাকা: ৳<span id="userBalance">0.00</span></div>
+        <div>টোকেন: <span id="userToken">0</span></div>
+        <div>স্পিন: <span id="spinLeft">3</span>টি</div>
+    </div>
 
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    <!-- ================= 1. HOME PAGE ================= -->
+    <div id="pageHome" class="tab-content active">
+        <div class="card">
+            <h4>চাকা ঘোরান (Spin & Win)</h4>
+            <p>দৈনিক স্পিন বাকি: <span id="spinCountText">3</span>/3</p>
+            <button class="btn btn-warning" onclick="spinWheel()">স্পিন করুন</button>
+            <hr style="margin: 10px 0;">
+            <p style="font-size: 12px;">স্পিন শেষ হলে ২টি অ্যাড দেখে ১টি স্পিন নিন:</p>
+            <button class="btn btn-success" onclick="unlockExtraSpin()">অ্যাড দেখে স্পিন নিন</button>
+        </div>
 
-    const database = firebase.database();
+        <div class="card">
+            <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৫০)</h4>
+            <p>দেখা হয়েছে: <span id="adRound1Count">০</span>/১০</p>
+            <button class="btn" onclick="watchTimedAd(1)">অ্যাড দেখুন (১০ সে.)</button>
+        </div>
 
-    const adLinks = [
-        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
-        "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
+        <div class="card" id="round2Card" style="background: #e9ecef;">
+            <h4>স্কয়ার অ্যাড রাউন্ড ২ (৳০.৫০)</h4>
+            <p id="round2StatusText" style="color: #d9534f; font-weight: bold; font-size: 12px;">প্রথম রাউন্ড শেষ করার ৩-৫ ঘণ্টা পর আনলক হবে</p>
+            <p>দেখা হয়েছে: <span id="adRound2Count">০</span>/১০</p>
+            <button class="btn btn-warning" id="round2Btn" onclick="watchTimedAd(2)" disabled style="opacity: 0.6;">অ্যাড দেখুন (লক আছে)</button>
+        </div>
+    </div>
+
+    <!-- ================= 2. TASKS PAGE (YT, FB, TG, WA) ================= -->
+    <div id="pageTasks" class="tab-content">
+        <h4 style="margin-bottom: 10px;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
+        
+        <!-- YouTube Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব সাব
