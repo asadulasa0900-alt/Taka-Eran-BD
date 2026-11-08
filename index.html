@@ -215,7 +215,7 @@
 
 <script>
     // -------------------------------------------------------------
-    // ⚙️ FIREBASE CONFIGURATION (সঠিক Web App কনফিগারেশন)
+    // ⚙️ FIREBASE CONFIGURATION
     // -------------------------------------------------------------
     const firebaseConfig = {
         apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
@@ -226,7 +226,10 @@
         messagingSenderId: "1017127718075",
         appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
     };
-    firebase.initializeApp(firebaseConfig);
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
 
     const auth = firebase.auth();
     const database = firebase.database();
@@ -262,18 +265,22 @@
     let isRecharging = false; 
 
     function login() {
-        const email = document.getElementById('authEmail').value;
-        const pass = document.getElementById('authPass').value;
+        const email = document.getElementById('authEmail').value.trim();
+        const pass = document.getElementById('authPass').value.trim();
         if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
+        
         auth.signInWithEmailAndPassword(email, pass)
-            .then(() => { triggerAutoAd(); })
+            .then(() => {
+                alert('লগইন সফল হয়েছে!');
+            })
             .catch(err => alert("লগইন ব্যর্থ: " + err.message));
     }
 
     function register() {
-        const email = document.getElementById('authEmail').value;
-        const pass = document.getElementById('authPass').value;
+        const email = document.getElementById('authEmail').value.trim();
+        const pass = document.getElementById('authPass').value.trim();
         if(!email || !pass) { alert('ইমেইল এবং পাসওয়ার্ড দিন!'); return; }
+        
         auth.createUserWithEmailAndPassword(email, pass)
             .then(res => {
                 database.ref('users/' + res.user.uid).set({
@@ -288,4 +295,57 @@
                     round1Ads: 0,
                     round2Ads: 0,
                     round1Time: 0,
-                    round2Time: 
+                    round2Time: 0,
+                    profileImg: "",
+                    bio: "",
+                    userLink: ""
+                });
+                alert('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
+            })
+            .catch(err => alert("রেজিস্ট্রেশন ব্যর্থ: " + err.message));
+    }
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUserUid = user.uid;
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            document.getElementById('userEmailText').innerText = user.email;
+            
+            document.getElementById('profileUidText').innerText = user.uid.substring(0, 8);
+            document.getElementById('referLinkInput').value = `https://taka-earn-bd.web.app/?ref=${user.uid}`;
+
+            database.ref('users/' + user.uid).on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    currentBalance = data.balance || 0.00;
+                    currentToken = data.arToken || 0;
+                    spinLeft = data.spins !== undefined ? data.spins : 3;
+                    totalAdsWatched = data.adsWatched || 0;
+                    totalTasksCompleted = data.tasksCompleted || 0;
+                    totalRefers = data.refers || 0;
+                    totalDailyTaps = data.dailyTaps || 0;
+                    
+                    round1Count = data.round1Ads || 0;
+                    round2Count = data.round2Ads || 0;
+                    round1FinishedTime = data.round1Time || 0;
+                    round2FinishedTime = data.round2Time || 0;
+
+                    document.getElementById('userBalance').innerText = currentBalance.toFixed(2);
+                    document.getElementById('userToken').innerText = currentToken;
+                    document.getElementById('spinLeft').innerText = spinLeft;
+                    document.getElementById('spinCountText').innerText = spinLeft;
+                    document.getElementById('tapCountToday').innerText = totalDailyTaps;
+                    document.getElementById('totalReferCount').innerText = totalRefers;
+                    
+                    document.getElementById('profileAdsCount').innerText = totalAdsWatched;
+                    document.getElementById('profileTasksCount').innerText = totalTasksCompleted;
+
+                    document.getElementById('adRound1Count').innerText = round1Count;
+                    document.getElementById('adRound2Count').innerText = round2Count;
+
+                    checkAdAndTaskTimers();
+
+                    if (data.profileImg) {
+                        document.getElementById('profileDisplayImg').src = data.profileImg;
+                        document.getElementById('
