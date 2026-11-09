@@ -9,15 +9,21 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; font-weight: 700; }
         body { background: linear-gradient(135deg, #0b0f19, #1b263b); color: #fff; padding-bottom: 90px; }
         .container { max-width: 480px; margin: 0 auto; background: #111827; min-height: 100vh; padding: 15px; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); border: 1px solid #1f2937; }
+        
+        /* Live Running News Ticker (TV Style) */
+        .marquee-container { background: #ef4444; color: #fff; padding: 6px 0; font-size: 13px; border-radius: 4px; margin-bottom: 12px; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 8px rgba(239,68,68,0.4); }
+        .marquee-container span { display: inline-block; padding-left: 100%; animation: marquee 18s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
         .header { background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; border: 1px solid #059669; }
-        .balance-card { background: #1f2937; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; border: 1px solid #374151; color: #f3f4f6; }
+        .balance-card { background: #1f2937; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-size: 13px; display: flex; justify-content: space-around; border: 1px solid #374151; color: #f3f4f6; }
         
         /* Bottom Navigation Bar */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #ef4444; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.5); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #9ca3af; outline: none; }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; color: #9ca3af; outline: none; }
         .nav-item.active { color: #10b981; font-size: 13px; }
         .nav-item div { font-size: 18px; margin-bottom: 2px; }
 
@@ -26,17 +32,17 @@
         .app-page.active-page { display: block; }
 
         .card { border: 1px solid #374151; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #1f2937; text-align: center; color: #f9fafb; }
-        .btn { display: inline-block; width: 100%; padding: 10px; background: #2563eb; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; font-weight: bold; }
+        .btn { display: inline-block; width: 100%; padding: 10px; background: #2563eb; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
         .btn-success { background: #10b981; }
         .btn-warning { background: #f59e0b; color: #000; }
         .btn-danger { background: #ef4444; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #4b5563; border-radius: 4px; font-size: 13px; background: #111827; color: #fff; }
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ef4444; margin: 0 auto 10px; display: block; background: #374151; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #4b5563; border-radius: 4px; font-size: 13px; background: #111827; color: #fff; font-weight: 600; }
+        .profile-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #ef4444; margin: 0 auto 10px; display: block; background: #374151; }
         
         /* Live Spinning Wheel */
         .wheel-container { position: relative; width: 150px; height: 150px; margin: 15px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #ef4444; background: conic-gradient(#f59e0b 0deg 90deg, #10b981 90deg 180deg, #2563eb 180deg 270deg, #ef4444 270deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.15, 0.90, 0.15, 1); }
-        .wheel-center { position: absolute; width: 35px; height: 35px; background: #111827; color: #fff; border-radius: 50%; border: 3px solid #ef4444; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #ef4444; background: conic-gradient(#f59e0b 0deg 90deg, #10b981 90deg 180deg, #2563eb 180deg 270deg, #dc3545 270deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.15, 0.90, 0.15, 1); }
+        .wheel-center { position: absolute; width: 35px; height: 35px; background: #111827; color: #fff; border-radius: 50%; border: 3px solid #ef4444; display: flex; align-items: center; justify-content: center; font-size: 10px; }
         .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #ef4444; z-index: 10; }
 
         /* 3D Press Effect for Tap-Tap Circle */
@@ -45,7 +51,7 @@
             background: linear-gradient(145deg, #ef4444, #991b1b); 
             color: white; border-radius: 50%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 16px; font-weight: bold; margin: 15px auto; cursor: pointer; 
+            font-size: 16px; margin: 15px auto; cursor: pointer; 
             box-shadow: 0 8px #7f1d1d, 0 12px 15px rgba(0,0,0,0.4); 
             user-select: none; transition: all 0.05s ease; 
         }
@@ -59,6 +65,11 @@
 <body>
 
 <div class="container">
+    <!-- Live Ticker News Bar -->
+    <div class="marquee-container">
+        <span>ধন্যবাদ আপনাকে আমাদের অ্যাপসে জয়েন হওয়ার জন্য। এখানে আপনারা রেগুলার ভাবে কাজ করুন নতুন নতুন টাস্ক আপনাদের জন্য দেওয়া হবে।</span>
+    </div>
+
     <div class="header">
         <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
         <p id="userNameText" style="font-size: 12px;">User</p>
@@ -87,8 +98,9 @@
             <button class="btn btn-success" onclick="claimDailyCheckIn()">আজকের বোনাস নিন</button>
         </div>
         <div class="card">
-            <h4>⭐ স্পেশাল অ্যাড (৩টি অ্যাড দেখতে হবে)</h4>
-            <button class="btn btn-danger" onclick="watchSpecialAd()">স্পেশাল অ্যাড শুরু করুন</button>
+            <h4>⭐ স্পেশাল অ্যাড (৳১.৫০)</h4>
+            <p id="specialAdStatus" style="font-size: 12px; color: #10b981; margin-bottom: 8px;">দৈনিক লিমিট: ১ বার</p>
+            <button class="btn btn-danger" id="specialAdBtn" onclick="watchSpecialAd()">৩টি অ্যাড দেখে রিওয়ার্ড নিন</button>
         </div>
         <div class="card">
             <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
@@ -101,71 +113,99 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ২: সোশ্যাল টাস্ক পেজ (আলাদা আলাদা টাস্ক) ================= -->
+    <!-- ================= পেজ ২: সোশ্যাল টাস্ক পেজ (১০০০ লিমিট সহ) ================= -->
     <div id="page2" class="app-page">
         <h4 style="margin-bottom: 10px; text-align: center; color: #10b981;">সোশ্যাল মিডিয়া ও অ্যাপস টাস্ক</h4>
         
         <!-- TikTok Task -->
         <div class="card" style="text-align: left;">
             <h4 style="color: #ef4444; font-size: 14px;">🎵 টিকটক ফলো টাস্ক (৳২.০০)</h4>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t1Count">0</span> / 1000</p>
             <input type="file" id="t1File" accept="image/*" onchange="previewImg(event, 'p1')">
             <img id="p1" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('টিকটক', 't1File', 'p1')">টাস্ক জমা দিন</button>
+            <button class="btn btn-warning" onclick="submitTask('tiktok', 'टिकটক', 't1File', 'p1')">টাস্ক জমা দিন</button>
         </div>
 
         <!-- Facebook Task -->
         <div class="card" style="text-align: left;">
             <h4 style="color: #2563eb; font-size: 14px;">👥 ফেসবুক পেজ লাইক (৳২.০০)</h4>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t2Count">0</span> / 1000</p>
             <input type="file" id="t2File" accept="image/*" onchange="previewImg(event, 'p2')">
             <img id="p2" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('ফেসবুক', 't2File', 'p2')">টাস্ক জমা দিন</button>
+            <button class="btn btn-warning" onclick="submitTask('fb', 'ফেসবুক', 't2File', 'p2')">টাস্ক জমা দিন</button>
         </div>
 
         <!-- YouTube Task -->
         <div class="card" style="text-align: left;">
             <h4 style="color: #ef4444; font-size: 14px;">📺 ইউটিউব সাবস্ক্রাইব (৳২.০০)</h4>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t3Count">0</span> / 1000</p>
             <input type="file" id="t3File" accept="image/*" onchange="previewImg(event, 'p3')">
             <img id="p3" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('ইউটিউব', 't3File', 'p3')">টাস্ক জমা দিন</button>
+            <button class="btn btn-warning" onclick="submitTask('yt', 'ইউটিউব', 't3File', 'p3')">টাস্ক জমা দিন</button>
         </div>
 
         <!-- WhatsApp Task -->
         <div class="card" style="text-align: left;">
             <h4 style="color: #10b981; font-size: 14px;">💬 হোয়াটসঅ্যাপ গ্রুপ জয়েন (৳২.০০)</h4>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t4Count">0</span> / 1000</p>
             <input type="file" id="t4File" accept="image/*" onchange="previewImg(event, 'p4')">
             <img id="p4" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('হোয়াটসঅ্যাপ', 't4File', 'p4')">টাস্ক জমা দিন</button>
+            <button class="btn btn-warning" onclick="submitTask('wa', 'হোয়াটসঅ্যাপ', 't4File', 'p4')">টাস্ক জমা দিন</button>
         </div>
 
         <!-- Telegram Task -->
         <div class="card" style="text-align: left;">
             <h4 style="color: #38bdf8; font-size: 14px;">✈️ টেলিগ্রাম চ্যানেল জয়েন (৳২.০০)</h4>
+            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t5Count">0</span> / 1000</p>
             <input type="file" id="t5File" accept="image/*" onchange="previewImg(event, 'p5')">
             <img id="p5" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('টেলিগ্রাম', 't5File', 'p5')">টাস্ক জমা দিন</button>
+            <button class="btn btn-warning" onclick="submitTask('tg', 'টেলিগ্রাম', 't5File', 'p5')">টাস্ক জমা দিন</button>
         </div>
     </div>
 
-    <!-- ================= পেজ ৩: প্রোফাইল ও ইউআইডি পেজ ================= -->
+    <!-- ================= পেজ ৩: ডিজাইনড প্রোফাইল পেজ (সম্পূর্ণ ডিটেইলস) ================= -->
     <div id="page3" class="app-page">
-        <div class="card">
-            <h4>ইউজার প্রোফাইল ও ইউআইডি</h4>
-            <img id="profileDisplayImg" src="https://via.placeholder.com/80" class="profile-img">
-            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">ইউনিক ইউআইডি: <span id="uidDisplay" style="color: #10b981;">---</span></p>
+        <div class="card" style="text-align: left;">
+            <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">ইউজার প্রোফাইল ও বিবরণ</h4>
+            <img id="profileDisplayImg" src="https://via.placeholder.com/90" class="profile-img" style="margin: 0 auto 10px auto;">
+            <p style="text-align: center; font-size: 13px; margin-bottom: 10px;">ইউনিক ইউআইডি: <span id="uidDisplay" style="color: #38bdf8;">---</span></p>
             
-            <div style="text-align: left; font-size: 13px;">
-                <label>ফাইল ম্যানেজার থেকে ছবি সেট করুন:</label>
-                <input type="file" id="localImgInput" accept="image/*" onchange="setProfileImageLocally(event)">
-                
-                <label style="margin-top: 8px; display: block;">রেফার লিংক:</label>
-                <input type="text" id="referInput" readonly style="text-align: center; background: #0b0f19;">
-                <button class="btn btn-success" onclick="copyRefer()">লিংক কপি</button>
-                <p style="margin-top: 8px; font-size: 12px;">মোট রেফার: <span id="refCountShow">0</span> জন | মোট অ্যাড: <span id="adCountShow">0</span> টি</p>
-            </div>
+            <label style="font-size: 12px; color: #10b981;">প্রোফাইল ছবি আপলোড:</label>
+            <input type="file" id="localImgInput" accept="image/*" onchange="setProfileImageLocally(event)" style="margin-bottom: 8px;">
+
+            <label style="font-size: 12px;">পূর্ণ নাম:</label>
+            <input type="text" id="pName" placeholder="আপনার নাম লিখুন">
+
+            <label style="font-size: 12px;">ঠিকানা:</label>
+            <input type="text" id="pAddress" placeholder="আপনার ঠিকানা লিখুন">
+
+            <label style="font-size: 12px;">জিমেইল:</label>
+            <input type="email" id="pEmail" placeholder="example@gmail.com">
+
+            <label style="font-size: 12px;">বয়স:</label>
+            <input type="number" id="pAge" placeholder="আপনার বয়স">
+
+            <label style="font-size: 12px;">লিঙ্গ (Gender):</label>
+            <select id="pGender">
+                <option value="Male">পুরুষ (Male)</option>
+                <option value="Female">মহিলা (Female)</option>
+                <option value="Other">অন্যান্য (Other)</option>
+            </select>
+
+            <label style="font-size: 12px;">বায়ো (Bio):</label>
+            <textarea id="pBio" rows="2" placeholder="আপনার সম্পর্কে কিছু বলুন..."></textarea>
+
+            <button class="btn btn-success" onclick="saveProfileDetails()" style="margin-top: 5px;">প্রোফাইল সেভ করুন</button>
+
+            <hr style="border-color: #374151; margin: 15px 0;">
+            <label style="font-size: 12px;">রেফার লিংক:</label>
+            <input type="text" id="referInput" readonly style="text-align: center; background: #0b0f19;">
+            <button class="btn btn-success" onclick="copyRefer()">লিংক কপি</button>
+            <p style="margin-top: 8px; font-size: 12px; text-align: center;">মোট রেফার: <span id="refCountShow">0</span> জন | মোট অ্যাড: <span id="adCountShow">0</span> টি</p>
         </div>
     </div>
 
-    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ (২৫ ট্যাপে অটো অ্যাড) ================= -->
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
     <div id="page4" class="app-page">
         <div class="card">
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
@@ -177,7 +217,7 @@
                 <span style="font-size: 11px; margin-top: 2px;">AR TOKEN</span>
             </div>
 
-            <p style="font-size: 14px; font-weight: bold; margin-top: 8px;">এআর টোকেন: <span id="tapTokenShow">0</span></p>
+            <p style="font-size: 14px; margin-top: 8px;">এআর টোকেন: <span id="tapTokenShow">0</span></p>
             <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</button>
         </div>
     </div>
@@ -187,19 +227,19 @@
         <div class="card" style="text-align: left;">
             <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">টাকা উত্তোলন (উইথড্র)</h4>
             <p style="font-size: 11px; color: #ef4444; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
-            <label style="font-size: 12px; font-weight: bold;">মাধ্যম:</label>
+            <label style="font-size: 12px;">মাধ্যম:</label>
             <select id="wMethod">
                 <option value="bkash">বিকাশ</option>
                 <option value="nagad">নগদ</option>
                 <option value="recharge">মোবাইল রিচার্জ</option>
             </select>
-            <label style="font-size: 12px; font-weight: bold;">পরিমাণ:</label>
+            <label style="font-size: 12px;">পরিমাণ:</label>
             <select id="wAmount">
                 <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
                 <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
                 <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
             </select>
-            <label style="font-size: 12px; font-weight: bold;">নম্বর:</label>
+            <label style="font-size: 12px;">নম্বর:</label>
             <input type="text" id="wAcc" placeholder="আপনার নম্বর">
             <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
@@ -229,7 +269,6 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    // ইউনিক ইউআইডি ফরম্যাট (যেমন: 12597...)
     let uid = localStorage.getItem('taka_uid');
     if (!uid) {
         let randomNum = Math.floor(10000 + Math.random() * 90000);
@@ -245,8 +284,9 @@
     let totalAdsWatched = 0;
     let totalRefers = 0;
     let lastCheckInDate = "";
+    let lastSpecialAdDate = "";
     let currentDegree = 0;
-    let sessionTapCount = 0; // ২৫ ট্যাপ কাউন্ট ট্র্যাক করার জন্য
+    let sessionTapCount = 0;
 
     document.getElementById('userNameText').innerText = "User_" + uid;
     document.getElementById('uidDisplay').innerText = uid;
@@ -278,9 +318,38 @@
         totalAdsWatched = d.adsWatched || 0;
         totalRefers = d.refers || 0;
         lastCheckInDate = d.lastCheckIn || "";
+        lastSpecialAdDate = d.lastSpecialAdDate || "";
 
         if(d.profileImg) {
             document.getElementById('profileDisplayImg').src = d.profileImg;
+        }
+
+        // প্রোফাইল ডিটেইলস বাইন্ড করা
+        if(d.fullName) document.getElementById('pName').value = d.fullName;
+        if(d.address) document.getElementById('pAddress').value = d.address;
+        if(d.email) document.getElementById('pEmail').value = d.email;
+        if(d.age) document.getElementById('pAge').value = d.age;
+        if(d.gender) document.getElementById('pGender').value = d.gender;
+        if(d.bio) document.getElementById('pBio').value = d.bio;
+
+        // টাস্ক কাউন্ট (Limit 1000) শো করা
+        if(d.tasks) {
+            if(document.getElementById('t1Count')) document.getElementById('t1Count').innerText = d.tasks.tiktok || 0;
+            if(document.getElementById('t2Count')) document.getElementById('t2Count').innerText = d.tasks.fb || 0;
+            if(document.getElementById('t3Count')) document.getElementById('t3Count').innerText = d.tasks.yt || 0;
+            if(document.getElementById('t4Count')) document.getElementById('t4Count').innerText = d.tasks.wa || 0;
+            if(document.getElementById('t5Count')) document.getElementById('t5Count').innerText = d.tasks.tg || 0;
+        }
+
+        const today = new Date().toDateString();
+        const specialBtn = document.getElementById('specialAdBtn');
+        const specialStatus = document.getElementById('specialAdStatus');
+        if (lastSpecialAdDate === today) {
+            if(specialBtn) { specialBtn.setAttribute('disabled', 'true'); specialBtn.style.opacity = '0.5'; }
+            if(specialStatus) specialStatus.innerText = "আজকের স্পেশাল অ্যাড নেওয়া সম্পন্ন হয়েছে!";
+        } else {
+            if(specialBtn) { specialBtn.removeAttribute('disabled'); specialBtn.style.opacity = '1'; }
+            if(specialStatus) specialStatus.innerText = "দৈনিক লিমিট: ১ বার (৳১.৫০)";
         }
 
         if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = globalBalance.toFixed(2);
@@ -294,7 +363,6 @@
         if(document.getElementById('tapTokenShow')) document.getElementById('tapTokenShow').innerText = globalToken;
     });
 
-    // ফাইল ম্যানেজার থেকে প্রোফাইল ছবি সেট করার অপশন
     function setProfileImageLocally(event) {
         const reader = new FileReader();
         reader.onload = function() {
@@ -304,6 +372,25 @@
             alert('প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে!');
         };
         reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function saveProfileDetails() {
+        const fullName = document.getElementById('pName').value;
+        const address = document.getElementById('pAddress').value;
+        const email = document.getElementById('pEmail').value;
+        const age = document.getElementById('pAge').value;
+        const gender = document.getElementById('pGender').value;
+        const bio = document.getElementById('pBio').value;
+
+        db.ref('users/' + uid).update({
+            fullName: fullName,
+            address: address,
+            email: email,
+            age: age,
+            gender: gender,
+            bio: bio
+        });
+        alert('প্রোফাইলের সমস্ত তথ্য সফলভাবে সেভ করা হয়েছে!');
     }
 
     function watchHomeAd(round) {
@@ -327,7 +414,13 @@
     }
 
     function watchSpecialAd() {
-        alert('স্পেশাল অ্যাডের জন্য পরপর ৩টি অ্যাড দেখতে হবে। প্রথমটি খুলছে...');
+        const today = new Date().toDateString();
+        if (lastSpecialAdDate === today) {
+            alert('আজকের স্পেশাল অ্যাডের রিওয়ার্ড আপনি ইতিমধ্যেই নিয়েছেন!');
+            return;
+        }
+
+        alert('স্পেশাল অ্যাডের জন্য পরপর ৩টি অ্যাড দেখতে হবে। প্রথম অ্যাডটি খুলছে...');
         window.open(getRandomAd(), '_blank');
         setTimeout(() => {
             alert('দ্বিতীয় অ্যাডটি খুলছে...');
@@ -338,7 +431,13 @@
                 setTimeout(() => {
                     globalBalance += 1.50;
                     totalAdsWatched += 3;
-                    db.ref('users/' + uid).update({ balance: globalBalance, adsWatched: totalAdsWatched });
+                    lastSpecialAdDate = today;
+
+                    db.ref('users/' + uid).update({ 
+                        balance: globalBalance, 
+                        adsWatched: totalAdsWatched,
+                        lastSpecialAdDate: lastSpecialAdDate 
+                    });
                     alert('অভিনন্দন! ৩টি স্পেশাল অ্যাড দেখার জন্য ৳১.৫০ যোগ হয়েছে।');
                 }, 4000);
             }, 4000);
@@ -348,7 +447,7 @@
     function claimDailyCheckIn() {
         const today = new Date().toDateString();
         if(lastCheckInDate === today) {
-            alert('আজকের ডেইলি চেকিং করা হয়ে গেছে! আগামীকাল আবার চেষ্টা করুন।');
+            alert('আজকের ডেইলি চেকিং করা হয়ে গেছে!');
             return;
         }
         globalBalance += 1.00;
@@ -385,21 +484,37 @@
         r.readAsDataURL(e.target.files[0]);
     }
 
-    function submitTask(taskName, fileId, previewId) {
+    function submitTask(taskKey, taskName, fileId, previewId) {
         const fileInput = document.getElementById(fileId);
         if (fileInput.files.length === 0) {
             alert(taskName + ' টাস্কের স্ক্রিনশট আপলোড করুন!');
             return;
         }
 
-        globalBalance += 2.00;
-        db.ref('users/' + uid).update({ balance: globalBalance });
-        alert(taskName + ' টাস্ক সফলভাবে জমা হয়েছে! ৳২.০০ যোগ হয়েছে।');
-        fileInput.value = "";
-        document.getElementById(previewId).style.display = 'none';
+        db.ref('users/' + uid).once('value', snapshot => {
+            let userData = snapshot.val() || {};
+            let tasks = userData.tasks || {};
+            let currentCount = tasks[taskKey] || 0;
+
+            if (currentCount >= 1000) {
+                alert(taskName + ' টাস্কের ১০০০ লিমিট পূর্ণ হয়ে গেছে!');
+                return;
+            }
+
+            tasks[taskKey] = currentCount + 1;
+            globalBalance += 2.00;
+
+            db.ref('users/' + uid).update({
+                balance: globalBalance,
+                tasks: tasks
+            });
+
+            alert(taskName + ' টাস্ক সফলভাবে জমা হয়েছে! ৳২.০০ যোগ হয়েছে।');
+            fileInput.value = "";
+            document.getElementById(previewId).style.display = 'none';
+        });
     }
 
-    // ট্যাপ-ট্যাপ অপশনে প্রতি ২৫ ট্যাপে অটো অ্যাড রান করার লজিক
     function handleTap() {
         sessionTapCount++;
         globalToken += 1;
@@ -411,7 +526,7 @@
         db.ref('users/' + uid).update({ token: globalToken });
 
         if (sessionTapCount >= 25) {
-            sessionTapCount = 0; // কাউন্ট রিজেট
+            sessionTapCount = 0;
             document.getElementById('tapSessionCount').innerText = 0;
             alert('২৫টি ট্যাপ পূর্ণ হয়েছে! নিয়ম অনুযায়ী অটো অ্যাড ওপেন হচ্ছে...');
             window.open(getRandomAd(), '_blank');
