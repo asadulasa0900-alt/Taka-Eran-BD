@@ -10,7 +10,7 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; font-weight: 700; }
-        body { background: linear-gradient(135deg, #0b0f19, #1b263b); color: #fff; padding-bottom: 90px; }
+        body { background: linear-gradient(135deg, #0b0f19, #1b263b); color: #fff; padding-bottom: 110px; }
         .container { max-width: 480px; margin: 0 auto; background: #111827; min-height: 100vh; padding: 15px; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); border: 1px solid #1f2937; }
         
         /* Live Running News Ticker (TV Style) */
@@ -21,11 +21,11 @@
         .header { background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; border: 1px solid #059669; }
         .balance-card { background: #1f2937; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-size: 13px; display: flex; justify-content: space-around; border: 1px solid #374151; color: #f3f4f6; }
         
-        /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #ef4444; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.5); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; color: #9ca3af; outline: none; }
+        /* Bottom Navigation Bar - Safe Elevated Position for Apps */
+        .bottom-nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 460px; background: #0f172a; border: 2px solid #ef4444; border-radius: 12px; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 20px rgba(0,0,0,0.8); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; color: #9ca3af; outline: none; flex: 1; }
         .nav-item.active { color: #10b981; font-size: 13px; }
-        .nav-item div { font-size: 18px; margin-bottom: 2px; }
+        .nav-item div { font-size: 20px; margin-bottom: 2px; }
 
         /* Page Display Management */
         .app-page { display: none; }
@@ -275,3 +275,215 @@
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
             <p style="font-size: 12px; margin-bottom: 5px;">ট্যাপ করুন এবং এআর টোকেন আয় করুন</p>
             <p style="font-size: 11px; color: #f59e0b; margin-bottom: 10px;">বর্তমান ট্যাপ কাউন্ট: <span id="tapSessionCount">0</span>/25</p>
+            
+            <div class="taptap-circle-3d" onclick="handleTap()">
+                <span>TAP</span>
+                <span style="font-size: 11px; margin-top: 2px;">AR TOKEN</span>
+            </div>
+
+            <p style="font-size: 14px; margin-top: 8px;">এআর টোকেন: <span id="tapTokenShow">0</span></p>
+            <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</button>
+        </div>
+    </div>
+
+    <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
+    <div id="page5" class="app-page">
+        <div class="card" style="text-align: left;">
+            <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">টাকা উত্তোলন (উইথড্র)</h4>
+            <p style="font-size: 11px; color: #ef4444; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
+            <label style="font-size: 12px;">মাধ্যম:</label>
+            <select id="wMethod">
+                <option value="bkash">বিকাশ</option>
+                <option value="nagad">নগদ</option>
+                <option value="recharge">মোবাইল রিচার্জ</option>
+            </select>
+            <label style="font-size: 12px;">পরিমাণ:</label>
+            <select id="wAmount">
+                <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
+                <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
+                <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
+            </select>
+            <label style="font-size: 12px;">নম্বর:</label>
+            <input type="text" id="wAcc" placeholder="আপনার নম্বর">
+            <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= ফ্লোটিং ও সুরক্ষিত বটম নেভিগেশন বার ================= -->
+<div class="bottom-nav">
+    <button class="nav-item active" id="nav1" onclick="switchPage(1)"><div>🏠</div>হোম</button>
+    <button class="nav-item" id="nav2" onclick="switchPage(2)"><div>📋</div>টাস্ক</button>
+    <button class="nav-item" id="nav3" onclick="switchPage(3)"><div>👤</div>প্রোফাইল</button>
+    <button class="nav-item" id="nav4" onclick="switchPage(4)"><div>⚡</div>ট্যাপ</button>
+    <button class="nav-item" id="nav5" onclick="switchPage(5)"><div>💸</div>উইথড্র</button>
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyB9kJeXXH9v0DlJYQLK6UH6_Vf_7W43Z3U", 
+        authDomain: "taka-rane-bd.firebaseapp.com",
+        databaseURL: "https://taka-rane-bd-default-rtdb.firebaseio.com",
+        projectId: "taka-rane-bd",
+        storageBucket: "taka-rane-bd.appspot.com",
+        messagingSenderId: "1017127718075",
+        appId: "1:1017127718075:web:f250801f23eb7c5ce06d9e"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const db = firebase.database();
+
+    let uid = localStorage.getItem('taka_uid');
+    if (!uid) {
+        let randomNum = Math.floor(10000 + Math.random() * 90000);
+        uid = '' + randomNum + Math.floor(10 + Math.random() * 90);
+        localStorage.setItem('taka_uid', uid);
+    }
+
+    let globalBalance = 0.00;
+    let globalToken = 0;
+    let globalSpins = 3;
+    let ad1Count = 0;
+    let ad2Count = 0;
+    let totalAdsWatched = 0;
+    let totalRefers = 0;
+    let lastCheckInDate = "";
+    let lastSpecialAdDate = "";
+    let currentDegree = 0;
+    let sessionTapCount = 0;
+
+    document.getElementById('userNameText').innerText = "User_" + uid;
+    document.getElementById('uidDisplay').innerText = uid;
+    document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
+
+    const adLinks = [
+        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
+        "https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679"
+    ];
+    function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
+
+    function switchPage(pageNo) {
+        for(let i=1; i<=5; i++) {
+            const pageEl = document.getElementById('page' + i);
+            const navEl = document.getElementById('nav' + i);
+            if(pageEl) pageEl.classList.remove('active-page');
+            if(navEl) navEl.classList.remove('active');
+        }
+        const targetPage = document.getElementById('page' + pageNo);
+        const targetNav = document.getElementById('nav' + pageNo);
+        if(targetPage) targetPage.classList.add('active-page');
+        if(targetNav) targetNav.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function toggleTask(taskKey) {
+        const subContainers = document.querySelectorAll('.sub-task-container');
+        subContainers.forEach(box => {
+            if(box.id !== 'sub_' + taskKey) {
+                box.style.display = 'none';
+            }
+        });
+        const target = document.getElementById('sub_' + taskKey);
+        if(target) {
+            target.style.display = target.style.display === 'block' ? 'none' : 'block';
+        }
+    }
+
+    db.ref('users/' + uid).on('value', snap => {
+        const d = snap.val() || {};
+        globalBalance = d.balance || 0.00;
+        globalToken = d.token || 0;
+        globalSpins = d.spins !== undefined ? d.spins : 3;
+        ad1Count = d.ad1Count || 0;
+        ad2Count = d.ad2Count || 0;
+        totalAdsWatched = d.adsWatched || 0;
+        totalRefers = d.refers || 0;
+        lastCheckInDate = d.lastCheckIn || "";
+        lastSpecialAdDate = d.lastSpecialAdDate || "";
+
+        if(d.profileImg) {
+            document.getElementById('profileDisplayImg').src = d.profileImg;
+        }
+
+        if(d.fullName) document.getElementById('pName').value = d.fullName;
+        if(d.address) document.getElementById('pAddress').value = d.address;
+        if(d.email) document.getElementById('pEmail').value = d.email;
+        if(d.age) document.getElementById('pAge').value = d.age;
+        if(d.gender) document.getElementById('pGender').value = d.gender;
+        if(d.bio) document.getElementById('pBio').value = d.bio;
+
+        if(d.tasks) {
+            const taskKeys = ['ytSub', 'fbLike', 'tikTok', 'instaFollow', 'waGroup', 'tgChannel', 'otherSponsor', 'appDownload'];
+            taskKeys.forEach(key => {
+                const el = document.getElementById('t_' + key + '_Count');
+                if(el) el.innerText = d.tasks[key] || 0;
+            });
+        }
+
+        const today = new Date().toDateString();
+        const specialBtn = document.getElementById('specialAdBtn');
+        const specialStatus = document.getElementById('specialAdStatus');
+        if (lastSpecialAdDate === today) {
+            if(specialBtn) { specialBtn.setAttribute('disabled', 'true'); specialBtn.style.opacity = '0.5'; }
+            if(specialStatus) specialStatus.innerText = "আজকের স্পেশাল অ্যাড নেওয়া সম্পন্ন হয়েছে!";
+        } else {
+            if(specialBtn) { specialBtn.removeAttribute('disabled'); specialBtn.style.opacity = '1'; }
+            if(specialStatus) specialStatus.innerText = "দৈনিক লিমিট: ১ বার (৳১.৫০)";
+        }
+
+        if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = globalBalance.toFixed(2);
+        if(document.getElementById('userToken')) document.getElementById('userToken').innerText = globalToken;
+        if(document.getElementById('spinCountText')) document.getElementById('spinCountText').innerText = globalSpins;
+        if(document.getElementById('spinLeft')) document.getElementById('spinLeft').innerText = globalSpins;
+        if(document.getElementById('ad1Show')) document.getElementById('ad1Show').innerText = ad1Count;
+        if(document.getElementById('ad2Show')) document.getElementById('ad2Show').innerText = ad2Count;
+        if(document.getElementById('refCountShow')) document.getElementById('refCountShow').innerText = totalRefers;
+        if(document.getElementById('adCountShow')) document.getElementById('adCountShow').innerText = totalAdsWatched;
+        if(document.getElementById('tapTokenShow')) document.getElementById('tapTokenShow').innerText = globalToken;
+    });
+
+    function setProfileImageLocally(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64Img = reader.result;
+            document.getElementById('profileDisplayImg').src = base64Img;
+            db.ref('users/' + uid).update({ profileImg: base64Img });
+            alert('প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে!');
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function saveProfileDetails() {
+        const fullName = document.getElementById('pName').value;
+        const address = document.getElementById('pAddress').value;
+        const email = document.getElementById('pEmail').value;
+        const age = document.getElementById('pAge').value;
+        const gender = document.getElementById('pGender').value;
+        const bio = document.getElementById('pBio').value;
+
+        db.ref('users/' + uid).update({
+            fullName: fullName,
+            address: address,
+            email: email,
+            age: age,
+            gender: gender,
+            bio: bio
+        });
+        alert('প্রোফাইলের সমস্ত তথ্য সফলভাবে সেভ করা হয়েছে!');
+    }
+
+    function watchHomeAd(round) {
+        if(round === 1 && ad1Count >= 10) { alert('রাউন্ড ১ এর ১০টি অ্যাড দেখা শেষ!'); return; }
+        if(round === 2 && ad2Count >= 10) { alert('রাউন্ড ২ এর ১০টি অ্যাড দেখা শেষ!'); return; }
+
+        window.open(getRandomAd(), '_blank');
+        setTimeout(() => {
+            globalBalance += 0.40;
+            totalAdsWatched++;
+            if(round === 1) ad1Count++; else ad2Count++;
+
+            db.ref('users/' + uid).update({
+                balance: globalBalance,
+                adsWatched: totalAdsWatched,
+                ad1Count: ad1Count,
+                ad2Count:
