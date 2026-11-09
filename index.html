@@ -32,16 +32,6 @@
         .app-page.active-page { display: block; }
 
         .card { border: 1px solid #374151; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #1f2937; text-align: center; color: #f9fafb; }
-        
-        /* Task Category Grid Boxes */
-        .task-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .task-box { background: #1f2937; border: 2px solid #374151; border-radius: 8px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
-        .task-box:hover { border-color: #10b981; background: #374151; }
-        .task-box div { font-size: 24px; margin-bottom: 5px; }
-        .task-box span { font-size: 13px; color: #f3f4f6; }
-
-        .sub-task-container { display: none; margin-top: 10px; text-align: left; background: #111827; padding: 10px; border-radius: 6px; border: 1px solid #4b5563; }
-        
         .btn { display: inline-block; width: 100%; padding: 10px; background: #2563eb; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
         .btn-success { background: #10b981; }
         .btn-warning { background: #f59e0b; color: #000; }
@@ -123,124 +113,10 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ২: সোশ্যাল ও স্পন্সর টাস্ক পেজ (চারকোনা বক্স স্টাইল) ================= -->
+    <!-- ================= পেজ ২: ডায়নামিক অ্যাডমিন টাস্ক ও রিলস পেজ ================= -->
     <div id="page2" class="app-page">
-        <h4 style="margin-bottom: 12px; text-align: center; color: #10b981;">সোশ্যাল ও স্পন্সর টাস্ক ক্যাটাগরি</h4>
-        
-        <div class="task-grid">
-            <!-- YouTube Box -->
-            <div class="task-box" onclick="toggleTask('ytSub')">
-                <div>📺</div>
-                <span>ইউটিউব (YouTube)</span>
-            </div>
-            <!-- Facebook Box -->
-            <div class="task-box" onclick="toggleTask('fbLike')">
-                <div>📘</div>
-                <span>ফেসবুক (Facebook)</span>
-            </div>
-            <!-- TikTok Box -->
-            <div class="task-box" onclick="toggleTask('tikTok')">
-                <div>🎵</div>
-                <span>টিকটক (TikTok)</span>
-            </div>
-            <!-- Instagram Box -->
-            <div class="task-box" onclick="toggleTask('instaFollow')">
-                <div>📸</div>
-                <span>ইনস্টাগ্রাম (Instagram)</span>
-            </div>
-            <!-- WhatsApp Box -->
-            <div class="task-box" onclick="toggleTask('waGroup')">
-                <div>💬</div>
-                <span>হোয়াটসঅ্যাপ (WhatsApp)</span>
-            </div>
-            <!-- Telegram Box -->
-            <div class="task-box" onclick="toggleTask('tgChannel')">
-                <div>✈️</div>
-                <span>টেলিগ্রাম (Telegram)</span>
-            </div>
-            <!-- Others Sponsor Box -->
-            <div class="task-box" onclick="toggleTask('otherSponsor')">
-                <div>⭐</div>
-                <span>আদার্স স্পন্সর</span>
-            </div>
-            <!-- Apps Download Box -->
-            <div class="task-box" onclick="toggleTask('appDownload')">
-                <div>📥</div>
-                <span>অ্যাপস ডাউনলোড</span>
-            </div>
-        </div>
-
-        <!-- ইউটিউব সাব-টাস্ক -->
-        <div id="sub_ytSub" class="sub-task-container">
-            <h4 style="color: #ef4444; font-size: 14px; margin-bottom: 5px;">📺 ইউটিউব সাবস্ক্রাইব (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_ytSub_Count">0</span> / 1000</p>
-            <input type="file" id="f_ytSub" accept="image/*" onchange="previewImg(event, 'p_ytSub')">
-            <img id="p_ytSub" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('ytSub', 'ইউটিউব', 'f_ytSub', 'p_ytSub')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- ফেসবুক সাব-টাস্ক -->
-        <div id="sub_fbLike" class="sub-task-container">
-            <h4 style="color: #2563eb; font-size: 14px; margin-bottom: 5px;">📘 ফেসবুক পেজ লাইক (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_fbLike_Count">0</span> / 1000</p>
-            <input type="file" id="f_fbLike" accept="image/*" onchange="previewImg(event, 'p_fbLike')">
-            <img id="p_fbLike" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('fbLike', 'ফেসবুক', 'f_fbLike', 'p_fbLike')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- টিকটক সাব-টাস্ক -->
-        <div id="sub_tikTok" class="sub-task-container">
-            <h4 style="color: #ef4444; font-size: 14px; margin-bottom: 5px;">🎵 টিকটক ফলো টাস্ক (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_tikTok_Count">0</span> / 1000</p>
-            <input type="file" id="f_tikTok" accept="image/*" onchange="previewImg(event, 'p_tikTok')">
-            <img id="p_tikTok" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('tikTok', 'টিকটক', 'f_tikTok', 'p_tikTok')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- ইনস্টাগ্রাম সাব-টাস্ক -->
-        <div id="sub_instaFollow" class="sub-task-container">
-            <h4 style="color: #db2777; font-size: 14px; margin-bottom: 5px;">📸 ইনস্টাগ্রাম ফলো (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_instaFollow_Count">0</span> / 1000</p>
-            <input type="file" id="f_instaFollow" accept="image/*" onchange="previewImg(event, 'p_instaFollow')">
-            <img id="p_instaFollow" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('instaFollow', 'ইনস্টাগ্রাম', 'f_instaFollow', 'p_instaFollow')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- হোয়াটসঅ্যাপ সাব-টাস্ক -->
-        <div id="sub_waGroup" class="sub-task-container">
-            <h4 style="color: #10b981; font-size: 14px; margin-bottom: 5px;">💬 হোয়াটসঅ্যাপ গ্রুপ জয়েন (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_waGroup_Count">0</span> / 1000</p>
-            <input type="file" id="f_waGroup" accept="image/*" onchange="previewImg(event, 'p_waGroup')">
-            <img id="p_waGroup" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('waGroup', 'হোয়াটসঅ্যাপ', 'f_waGroup', 'p_waGroup')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- টেলিগ্রাম সাব-টাস্ক -->
-        <div id="sub_tgChannel" class="sub-task-container">
-            <h4 style="color: #38bdf8; font-size: 14px; margin-bottom: 5px;">✈️ টেলিগ্রাম চ্যানেল জয়েন (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_tgChannel_Count">0</span> / 1000</p>
-            <input type="file" id="f_tgChannel" accept="image/*" onchange="previewImg(event, 'p_tgChannel')">
-            <img id="p_tgChannel" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('tgChannel', 'টেলিগ্রাম', 'f_tgChannel', 'p_tgChannel')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- আদার্স স্পন্সর সাব-টাস্ক -->
-        <div id="sub_otherSponsor" class="sub-task-container">
-            <h4 style="color: #f59e0b; font-size: 14px; margin-bottom: 5px;">⭐ আদার্স স্পন্সর টাস্ক (৳২.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_otherSponsor_Count">0</span> / 1000</p>
-            <input type="file" id="f_otherSponsor" accept="image/*" onchange="previewImg(event, 'p_otherSponsor')">
-            <img id="p_otherSponsor" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('otherSponsor', 'স্পন্সর', 'f_otherSponsor', 'p_otherSponsor')">টাস্ক জমা দিন</button>
-        </div>
-
-        <!-- অ্যাপস ডাউনলোড সাব-টাস্ক -->
-        <div id="sub_appDownload" class="sub-task-container">
-            <h4 style="color: #10b981; font-size: 14px; margin-bottom: 5px;">📥 স্পন্সর অ্যাপস ডাউনলোড (৳৩.০০)</h4>
-            <p style="font-size: 11px; color: #9ca3af; margin-bottom: 6px;">কমপ্লিট হয়েছে: <span id="t_appDownload_Count">0</span> / 1000</p>
-            <input type="file" id="f_appDownload" accept="image/*" onchange="previewImg(event, 'p_appDownload')">
-            <img id="p_appDownload" class="task-proof-img" alt="Preview">
-            <button class="btn btn-warning" onclick="submitTask('appDownload', 'অ্যাপস ডাউনলোড', 'f_appDownload', 'p_appDownload')">টাস্ক জমা দিন</button>
-        </div>
+        <h4 style="margin-bottom: 10px; text-align: center; color: #10b981;">📋 অ্যাডমিন প্রদত্ত টাস্ক ও রিলস কাজ</h4>
+        <div id="dynamicTaskList" style="text-align: center; color: #94A3B8; font-size: 13px;">টাস্ক লোড হচ্ছে...</div>
     </div>
 
     <!-- ================= পেজ ৩: ডিজাইনড প্রোফাইল পেজ ================= -->
@@ -315,7 +191,7 @@
             </select>
             <label style="font-size: 12px;">পরিমাণ:</label>
             <select id="wAmount">
-                <option value="110">১inputValue টাকা (পাবেন ১০০ টাকা)</option>
+                <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
                 <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
                 <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
             </select>
@@ -388,18 +264,78 @@
         window.scrollTo(0, 0);
     }
 
-    // নির্দিষ্ট ক্যাটাগরির টাস্ক বক্স টগল করার ফাংশন
-    function toggleTask(taskKey) {
-        const subContainers = document.querySelectorAll('.sub-task-container');
-        subContainers.forEach(box => {
-            if(box.id !== 'sub_' + taskKey) {
-                box.style.display = 'none';
+    // অ্যাডমিন প্যানেলের দেওয়া 'customTasks' থেকে টাস্কগুলো লোড করার রিয়েলটাইম লজিক
+    function loadAdminTasksForUser() {
+        db.ref('customTasks').on('value', function(snapshot) {
+            var tasks = snapshot.val();
+            var taskListDiv = document.getElementById('dynamicTaskList');
+            
+            if(!tasks) {
+                taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center; padding: 20px;'>বর্তমানে কোনো নতুন টাস্ক বা রিলস কাজ নেই।</p>";
+                return;
             }
+
+            var html = "";
+            for(var key in tasks) {
+                var t = tasks[key];
+                
+                // যদি অ্যাডমিন ভিডিও আপলোড করে থাকেন (যা বেসসিকোড বা লিংক আকারে আছে)
+                var mediaContent = "";
+                if(t.link && t.link.startsWith('data:video')) {
+                    mediaContent = `<video controls style="width:100%; max-height:180px; border-radius:6px; margin-bottom:8px;"><source src="${t.link}" type="video/mp4"></video>`;
+                } else if(t.link && (t.link.startsWith('data:image') || t.link.match(/\.(jpeg|jpg|gif|png)$/i))) {
+                    mediaContent = `<img src="${t.link}" style="width:100%; max-height:140px; object-fit:cover; border-radius:6px; margin-bottom:8px;" alt="Task Media">`;
+                }
+
+                html += `<div class="card" style="text-align: left;">
+                    <h4 style="color: #38bdf8; font-size: 14px; margin-bottom: 4px;">[${t.type}] ${t.title}</h4>
+                    <p style="font-size: 12px; color: #94A3B8; margin-bottom: 6px;">${t.subtitle || ''}</p>
+                    ${mediaContent}
+                    <p style="font-size: 12px; color: #10b981; font-weight: bold; margin-bottom: 8px;">রিওয়ার্ড: ৳${t.reward}</p>
+                    
+                    <input type="file" id="proofFile_${key}" accept="image/*" style="padding: 6px; font-size: 11px;">
+                    <button class="btn btn-warning" onclick="submitAdminTaskProof('${key}', '${t.title}', ${t.reward}, 'proofFile_${key}')">টাস্ক প্রুফ জমা দিন</button>
+                </div>`;
+            }
+            taskListDiv.innerHTML = html;
         });
-        const target = document.getElementById('sub_' + taskKey);
-        if(target) {
-            target.style.display = target.style.display === 'block' ? 'none' : 'block';
+    }
+    loadAdminTasksForUser();
+
+    // ইউজারের জমা দেওয়া প্রুফ অ্যাডমিন প্যানেলের 'taskSubmissions' নোডে পাঠিয়ে দেওয়া
+    function submitAdminTaskProof(taskKey, taskTitle, reward, fileInputId) {
+        var fileInput = document.getElementById(fileInputId);
+        if(fileInput.files.length === 0) {
+            alert('দয়া করে স্ক্রিনশটের একটি ছবি সিলেক্ট করুন!');
+            return;
         }
+
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var proofBase64 = e.target.result;
+
+            var submissionData = {
+                taskKey: taskKey,
+                taskTitle: taskTitle,
+                reward: reward,
+                userUid: uid,
+                userName: document.getElementById('pName').value || ("User_" + uid),
+                proof: proofBase64,
+                status: 'Pending',
+                timestamp: Date.now()
+            };
+
+            db.ref('taskSubmissions').push().set(submissionData, function(error) {
+                if(!error) {
+                    alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে! অ্যাডমিন যাচাই করার পর আপনার অ্যাকাউন্টে টাকা যোগ করে দেওয়া হবে।');
+                    fileInput.value = '';
+                } else {
+                    alert('ত্রুটি: ' + error.message);
+                }
+            });
+        };
+        reader.readAsDataURL(file);
     }
 
     db.ref('users/' + uid).on('value', snap => {
@@ -424,14 +360,6 @@
         if(d.age) document.getElementById('pAge').value = d.age;
         if(d.gender) document.getElementById('pGender').value = d.gender;
         if(d.bio) document.getElementById('pBio').value = d.bio;
-
-        if(d.tasks) {
-            const taskKeys = ['ytSub', 'fbLike', 'tikTok', 'instaFollow', 'waGroup', 'tgChannel', 'otherSponsor', 'appDownload'];
-            taskKeys.forEach(key => {
-                const el = document.getElementById('t_' + key + '_Count');
-                if(el) el.innerText = d.tasks[key] || 0;
-            });
-        }
 
         const today = new Date().toDateString();
         const specialBtn = document.getElementById('specialAdBtn');
@@ -566,48 +494,6 @@
         }, 3000);
     }
 
-    function previewImg(e, id) {
-        const r = new FileReader();
-        r.onload = function() {
-            const img = document.getElementById(id);
-            img.src = r.result;
-            img.style.display = 'block';
-        }
-        r.readAsDataURL(e.target.files[0]);
-    }
-
-    function submitTask(taskKey, taskName, fileId, previewId) {
-        const fileInput = document.getElementById(fileId);
-        if (fileInput.files.length === 0) {
-            alert(taskName + ' টাস্কের স্ক্রিনশট আপলোড করুন!');
-            return;
-        }
-
-        db.ref('users/' + uid).once('value', snapshot => {
-            let userData = snapshot.val() || {};
-            let tasks = userData.tasks || {};
-            let currentCount = tasks[taskKey] || 0;
-
-            if (currentCount >= 1000) {
-                alert(taskName + ' টাস্কের ১০০০ লিমিট পূর্ণ হয়ে গেছে!');
-                return;
-            }
-
-            tasks[taskKey] = currentCount + 1;
-            let rewardAmt = (taskKey === 'appDownload') ? 3.00 : 2.00;
-            globalBalance += rewardAmt;
-
-            db.ref('users/' + uid).update({
-                balance: globalBalance,
-                tasks: tasks
-            });
-
-            alert(taskName + ' টাস্ক সফলভাবে জমা হয়েছে! ৳' + rewardAmt.toFixed(2) + ' যোগ হয়েছে।');
-            fileInput.value = "";
-            document.getElementById(previewId).style.display = 'none';
-        });
-    }
-
     function handleTap() {
         sessionTapCount++;
         globalToken += 1;
@@ -657,7 +543,7 @@
         globalBalance -= amount;
         db.ref('users/' + uid).update({ balance: globalBalance });
         alert(`উইথড্র রিকোয়েস্ট সফল! ১০ টাকা ফি কেটে ৳${actualPayout} পাঠানো হবে।`);
-        document.getElementById('wAcc').value = '';
+        document.getElementById('wAcc', '').value = '';
     }
 </script>
 </body>
