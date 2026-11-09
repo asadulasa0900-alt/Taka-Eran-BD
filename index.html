@@ -45,19 +45,20 @@
         .wheel-center { position: absolute; width: 35px; height: 35px; background: #111827; color: #fff; border-radius: 50%; border: 3px solid #ef4444; display: flex; align-items: center; justify-content: center; font-size: 10px; }
         .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #ef4444; z-index: 10; }
 
-        /* 3D Press Effect for Tap-Tap Circle */
+        /* 🔥 প্রফেশনাল থ্রিডি মেটালিক কয়েন ডিজাইন (Tap-Tap Coin) */
         .taptap-circle-3d { 
-            width: 130px; height: 130px; 
-            background: linear-gradient(145deg, #ef4444, #991b1b); 
-            color: white; border-radius: 50%; 
+            width: 145px; height: 145px; 
+            background: radial-gradient(circle at 30% 30%, #f87171, #dc2626 50%, #991b1b 90%); 
+            color: #fff; border-radius: 50%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            font-size: 16px; margin: 15px auto; cursor: pointer; 
-            box-shadow: 0 8px #7f1d1d, 0 12px 15px rgba(0,0,0,0.4); 
+            font-size: 18px; margin: 15px auto; cursor: pointer; 
+            border: 5px solid #fbbf24; 
+            box-shadow: 0 10px 0 #7f1d1d, 0 15px 25px rgba(0,0,0,0.6), inset 0 4px 6px rgba(255,255,255,0.4), inset 0 -4px 6px rgba(0,0,0,0.4); 
             user-select: none; transition: all 0.05s ease; 
         }
         .taptap-circle-3d:active { 
-            transform: translateY(5px); 
-            box-shadow: 0 3px #7f1d1d, 0 6px 8px rgba(0,0,0,0.4); 
+            transform: translateY(6px); 
+            box-shadow: 0 4px 0 #7f1d1d, 0 8px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.4); 
         }
 
         /* Ludo Board Styling */
@@ -88,10 +89,10 @@
     <div class="balance-card">
         <div>টাকা: ৳<span id="userBalance">0.00</span></div>
         <div>এআর টোকেন: <span id="userToken">0</span></div>
-        <div>স্পিন: <span id="spinLeft">3</span>টি</div>
+        <div>স্পিন: <span id="spinLeft">1</span>টি</div>
     </div>
 
-    <!-- ================= পেজ ১: হোম পেজ ================= -->
+    <!-- ================= পেজ ১: হোম পেজ (সাথে লুডু গেম সংযুক্ত) ================= -->
     <div id="page1" class="app-page active-page">
         <div class="card">
             <h4>স্কয়ার অ্যাড রাউন্ড ১ (৳০.৪০)</h4>
@@ -114,12 +115,34 @@
         </div>
         <div class="card">
             <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
-            <p>স্পিন বাকি: <span id="spinCountText">3</span>টি</p>
+            <p>স্পিন বাকি: <span id="spinCountText">1</span>টি</p>
             <div class="wheel-container">
                 <div class="wheel-pointer"></div>
                 <div class="wheel" id="liveWheel"><div class="wheel-center">SPIN</div></div>
             </div>
             <button class="btn btn-success" id="spinBtn" onclick="spinWheel()">স্পিন করুন</button>
+        </div>
+
+        <!-- অটোমেটিক অনলাইন লুডু গেম -->
+        <div class="card">
+            <h4 style="color: #10b981;">🎲 অটোমেটিক অনলাইন লুডু গেম</h4>
+            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৫.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
+            <p style="font-size: 11px; color: #f59e0b; margin-top: 3px;">আজকের লুডু খেলা বাকি: <span id="ludoLeftCount">5</span>/৫ বার</p>
+            
+            <button class="btn btn-success" id="startLudoBtn" onclick="initLudoGame()" style="margin: 10px 0;">খেলা শুরু করুন (৳৫ ফি)</button>
+
+            <div class="ludo-board-wrapper">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                    <div style="color: #ef4444;">🔴 আপনি (লাল)</div>
+                    <div style="color: #10b981;">🟢 প্লেয়ার ২ (সবুজ)</div>
+                </div>
+
+                <div class="ludo-track" id="ludoTrack"></div>
+
+                <div class="dice-box" id="diceDisplay">🎲</div>
+                <p id="ludoStatus" style="font-size: 13px; color: #38bdf8; min-height: 20px;">খেলা শুরু করতে উপরের বাটনে চাপ দিন</p>
+                <button class="btn btn-warning" id="rollDiceBtn" onclick="userRollDice()" style="display: none; margin-top: 10px;">ছক্কা চাল দিন 🎲</button>
+            </div>
         </div>
     </div>
 
@@ -164,27 +187,35 @@
             <button class="btn btn-success" onclick="saveProfileDetails()" style="margin-top: 5px;">প্রোফাইল সেভ করুন</button>
 
             <hr style="border-color: #374151; margin: 15px 0;">
-            <label style="font-size: 12px;">রেফার লিংক:</label>
+            <label style="font-size: 12px;">রেফার লিংক (প্রতি রেফারে ৳১০ বোনাস):</label>
             <input type="text" id="referInput" readonly style="text-align: center; background: #0b0f19;">
             <button class="btn btn-success" onclick="copyRefer()">লিংক কপি</button>
             <p style="margin-top: 8px; font-size: 12px; text-align: center;">মোট রেফার: <span id="refCountShow">0</span> জন | মোট অ্যাড: <span id="adCountShow">0</span> টি</p>
         </div>
     </div>
 
-    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ (আপডেটকৃত থ্রিডি কয়েন ও কাস্টম এক্সচেঞ্জ) ================= -->
     <div id="page4" class="app-page">
         <div class="card">
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
-            <p style="font-size: 12px; margin-bottom: 5px;">প্রতি ২৫ ট্যাপে অটোমেটিক অ্যাড আসবে!</p>
-            <p style="font-size: 11px; color: #f59e0b; margin-bottom: 10px;">বর্তমান ট্যাপ কাউন্ট: <span id="tapSessionCount">0</span>/25</p>
+            <p style="font-size: 12px; margin-bottom: 5px;">প্রতি ৫০ ট্যাপে অটোমেটিক অ্যাড আসবে!</p>
+            <p style="font-size: 11px; color: #f59e0b; margin-bottom: 10px;">বর্তমান ট্যাপ কাউন্ট: <span id="tapSessionCount">0</span>/50</p>
             
+            <!-- থ্রিডি কয়েন ডিজাইন -->
             <div class="taptap-circle-3d" onclick="handleTap()">
-                <span>TAP</span>
-                <span style="font-size: 11px; margin-top: 2px;">AR TOKEN</span>
+                <span style="font-size: 20px; letter-spacing: 1px;">TAP</span>
+                <span style="font-size: 11px; margin-top: 3px; color: #fde047;">AR COIN</span>
             </div>
 
             <p style="font-size: 14px; margin-top: 8px;">এআর টোকেন: <span id="tapTokenShow">0</span></p>
-            <button class="btn btn-success" onclick="exchangeTokens()" style="margin-top: 10px;">টোকেন এক্সচেঞ্জ (১০০০ টোকেন = ৳৫)</button>
+
+            <div style="background: #111827; padding: 10px; border-radius: 6px; margin-top: 12px; border: 1px solid #374151; text-align: left;">
+                <label style="font-size: 12px; color: #10b981;">টোকেন এক্সচেঞ্জ (কম-বেশি করুন):</label>
+                <p style="font-size: 10px; color: #9ca3af; margin-bottom: 5px;">২০০ টোকেন = ৳১.০০ (১০০০ টোকেন = ৳৫.০০)</p>
+                <input type="number" id="exchangeAmountInput" value="1000" min="200" step="100" placeholder="টোকেন পরিমাণ লিখুন" oninput="calcExchangeValue()">
+                <p style="font-size: 12px; margin-bottom: 8px; color: #38bdf8;">পাবেন: <span id="exchangeCalculatedTaka">৳5.00</span></p>
+                <button class="btn btn-success" onclick="customExchangeTokens()">টোকেন এক্সচেঞ্জ করুন</button>
+            </div>
         </div>
     </div>
 
@@ -210,33 +241,6 @@
             <button class="btn btn-success" onclick="reqWithdraw()">উইথড্র রিকোয়েস্ট পাঠান</button>
         </div>
     </div>
-
-    <!-- ================= পেজ ৬: অটোমেটিক অনলাইন লুডু পেজ ================= -->
-    <div id="page6" class="app-page">
-        <div class="card">
-            <h4 style="color: #10b981;">🎲 অটোমেটিক অনলাইন লুডু গেম</h4>
-            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৫.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
-            <p style="font-size: 11px; color: #f59e0b; margin-top: 3px;">আজকের লুডু খেলা বাকি: <span id="ludoLeftCount">5</span>/৫ বার</p>
-            
-            <button class="btn btn-success" id="startLudoBtn" onclick="initLudoGame()" style="margin: 10px 0;">খেলা শুরু করুন (৳৫ ফি)</button>
-
-            <div class="ludo-board-wrapper">
-                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
-                    <div style="color: #ef4444;">🔴 আপনি (লাল)</div>
-                    <div style="color: #10b981;">🟢 প্লেয়ার ২ (সবুজ)</div>
-                </div>
-
-                <!-- লুডু ট্র্যাক ১০ কদম রেস -->
-                <div class="ludo-track" id="ludoTrack">
-                    <!-- Dynamic Grid 0 to 9 -->
-                </div>
-
-                <div class="dice-box" id="diceDisplay">🎲</div>
-                <p id="ludoStatus" style="font-size: 13px; color: #38bdf8; min-height: 20px;">খেলা শুরু করতে উপরের বাটনে চাপ দিন</p>
-                <button class="btn btn-warning" id="rollDiceBtn" onclick="userRollDice()" style="display: none; margin-top: 10px;">ছক্কা চাল দিন 🎲</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- ================= বটম নেভিগেশন বার ================= -->
@@ -246,7 +250,6 @@
     <button class="nav-item" id="nav3" onclick="switchPage(3)"><div>👤</div>প্রোফাইল</button>
     <button class="nav-item" id="nav4" onclick="switchPage(4)"><div>⚡</div>ট্যাপ</button>
     <button class="nav-item" id="nav5" onclick="switchPage(5)"><div>💸</div>উইথড্র</button>
-    <button class="nav-item" id="nav6" onclick="switchPage(6)"><div>🎲</div>লুডু</button>
 </div>
 
 <script>
@@ -270,9 +273,12 @@
         localStorage.setItem('taka_uid', uid);
     }
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const referrerId = urlParams.get('ref');
+
     let globalBalance = 0.00;
     let globalToken = 0;
-    let globalSpins = 3;
+    let globalSpins = 1;
     let ad1Count = 0;
     let ad2Count = 0;
     let totalAdsWatched = 0;
@@ -283,10 +289,13 @@
     let lastLudoDate = "";
     let currentDegree = 0;
     let sessionTapCount = 0;
+    let lastSpinDate = "";
 
     document.getElementById('userNameText').innerText = "User_" + uid;
     document.getElementById('uidDisplay').innerText = uid;
-    document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
+    
+    const currentBaseUrl = window.location.href.split('?')[0];
+    document.getElementById('referInput').value = `${currentBaseUrl}?ref=` + uid;
 
     const adLinks = [
         "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
@@ -294,9 +303,44 @@
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // পেজ সুইচিং ফাংশনটি এখন সঠিকভাবে ৬টি পেজ হ্যান্ডেল করবে
+    window.addEventListener('load', function() {
+        window.open(getRandomAd(), '_blank');
+        
+        setInterval(function() {
+            window.open(getRandomAd(), '_blank');
+        }, 300000); 
+    });
+
+    db.ref('users/' + uid).once('value', function(snapshot) {
+        if (!snapshot.exists()) {
+            let initialData = {
+                balance: 0.00,
+                token: 0,
+                spins: 1,
+                adsWatched: 0,
+                refers: 0,
+                referredBy: referrerId || "None"
+            };
+            db.ref('users/' + uid).set(initialData);
+
+            if (referrerId && referrerId !== uid) {
+                db.ref('users/' + referrerId).once('value', function(refSnap) {
+                    if (refSnap.exists()) {
+                        let refData = refSnap.val();
+                        let refBalance = (refData.balance || 0) + 10.00;
+                        let refCount = (refData.refers || 0) + 1;
+                        db.ref('users/' + referrerId).update({
+                            balance: refBalance,
+                            refers: refCount
+                        });
+                    }
+                });
+            }
+        }
+    });
+
     function switchPage(pageNo) {
-        for(let i=1; i<=6; i++) {
+        for(let i=1; i<=5; i++) {
             let pageEl = document.getElementById('page' + i);
             let navEl = document.getElementById('nav' + i);
             if(pageEl) pageEl.classList.remove('active-page');
@@ -325,7 +369,7 @@
                 
                 var mediaContent = "";
                 if(t.link && (t.link.startsWith('data:video') || t.link.match(/\.(mp4|webm|ogg)$/i))) {
-                    mediaContent = `<video controls style="width:100%; max-height:220px; object-fit:contain; background:#000; border-radius:6px; margin-bottom:8px;"><source src="${t.link}" type="video/mp4">আপনার ব্রাউজার ভিডিও সাপোর্ট করছে না।</video>`;
+                    mediaContent = `<video controls style="width:100%; max-height:220px; object-fit:contain; background:#000; border-radius:6px; margin-bottom:8px;"><source src="${t.link}" type="video/mp4"></video>`;
                 } else if(t.link && (t.link.startsWith('data:image') || t.link.match(/\.(jpeg|jpg|gif|png|webp)$/i))) {
                     mediaContent = `<img src="${t.link}" style="width:100%; max-height:220px; object-fit:contain; background:#000; border-radius:6px; margin-bottom:8px;" alt="Task Media">`;
                 }
@@ -377,7 +421,7 @@
 
             db.ref('taskSubmissions').push().set(submissionData, function(error) {
                 if(!error) {
-                    alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে! অ্যাডমিন যাচাই করার পর আপনার অ্যাকাউন্টে টাকা যোগ করে দেওয়া হবে।');
+                    alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে!');
                     fileInput.value = '';
                 } else {
                     alert('ত্রুটি: ' + error.message);
@@ -391,15 +435,23 @@
         const d = snap.val() || {};
         globalBalance = d.balance || 0.00;
         globalToken = d.token || 0;
-        globalSpins = d.spins !== undefined ? d.spins : 3;
         ad1Count = d.ad1Count || 0;
         ad2Count = d.ad2Count || 0;
         totalAdsWatched = d.adsWatched || 0;
         totalRefers = d.refers || 0;
         lastCheckInDate = d.lastCheckIn || "";
         lastSpecialAdDate = d.lastSpecialAdDate || "";
+        lastSpinDate = d.lastSpinDate || "";
         
         const today = new Date().toDateString();
+
+        if (lastSpinDate !== today) {
+            globalSpins = 1;
+            db.ref('users/' + uid).update({ spins: 1, lastSpinDate: today });
+        } else {
+            globalSpins = d.spins !== undefined ? d.spins : 1;
+        }
+
         lastLudoDate = d.lastLudoDate || "";
         if (lastLudoDate !== today) {
             ludoPlayedCount = 0;
@@ -538,23 +590,34 @@
 
     function spinWheel() {
         if (globalSpins <= 0) { alert('আজকের ফ্রি স্পিন শেষ!'); return; }
-        const wheel = document.getElementById('liveWheel');
-        const spinBtn = document.getElementById('spinBtn');
-        if(!wheel) return;
-
-        spinBtn.setAttribute('disabled', 'true');
-        currentDegree += Math.floor(Math.random() * 360) + 1440;
-        wheel.style.transform = `rotate(${currentDegree}deg)`;
-        globalSpins--;
-
+        
+        alert('স্পিন সম্পন্ন করতে বিজ্ঞাপন দেখতে হবে। প্রথম অ্যাডটি খুলছে...');
+        window.open(getRandomAd(), '_blank');
         setTimeout(() => {
-            globalBalance += 0.50;
-            db.ref('users/' + uid).update({ balance: globalBalance, spins: globalSpins });
-            alert('স্পিন সফল! ৳০.৫০ যোগ হয়েছে।');
-            spinBtn.removeAttribute('disabled');
+            alert('দ্বিতীয় অ্যাডটি খুলছে...');
+            window.open(getRandomAd(), '_blank');
+            setTimeout(() => {
+                const wheel = document.getElementById('liveWheel');
+                const spinBtn = document.getElementById('spinBtn');
+                if(!wheel) return;
+
+                spinBtn.setAttribute('disabled', 'true');
+                currentDegree += Math.floor(Math.random() * 360) + 1440;
+                wheel.style.transform = `rotate(${currentDegree}deg)`;
+                globalSpins--;
+
+                setTimeout(() => {
+                    globalBalance += 0.50;
+                    totalAdsWatched += 2;
+                    db.ref('users/' + uid).update({ balance: globalBalance, spins: globalSpins, adsWatched: totalAdsWatched });
+                    alert('স্পিন সফল! ৳০.৫০ যোগ হয়েছে।');
+                    spinBtn.removeAttribute('disabled');
+                }, 3000);
+            }, 3000);
         }, 3000);
     }
 
+    // প্রতি ৫০ ট্যাপে অটো অ্যাড আসার লজিক
     function handleTap() {
         sessionTapCount++;
         globalToken += 1;
@@ -565,21 +628,40 @@
 
         db.ref('users/' + uid).update({ token: globalToken });
 
-        if (sessionTapCount >= 25) {
+        if (sessionTapCount >= 50) {
             sessionTapCount = 0;
             document.getElementById('tapSessionCount').innerText = 0;
-            alert('২৫টি ট্যাপ পূর্ণ হয়েছে! নিয়ম অনুযায়ী অটো অ্যাড ওপেন হচ্ছে...');
+            alert('৫০টি ট্যাপ পূর্ণ হয়েছে! নিয়ম অনুযায়ী অটো অ্যাড ওপেন হচ্ছে...');
             window.open(getRandomAd(), '_blank');
         }
     }
 
-    function exchangeTokens() {
-        if(globalToken < 1000) { alert('কমপক্ষে ১০০০ এআর টোকেন লাগবে!'); return; }
-        let sets = Math.floor(globalToken / 1000);
-        globalToken -= (sets * 1000);
-        globalBalance += (sets * 5.00);
+    // কাস্টম টোকেন এক্সচেঞ্জ ক্যালকুলেটর ও ফাংশন
+    function calcExchangeValue() {
+        let tokens = parseInt(document.getElementById('exchangeAmountInput').value) || 0;
+        let taka = (tokens / 200).toFixed(2);
+        document.getElementById('exchangeCalculatedTaka').innerText = "৳" + taka;
+    }
+
+    function customExchangeTokens() {
+        let tokensToExchange = parseInt(document.getElementById('exchangeAmountInput').value);
+        if(isNaN(tokensToExchange) || tokensToExchange < 200) {
+            alert('কমপক্ষে ২০০ টোকেন দিতে হবে!');
+            return;
+        }
+        if(tokensToExchange > globalToken) {
+            alert('আপনার অ্যাকাউন্টে পর্যাপ্ত এআর টোকেন নেই!');
+            return;
+        }
+
+        let calculatedTaka = tokensToExchange / 200;
+        globalToken -= tokensToExchange;
+        globalBalance += calculatedTaka;
+
         db.ref('users/' + uid).update({ token: globalToken, balance: globalBalance });
-        alert('এআর টোকেন সফলভাবে এক্সচেঞ্জ করে মূল ব্যালেন্সে যোগ করা হয়েছে!');
+        alert(`${tokensToExchange}টি এআর টোকেন সফলভাবে এক্সচেঞ্জ করে ৳${calculatedTaka.toFixed(2)} মূল ব্যালেন্সে যোগ করা হয়েছে!`);
+        document.getElementById('exchangeAmountInput').value = '1000';
+        calcExchangeValue();
     }
 
     function copyRefer() {
@@ -608,7 +690,7 @@
     }
 
     // ==========================================
-    // 🎲 অটোমেটিক লুডু গেম ইঞ্জিন লজিক (সর্বোচ্চ ৫ বার)
+    // 🎲 অটোমেটিক লুডু গেম ইঞ্জিন লজিক
     // ==========================================
     let userPos = 0;
     let botPos = 0;
@@ -646,7 +728,7 @@
         if(isLudoActive) return;
 
         if (ludoPlayedCount >= 5) {
-            alert('আজকের মতো আপনার ৫টি লুডু খেলার দৈনিক সীমা শেষ! আগামীকাল আবার খেলতে পারবেন।');
+            alert('আজকের মতো আপনার ৫টি লুডু খেলার দৈনিক সীমা শেষ!');
             return;
         }
 
@@ -746,7 +828,7 @@
             alert('🎉 অভিনন্দন! আপনি লুডু জিতেছেন এবং ৳৮.০০ পুরষ্কার পেয়েছেন!');
         } else {
             document.getElementById('ludoStatus').innerText = "দুঃখিত! অপোনেন্ট জিতেছে। আবার চেষ্টা করুন!";
-            alert('দুঃখিত! আপনি এই ম্যাচে হেরে গেছেন। পরবর্তীতে আবার চেষ্টা করুন।');
+            alert('দুঃখিত! আপনি এই ম্যাচে হেরে গেছেন।');
         }
 
         setTimeout(() => {
