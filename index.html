@@ -105,16 +105,16 @@
             <button class="btn btn-warning" onclick="watchHomeAd(2)">অ্যাড দেখুন (রাউন্ড ২)</button>
         </div>
         <div class="card">
-            <h4>🎁 ডেইলি চেকিং (৳১.০০)</h4>
+            <h4>🎁 ডেইলি চেকিং (৳0.75)</h4>
             <button class="btn btn-success" onclick="claimDailyCheckIn()">আজকের বোনাস নিন</button>
         </div>
         <div class="card">
-            <h4>⭐ স্পেশাল অ্যাড (৳১.৫০)</h4>
+            <h4>⭐ স্পেশাল অ্যাড (৳১.০০)</h4>
             <p id="specialAdStatus" style="font-size: 12px; color: #10b981; margin-bottom: 8px;">দৈনিক লিমিট: ১ বার</p>
             <button class="btn btn-danger" id="specialAdBtn" onclick="watchSpecialAd()">৩টি অ্যাড দেখে রিওয়ার্ড নিন</button>
         </div>
         <div class="card">
-            <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
+            <h4>চাকা ঘোরান (Spin & Win - ৳০.৪০)</h4>
             <p>স্পিন বাকি: <span id="spinCountText">1</span>টি</p>
             <div class="wheel-container">
                 <div class="wheel-pointer"></div>
@@ -126,7 +126,7 @@
         <!-- অটোমেটিক অনলাইন লুডু গেম -->
         <div class="card">
             <h4 style="color: #10b981;">🎲 অটোমেটিক অনলাইন লুডু গেম</h4>
-            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৫.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
+            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৪.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
             <p style="font-size: 11px; color: #f59e0b; margin-top: 3px;">আজকের লুডু খেলা বাকি: <span id="ludoLeftCount">5</span>/৫ বার</p>
             
             <button class="btn btn-success" id="startLudoBtn" onclick="initLudoGame()" style="margin: 10px 0;">খেলা শুরু করুন (৳৫ ফি)</button>
@@ -211,9 +211,9 @@
 
             <div style="background: #111827; padding: 10px; border-radius: 6px; margin-top: 12px; border: 1px solid #374151; text-align: left;">
                 <label style="font-size: 12px; color: #10b981;">টোকেন এক্সচেঞ্জ (কম-বেশি করুন):</label>
-                <p style="font-size: 10px; color: #9ca3af; margin-bottom: 5px;">২০০ টোকেন = ৳১.০০ (১০০০ টোকেন = ৳৫.০০)</p>
+                <p style="font-size: 10px; color: #9ca3af; margin-bottom: 5px;">২০০ টোকেন = ৳০.৭৫ (১০০০ টোকেন = ৳৪.০০)</p>
                 <input type="number" id="exchangeAmountInput" value="1000" min="200" step="100" placeholder="টোকেন পরিমাণ লিখুন" oninput="calcExchangeValue()">
-                <p style="font-size: 12px; margin-bottom: 8px; color: #38bdf8;">পাবেন: <span id="exchangeCalculatedTaka">৳5.00</span></p>
+                <p style="font-size: 12px; margin-bottom: 8px; color: #38bdf8;">পাবেন: <span id="exchangeCalculatedTaka">৳৪.00</span></p>
                 <button class="btn btn-success" onclick="customExchangeTokens()">টোকেন এক্সচেঞ্জ করুন</button>
             </div>
         </div>
@@ -571,7 +571,7 @@
                         adsWatched: totalAdsWatched,
                         lastSpecialAdDate: lastSpecialAdDate 
                     });
-                    alert('অভিনন্দন! ৩টি স্পেশাল অ্যাড দেখার জন্য ৳১.৫০ যোগ হয়েছে।');
+                    alert('অভিনন্দন! ৩টি স্পেশাল অ্যাড দেখার জন্য ৳০.75 যোগ হয়েছে।');
                 }, 4000);
             }, 4000);
         }, 4000);
