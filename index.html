@@ -10,48 +10,50 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-        body { background-color: #f4f6f9; color: #333; padding-bottom: 90px; }
-        .container { max-width: 480px; margin: 0 auto; background: #fff; min-height: 100vh; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .header { background: #28a745; color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; }
-        .balance-card { background: #e9ecef; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; }
+        body { background: linear-gradient(135deg, #0b0f19, #1b263b); color: #fff; padding-bottom: 90px; }
+        .container { max-width: 480px; margin: 0 auto; background: #111827; min-height: 100vh; padding: 15px; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); border: 1px solid #1f2937; }
+        .header { background: linear-gradient(135deg, #10b981, #047857); color: white; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 12px; border: 1px solid #059669; }
+        .balance-card { background: #1f2937; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-around; border: 1px solid #374151; color: #f3f4f6; }
         
         /* Bottom Navigation Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 2px solid #28a745; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); }
-        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #555; flex: 1; outline: none; }
-        .nav-item.active { color: #28a745; font-size: 13px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #0f172a; border-top: 2px solid #ef4444; display: flex; justify-content: space-around; padding: 10px 0; z-index: 999999; box-shadow: 0 -4px 15px rgba(0,0,0,0.5); }
+        .nav-item { border: none; background: none; text-align: center; cursor: pointer; font-size: 12px; font-weight: bold; color: #9ca3af; outline: none; }
+        .nav-item.active { color: #10b981; font-size: 13px; }
         .nav-item div { font-size: 18px; margin-bottom: 2px; }
 
         /* Page Display Management */
         .app-page { display: none; }
         .app-page.active-page { display: block; }
 
-        .card { border: 1px solid #ddd; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #fafafa; text-align: center; }
-        .btn { display: inline-block; width: 100%; padding: 10px; background: #007bff; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; }
-        .btn-success { background: #28a745; }
-        .btn-warning { background: #ffc107; color: #000; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
-        .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #28a745; margin: 0 auto 10px; display: block; background: #ddd; }
+        .card { border: 1px solid #374151; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #1f2937; text-align: center; color: #f9fafb; }
+        .btn { display: inline-block; width: 100%; padding: 10px; background: #2563eb; color: white; text-align: center; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 5px; font-weight: bold; }
+        .btn-success { background: #10b981; }
+        .btn-warning { background: #f59e0b; color: #000; }
+        .btn-danger { background: #ef4444; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 10px; border: 1px solid #4b5563; border-radius: 4px; font-size: 13px; background: #111827; color: #fff; }
+        .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ef4444; margin: 0 auto 10px; display: block; background: #374151; }
         
         /* Live Spinning Wheel */
         .wheel-container { position: relative; width: 150px; height: 150px; margin: 15px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #28a745; background: conic-gradient(#ffc107 0deg 90deg, #28a745 90deg 180deg, #007bff 180deg 270deg, #dc3545 270deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.15, 0.90, 0.15, 1); }
-        .wheel-center { position: absolute; width: 35px; height: 35px; background: #fff; border-radius: 50%; border: 3px solid #333; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
-        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #333; z-index: 10; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #ef4444; background: conic-gradient(#f59e0b 0deg 90deg, #10b981 90deg 180deg, #2563eb 180deg 270deg, #ef4444 270deg 360deg); display: flex; align-items: center; justify-content: center; position: relative; transition: transform 3s cubic-bezier(0.15, 0.90, 0.15, 1); }
+        .wheel-center { position: absolute; width: 35px; height: 35px; background: #111827; color: #fff; border-radius: 50%; border: 3px solid #ef4444; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
+        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #ef4444; z-index: 10; }
 
         /* 3D Press Effect for Tap-Tap Circle */
         .taptap-circle-3d { 
             width: 130px; height: 130px; 
-            background: linear-gradient(145deg, #28a745, #1e7e34); 
+            background: linear-gradient(145deg, #ef4444, #991b1b); 
             color: white; border-radius: 50%; 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
             font-size: 16px; font-weight: bold; margin: 15px auto; cursor: pointer; 
-            box-shadow: 0 8px #1c6b2a, 0 12px 15px rgba(0,0,0,0.2); 
+            box-shadow: 0 8px #7f1d1d, 0 12px 15px rgba(0,0,0,0.4); 
             user-select: none; transition: all 0.05s ease; 
         }
         .taptap-circle-3d:active { 
             transform: translateY(5px); 
-            box-shadow: 0 3px #1c6b2a, 0 6px 8px rgba(0,0,0,0.2); 
+            box-shadow: 0 3px #7f1d1d, 0 6px 8px rgba(0,0,0,0.4); 
         }
+        .task-proof-img { width: 100%; max-height: 140px; object-fit: cover; border-radius: 4px; margin-top: 5px; border: 1px solid #4b5563; display: none; }
     </style>
 </head>
 <body>
@@ -86,7 +88,7 @@
         </div>
         <div class="card">
             <h4>⭐ স্পেশাল অ্যাড (৩টি অ্যাড দেখতে হবে)</h4>
-            <button class="btn btn-warning" onclick="watchSpecialAd()">স্পেশাল অ্যাড শুরু করুন</button>
+            <button class="btn btn-danger" onclick="watchSpecialAd()">স্পেশাল অ্যাড শুরু করুন</button>
         </div>
         <div class="card">
             <h4>চাকা ঘোরান (Spin & Win - ৳০.৫০)</h4>
@@ -99,36 +101,76 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ২: টাস্ক পেজ ================= -->
+    <!-- ================= পেজ ২: সোশ্যাল টাস্ক পেজ (আলাদা আলাদা টাস্ক) ================= -->
     <div id="page2" class="app-page">
-        <h4 style="margin-bottom: 10px; text-align: center;">সোশ্যাল মিডিয়া টাস্কসমূহ</h4>
+        <h4 style="margin-bottom: 10px; text-align: center; color: #10b981;">সোশ্যাল মিডিয়া ও অ্যাপস টাস্ক</h4>
+        
+        <!-- TikTok Task -->
         <div class="card" style="text-align: left;">
-            <h4 style="color: #28a745; font-size: 14px;">📺 ইউটিউব / ফেসবুক টাস্ক (৳২.০০)</h4>
-            <input type="file" id="taskFile" accept="image/*">
-            <button class="btn btn-warning" onclick="submitTask()">টাস্ক জমা দিন</button>
+            <h4 style="color: #ef4444; font-size: 14px;">🎵 টিকটক ফলো টাস্ক (৳২.০০)</h4>
+            <input type="file" id="t1File" accept="image/*" onchange="previewImg(event, 'p1')">
+            <img id="p1" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask('টিকটক', 't1File', 'p1')">টাস্ক জমা দিন</button>
+        </div>
+
+        <!-- Facebook Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #2563eb; font-size: 14px;">👥 ফেসবুক পেজ লাইক (৳২.০০)</h4>
+            <input type="file" id="t2File" accept="image/*" onchange="previewImg(event, 'p2')">
+            <img id="p2" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask('ফেসবুক', 't2File', 'p2')">টাস্ক জমা দিন</button>
+        </div>
+
+        <!-- YouTube Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #ef4444; font-size: 14px;">📺 ইউটিউব সাবস্ক্রাইব (৳২.০০)</h4>
+            <input type="file" id="t3File" accept="image/*" onchange="previewImg(event, 'p3')">
+            <img id="p3" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask('ইউটিউব', 't3File', 'p3')">টাস্ক জমা দিন</button>
+        </div>
+
+        <!-- WhatsApp Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #10b981; font-size: 14px;">💬 হোয়াটসঅ্যাপ গ্রুপ জয়েন (৳২.০০)</h4>
+            <input type="file" id="t4File" accept="image/*" onchange="previewImg(event, 'p4')">
+            <img id="p4" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask('হোয়াটসঅ্যাপ', 't4File', 'p4')">টাস্ক জমা দিন</button>
+        </div>
+
+        <!-- Telegram Task -->
+        <div class="card" style="text-align: left;">
+            <h4 style="color: #38bdf8; font-size: 14px;">✈️ টেলিগ্রাম চ্যানেল জয়েন (৳২.০০)</h4>
+            <input type="file" id="t5File" accept="image/*" onchange="previewImg(event, 'p5')">
+            <img id="p5" class="task-proof-img" alt="Preview">
+            <button class="btn btn-warning" onclick="submitTask('টেলিগ্রাম', 't5File', 'p5')">টাস্ক জমা দিন</button>
         </div>
     </div>
 
-    <!-- ================= পেজ ৩: প্রোফাইল ও রেফার পেজ ================= -->
+    <!-- ================= পেজ ৩: প্রোফাইল ও ইউআইডি পেজ ================= -->
     <div id="page3" class="app-page">
         <div class="card">
-            <h4>ইউজার প্রোফাইল ও রেফার</h4>
-            <img src="https://via.placeholder.com/80" class="profile-img">
-            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">আইডি: <span id="uidDisplay" style="color: #007bff;">---</span></p>
+            <h4>ইউজার প্রোফাইল ও ইউআইডি</h4>
+            <img id="profileDisplayImg" src="https://via.placeholder.com/80" class="profile-img">
+            <p style="font-size: 13px; font-weight: bold; margin-bottom: 8px;">ইউনিক ইউআইডি: <span id="uidDisplay" style="color: #10b981;">---</span></p>
+            
             <div style="text-align: left; font-size: 13px;">
-                <label>রেফার লিংক:</label>
-                <input type="text" id="referInput" readonly style="text-align: center; background: #eee;">
+                <label>ফাইল ম্যানেজার থেকে ছবি সেট করুন:</label>
+                <input type="file" id="localImgInput" accept="image/*" onchange="setProfileImageLocally(event)">
+                
+                <label style="margin-top: 8px; display: block;">রেফার লিংক:</label>
+                <input type="text" id="referInput" readonly style="text-align: center; background: #0b0f19;">
                 <button class="btn btn-success" onclick="copyRefer()">লিংক কপি</button>
                 <p style="margin-top: 8px; font-size: 12px;">মোট রেফার: <span id="refCountShow">0</span> জন | মোট অ্যাড: <span id="adCountShow">0</span> টি</p>
             </div>
         </div>
     </div>
 
-    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ (২৫ ট্যাপে অটো অ্যাড) ================= -->
     <div id="page4" class="app-page">
         <div class="card">
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
-            <p style="font-size: 12px; margin-bottom: 5px;">ট্যাপ করে এআর টোকেন আয় করুন</p>
+            <p style="font-size: 12px; margin-bottom: 5px;">প্রতি ২৫ ট্যাপে অটোমেটিক অ্যাড আসবে!</p>
+            <p style="font-size: 11px; color: #f59e0b; margin-bottom: 10px;">বর্তমান ট্যাপ কাউন্ট: <span id="tapSessionCount">0</span>/25</p>
             
             <div class="taptap-circle-3d" onclick="handleTap()">
                 <span>TAP</span>
@@ -143,8 +185,8 @@
     <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
     <div id="page5" class="app-page">
         <div class="card" style="text-align: left;">
-            <h4 style="text-align: center; margin-bottom: 10px;">টাকা উত্তোলন (উইথড্র)</h4>
-            <p style="font-size: 11px; color: #e74c3c; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
+            <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">টাকা উত্তোলন (উইথড্র)</h4>
+            <p style="font-size: 11px; color: #ef4444; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
             <label style="font-size: 12px; font-weight: bold;">মাধ্যম:</label>
             <select id="wMethod">
                 <option value="bkash">বিকাশ</option>
@@ -187,9 +229,11 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
+    // ইউনিক ইউআইডি ফরম্যাট (যেমন: 12597...)
     let uid = localStorage.getItem('taka_uid');
     if (!uid) {
-        uid = 'user_' + Math.random().toString(36).substring(2, 10);
+        let randomNum = Math.floor(10000 + Math.random() * 90000);
+        uid = '' + randomNum + Math.floor(10 + Math.random() * 90);
         localStorage.setItem('taka_uid', uid);
     }
 
@@ -202,8 +246,9 @@
     let totalRefers = 0;
     let lastCheckInDate = "";
     let currentDegree = 0;
+    let sessionTapCount = 0; // ২৫ ট্যাপ কাউন্ট ট্র্যাক করার জন্য
 
-    document.getElementById('userNameText').innerText = "User_" + uid.substring(5, 10);
+    document.getElementById('userNameText').innerText = "User_" + uid;
     document.getElementById('uidDisplay').innerText = uid;
     document.getElementById('referInput').value = `https://taka-earn-bd.web.app/?ref=` + uid;
 
@@ -213,7 +258,6 @@
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // স্থায়ী পেজ সুইচিং ফাংশন (কখনো আটকে থাকবে না)
     function switchPage(pageNo) {
         for(let i=1; i<=5; i++) {
             document.getElementById('page' + i).classList.remove('active-page');
@@ -224,7 +268,6 @@
         window.scrollTo(0, 0);
     }
 
-    // ফায়ারবেস ডেটা সিঙ্ক (UI রিসেট করবে না, শুধু টেক্সট আপডেট করবে)
     db.ref('users/' + uid).on('value', snap => {
         const d = snap.val() || {};
         globalBalance = d.balance || 0.00;
@@ -236,6 +279,10 @@
         totalRefers = d.refers || 0;
         lastCheckInDate = d.lastCheckIn || "";
 
+        if(d.profileImg) {
+            document.getElementById('profileDisplayImg').src = d.profileImg;
+        }
+
         if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = globalBalance.toFixed(2);
         if(document.getElementById('userToken')) document.getElementById('userToken').innerText = globalToken;
         if(document.getElementById('spinCountText')) document.getElementById('spinCountText').innerText = globalSpins;
@@ -246,6 +293,18 @@
         if(document.getElementById('adCountShow')) document.getElementById('adCountShow').innerText = totalAdsWatched;
         if(document.getElementById('tapTokenShow')) document.getElementById('tapTokenShow').innerText = globalToken;
     });
+
+    // ফাইল ম্যানেজার থেকে প্রোফাইল ছবি সেট করার অপশন
+    function setProfileImageLocally(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64Img = reader.result;
+            document.getElementById('profileDisplayImg').src = base64Img;
+            db.ref('users/' + uid).update({ profileImg: base64Img });
+            alert('প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে!');
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
 
     function watchHomeAd(round) {
         if(round === 1 && ad1Count >= 10) { alert('রাউন্ড ১ এর ১০টি অ্যাড দেখা শেষ!'); return; }
@@ -316,21 +375,47 @@
         }, 3000);
     }
 
-    function submitTask() {
-        alert('টাস্ক সফলভাবে জমা হয়েছে!');
-        db.ref('users/' + uid).transaction(u => {
-            u = u || {balance:0};
-            u.balance = (u.balance || 0) + 2.00;
-            return u;
-        });
+    function previewImg(e, id) {
+        const r = new FileReader();
+        r.onload = function() {
+            const img = document.getElementById(id);
+            img.src = r.result;
+            img.style.display = 'block';
+        }
+        r.readAsDataURL(e.target.files[0]);
     }
 
+    function submitTask(taskName, fileId, previewId) {
+        const fileInput = document.getElementById(fileId);
+        if (fileInput.files.length === 0) {
+            alert(taskName + ' টাস্কের স্ক্রিনশট আপলোড করুন!');
+            return;
+        }
+
+        globalBalance += 2.00;
+        db.ref('users/' + uid).update({ balance: globalBalance });
+        alert(taskName + ' টাস্ক সফলভাবে জমা হয়েছে! ৳২.০০ যোগ হয়েছে।');
+        fileInput.value = "";
+        document.getElementById(previewId).style.display = 'none';
+    }
+
+    // ট্যাপ-ট্যাপ অপশনে প্রতি ২৫ ট্যাপে অটো অ্যাড রান করার লজিক
     function handleTap() {
-        db.ref('users/' + uid).transaction(u => {
-            u = u || {token:0};
-            u.token = (u.token || 0) + 1;
-            return u;
-        });
+        sessionTapCount++;
+        globalToken += 1;
+
+        if(document.getElementById('tapSessionCount')) {
+            document.getElementById('tapSessionCount').innerText = sessionTapCount;
+        }
+
+        db.ref('users/' + uid).update({ token: globalToken });
+
+        if (sessionTapCount >= 25) {
+            sessionTapCount = 0; // কাউন্ট রিজেট
+            document.getElementById('tapSessionCount').innerText = 0;
+            alert('২৫টি ট্যাপ পূর্ণ হয়েছে! নিয়ম অনুযায়ী অটো অ্যাড ওপেন হচ্ছে...');
+            window.open(getRandomAd(), '_blank');
+        }
     }
 
     function exchangeTokens() {
