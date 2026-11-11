@@ -110,11 +110,11 @@
             <button class="btn btn-warning" onclick="watchHomeAd(2)">অ্যাড দেখুন (রাউন্ড ২)</button>
         </div>
         <div class="card">
-            <h4>🎁 ডেইলি চেকিং (৳0.75)</h4>
+            <h4>🎁 ডেইলি চেকিং (৳০.৭৫)</h4>
             <button class="btn btn-success" onclick="claimDailyCheckIn()">আজকের বোনাস নিন</button>
         </div>
         <div class="card">
-            <h4>⭐ স্পেশাল অ্যাড (৳১.০০)</h4>
+            <h4>⭐ স্পেশাল অ্যাড (৳১.৫০)</h4>
             <p id="specialAdStatus" style="font-size: 12px; color: #10b981; margin-bottom: 8px;">দৈনিক লিমিট: ১ বার</p>
             <button class="btn btn-danger" id="specialAdBtn" onclick="watchSpecialAd()">৩টি অ্যাড দেখে রিওয়ার্ড নিন</button>
         </div>
@@ -131,7 +131,7 @@
         <!-- অটোমেটিক অনলাইন লুডু গেম -->
         <div class="card">
             <h4 style="color: #10b981;">🎲 অটোমেটিক অনলাইন লুডু গেম</h4>
-            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৪.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
+            <p style="font-size: 12px; margin-top: 4px;">এন্ট্রি ফি: <span style="color: #ef4444;">৳৫.০০</span> | বিজয়ী পুরষ্কার: <span style="color: #10b981;">৳৮.০০</span></p>
             <p style="font-size: 11px; color: #f59e0b; margin-top: 3px;">আজকের লুডু খেলা বাকি: <span id="ludoLeftCount">5</span>/৫ বার</p>
             
             <button class="btn btn-success" id="startLudoBtn" onclick="initLudoGame()" style="margin: 10px 0;">খেলা শুরু করুন (৳৫ ফি)</button>
@@ -199,12 +199,13 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ (আপডেটকৃত থ্রিডি কয়েন ও কাস্টম এক্সচেঞ্জ) ================= -->
+    <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ (সর্বোচ্চ ১০০০ ট্যাপ ও এক্সচেঞ্জ লিমি트) ================= -->
     <div id="page4" class="app-page">
         <div class="card">
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
             <p style="font-size: 12px; margin-bottom: 5px;">প্রতি ৫০ ট্যাপে অটোমেটিক অ্যাড আসবে!</p>
-            <p style="font-size: 11px; color: #f59e0b; margin-bottom: 10px;">বর্তমান ট্যাপ কাউন্ট: <span id="tapSessionCount">0</span>/50</p>
+            <p style="font-size: 11px; color: #f59e0b; margin-bottom: 3px;">আজকের ট্যাপ কাউন্ট: <span id="dailyTapCountShow">0</span>/1000</p>
+            <p style="font-size: 10px; color: #9ca3af; margin-bottom: 10px;">বর্তমান সেশন ট্যাপ: <span id="tapSessionCount">0</span>/50</p>
             
             <!-- থ্রিডি কয়েন ডিজাইন -->
             <div class="taptap-circle-3d" onclick="handleTap()">
@@ -218,7 +219,7 @@
                 <label style="font-size: 12px; color: #10b981;">টোকেন এক্সচেঞ্জ (কম-বেশি করুন):</label>
                 <p style="font-size: 10px; color: #9ca3af; margin-bottom: 5px;">২০০ টোকেন = ৳০.৭৫ (১০০০ টোকেন = ৳৪.০০)</p>
                 <input type="number" id="exchangeAmountInput" value="1000" min="200" step="100" placeholder="টোকেন পরিমাণ লিখুন" oninput="calcExchangeValue()">
-                <p style="font-size: 12px; margin-bottom: 8px; color: #38bdf8;">পাবেন: <span id="exchangeCalculatedTaka">৳৪.00</span></p>
+                <p style="font-size: 12px; margin-bottom: 8px; color: #38bdf8;">পাবেন: <span id="exchangeCalculatedTaka">৳৪.০০</span></p>
                 <button class="btn btn-success" onclick="customExchangeTokens()">টোকেন এক্সচেঞ্জ করুন</button>
             </div>
         </div>
@@ -237,7 +238,7 @@
             </select>
             <label style="font-size: 12px;">পরিমাণ:</label>
             <select id="wAmount">
-                <option value="110">১১০ টাকা (পাবেন ১০০ টাকা)</option>
+                <option value="110">১টো টাকা (পাবেন ১০০ টাকা)</option>
                 <option value="210">২১০ টাকা (পাবেন ২০০ টাকা)</option>
                 <option value="310">৩১০ টাকা (পাবেন ৩০০ টাকা)</option>
             </select>
@@ -294,6 +295,8 @@
     let lastLudoDate = "";
     let currentDegree = 0;
     let sessionTapCount = 0;
+    let dailyTapCount = 0;
+    let lastTapDate = "";
     let lastSpinDate = "";
 
     document.getElementById('userNameText').innerText = "User_" + uid;
@@ -302,7 +305,6 @@
     const currentBaseUrl = window.location.href.split('?')[0];
     document.getElementById('referInput').value = `${currentBaseUrl}?ref=` + uid;
 
-    // নিরাপদ অ্যাড লিংকগুলোর অ্যারে
     const adLinks = [
         "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
         "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
@@ -315,16 +317,19 @@
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // 🔥 অ্যাপসে ঢোকার সাথে সাথে অ্যাড ওপেন এবং প্রতি ৫ মিনিট (৩০০০০০ মিলি সেকেন্ড) পর পর অটোমেটিক অ্যাড শো করার ফিক্সড লজিক
-    window.addEventListener('load', function() {
-        // অ্যাপ লোড হওয়ার সাথে সাথে প্রথম অ্যাড ওপেন হবে
-        window.open(getRandomAd(), '_blank');
-        
-        // প্রতি ৫ মিনিট পরপর অটো অ্যাড ওপেন হবে
-        setInterval(function() {
+    let autoAdTriggered = false;
+    function triggerFirstAdOnUserAction() {
+        if (!autoAdTriggered) {
+            autoAdTriggered = true;
             window.open(getRandomAd(), '_blank');
-        }, 300000); 
-    });
+        }
+    }
+    window.addEventListener('click', triggerFirstAdOnUserAction, { once: true });
+    window.addEventListener('touchstart', triggerFirstAdOnUserAction, { once: true });
+
+    setInterval(function() {
+        window.open(getRandomAd(), '_blank');
+    }, 300000);
 
     db.ref('users/' + uid).once('value', function(snapshot) {
         if (!snapshot.exists()) {
@@ -333,20 +338,3 @@
                 token: 0,
                 spins: 1,
                 adsWatched: 0,
-                refers: 0,
-                referredBy: referrerId || "None"
-            };
-            db.ref('users/' + uid).set(initialData);
-
-            if (referrerId && referrerId !== uid) {
-                db.ref('users/' + referrerId).once('value', function(refSnap) {
-                    if (refSnap.exists()) {
-                        let refData = refSnap.val();
-                        let refBalance = (refData.balance || 0) + 10.00;
-                        let refCount = (refData.refers || 0) + 1;
-                        db.ref('users/' + referrerId).update({
-                            balance: refBalance,
-                            refers: refCount
-                        });
-                    }
-                });
