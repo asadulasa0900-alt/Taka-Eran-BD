@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <!-- মনিট্যাক ও অ্যাডস্টেরা স্ক্রিপ্ট -->
+    <!-- হেড সেকশনে মনিট্যাগ ও অ্যাডস্টেরার স্ক্রিপ্ট -->
     <script data-cfasync="false" src="https://afders.org/1/f292ff1fed48cb5e441cc7cffaf8c3c2"></script>
     <script data-cfasync="false" src="https://bicea.org/14/963584fa9588e4a5f8a2679ca24fb726"></script>
     <script async="async" data-cfasync="false" src="https://bicea.org/21/a33d7ba82f7032427329c554c6412d20"></script>
@@ -86,7 +86,7 @@
         <span>ধন্যবাদ আপনাকে আমাদের অ্যাপসে জয়েন হওয়ার জন্য। এখানে আপনারা রেগুলার ভাবে কাজ করুন নতুন নতুন টাস্ক আপনাদের জন্য দেওয়া হবে। - Developer: MD.Asadul Islam Phone nombor:01933232681 (Sarishabarhi 2050)</span>
     </div>
 
-    <!-- ব্যানার অ্যাড কন্টেইনার (অ্যাডস্টেরা / মনিট্যাক ব্যানার) -->
+    <!-- ব্যানার অ্যাড কন্টেইনার -->
     <div style="text-align: center; margin-bottom: 10px;" id="container-a33d7ba82f7032427329c554c6412d20"></div>
 
     <div class="header">
@@ -305,13 +305,20 @@
     const currentBaseUrl = window.location.href.split('?')[0];
     document.getElementById('referInput').value = `${currentBaseUrl}?ref=` + uid;
 
-    // আপনার দেওয়া মনিট্যাকের পপন্ডার অ্যাড লিংক
+    // নিরাপদ এবং পরীক্ষিত মনিট্যাক ও অ্যাডস্টেরার লিংকগুলোর অ্যারে
     const adLinks = [
+        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
+        "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
+        "https://asiafilm.org/4/6e74df70475b9ca0172e83240d1e3dd2",
+        "https://uplcm.com/4/11992398",
+        "https://uplcm.com/4/11995528",
+        "https://uplcm.com/4/12015326",
+        "https://uplcm.com/4/11992396",
         "https://arwf.org/4/a454091c5bcd199404426d1283fae11b"
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // অ্যাপসে ঢোকার সাথে সাথে অ্যাড ওপেন এবং প্রতি ৫ মিনিট (৩০০০০০ মিলি সেকেন্ড) পর পর অটোমেটিক অ্যাড শো করার কোড
+    // অ্যাপসে প্রবেশের সাথে সাথে এবং প্রতি ৫ মিনিট পরপর অটো অ্যাড পপআপ ওপেন হওয়ার লজিক
     window.addEventListener('load', function() {
         window.open(getRandomAd(), '_blank');
         
