@@ -8,6 +8,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
+    <!-- মনিট্যাক ও অ্যাডস্টেরা স্ক্রিপ্ট -->
+    <script data-cfasync="false" src="https://afders.org/1/f292ff1fed48cb5e441cc7cffaf8c3c2"></script>
+    <script data-cfasync="false" src="https://bicea.org/14/963584fa9588e4a5f8a2679ca24fb726"></script>
+    <script async="async" data-cfasync="false" src="https://bicea.org/21/a33d7ba82f7032427329c554c6412d20"></script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; font-weight: 700; }
         body { background: linear-gradient(135deg, #0b0f19, #1b263b); color: #fff; padding-bottom: 90px; }
@@ -80,6 +85,9 @@
     <div class="marquee-container">
         <span>ধন্যবাদ আপনাকে আমাদের অ্যাপসে জয়েন হওয়ার জন্য। এখানে আপনারা রেগুলার ভাবে কাজ করুন নতুন নতুন টাস্ক আপনাদের জন্য দেওয়া হবে। - Developer: MD.Asadul Islam Phone nombor:01933232681 (Sarishabarhi 2050)</span>
     </div>
+
+    <!-- ব্যানার অ্যাড কন্টেইনার (অ্যাডস্টেরা / মনিট্যাক ব্যানার) -->
+    <div style="text-align: center; margin-bottom: 10px;" id="container-a33d7ba82f7032427329c554c6412d20"></div>
 
     <div class="header">
         <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
@@ -297,12 +305,13 @@
     const currentBaseUrl = window.location.href.split('?')[0];
     document.getElementById('referInput').value = `${currentBaseUrl}?ref=` + uid;
 
+    // আপনার দেওয়া মনিট্যাকের পপন্ডার অ্যাড লিংক
     const adLinks = [
-        "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
-        "https://auctionr.org/4/03e62852e0047e5b9397cdccfc07f679"
+        "https://arwf.org/4/a454091c5bcd199404426d1283fae11b"
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
+    // অ্যাপসে ঢোকার সাথে সাথে অ্যাড ওপেন এবং প্রতি ৫ মিনিট (৩০০০০০ মিলি সেকেন্ড) পর পর অটোমেটিক অ্যাড শো করার কোড
     window.addEventListener('load', function() {
         window.open(getRandomAd(), '_blank');
         
