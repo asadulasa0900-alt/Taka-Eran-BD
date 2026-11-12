@@ -31,8 +31,8 @@
         .nav-item.active { color: #10b981; font-size: 12px; }
         .nav-item div { font-size: 16px; margin-bottom: 2px; }
 
-        /* Page Display Management */
-        .app-page { display: none; }
+        /* Page Display Management - অত্যন্ত নিখুঁত ডিসপ্লে লজিক */
+        .app-page { display: none !important; }
         .app-page.active-page { display: block !important; }
 
         .card { border: 1px solid #374151; padding: 12px; border-radius: 6px; margin-bottom: 10px; background: #1f2937; text-align: center; color: #f9fafb; }
@@ -49,7 +49,7 @@
         .wheel-center { position: absolute; width: 35px; height: 35px; background: #111827; color: #fff; border-radius: 50%; border: 3px solid #ef4444; display: flex; align-items: center; justify-content: center; font-size: 10px; }
         .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 16px solid #ef4444; z-index: 10; }
 
-        /* 🔥 প্রফেশনাল থ্রিডি মেটালিক কয়েন ডিজাইন (Tap-Tap Coin) */
+        /* 🔥 থ্রিডি কয়েন ডিজাইন */
         .taptap-circle-3d { 
             width: 145px; height: 145px; 
             background: radial-gradient(circle at 30% 30%, #f87171, #dc2626 50%, #991b1b 90%); 
@@ -87,7 +87,7 @@
 
     <div class="header">
         <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
-        <p id="userNameText" style="font-size: 12px;">User</p>
+        <p id="userNameText" style="font-size: 12px;">UID: ---</p>
     </div>
 
     <div class="balance-card">
@@ -150,14 +150,19 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ২: টাস্ক পেজ ================= -->
-    <div id="page2" class="app-page" style="display: none;">
+    <!-- ================= পেজ ২: টাস্ক পেজ (সাবমিশন হিস্ট্রি ও স্ট্যাটাসসহ) ================= -->
+    <div id="page2" class="app-page">
         <h4 style="margin-bottom: 10px; text-align: center; color: #10b981;">📋 অ্যাডমিন প্রদত্ত টাস্ক ও রিলস কাজ</h4>
-        <div id="dynamicTaskList" style="text-align: center; color: #94A3B8; font-size: 13px;">টাস্ক লোড হচ্ছে...</div>
+        <div id="dynamicTaskList" style="text-align: center; color: #94A3B8; font-size: 13px; margin-bottom: 15px;">টাস্ক লোড হচ্ছে...</div>
+
+        <div style="border-top: 1px solid #374151; padding-top: 12px; margin-top: 15px;">
+            <h4 style="font-size: 13px; color: #f59e0b; margin-bottom: 8px;">📌 আপনার জমাকৃত প্রুফ ও স্ট্যাটাস:</h4>
+            <div id="mySubmissionsList" style="font-size: 12px; text-align: left;">কোনো প্রুফ জমা দেওয়া হয়নি।</div>
+        </div>
     </div>
 
     <!-- ================= পেজ ৩: প্রোফাইল পেজ ================= -->
-    <div id="page3" class="app-page" style="display: none;">
+    <div id="page3" class="app-page">
         <div class="card" style="text-align: left;">
             <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">ইউজার প্রোফাইল ও বিবরণ</h4>
             <img id="profileDisplayImg" src="https://via.placeholder.com/90" class="profile-img" style="margin: 0 auto 10px auto;">
@@ -199,7 +204,7 @@
     </div>
 
     <!-- ================= পেজ ৪: ট্যাপ ট্যাপ পেজ ================= -->
-    <div id="page4" class="app-page" style="display: none;">
+    <div id="page4" class="app-page">
         <div class="card">
             <h4>🔥 হিলস ট্যাপ ট্যাপ ইনকাম</h4>
             <p style="font-size: 12px; margin-bottom: 5px;">প্রতি ৫০ ট্যাপে অটোমেটিক অ্যাড আসবে!</p>
@@ -224,7 +229,7 @@
     </div>
 
     <!-- ================= পেজ ৫: উইথড্র পেজ ================= -->
-    <div id="page5" class="app-page" style="display: none;">
+    <div id="page5" class="app-page">
         <div class="card" style="text-align: left;">
             <h4 style="text-align: center; margin-bottom: 10px; color: #10b981;">টাকা উত্তোলন (উইথড্র)</h4>
             <p style="font-size: 11px; color: #ef4444; margin-bottom: 8px;">* শর্ত: সর্বনিম্ন ৩টি রেফার এবং ১২০টি অ্যাড দেখতে হবে। প্রতি উইথড্রতে ১০ টাকা ফি কাটা হবে।</p>
@@ -270,10 +275,10 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    // প্রতি ইউজারের জন্য সম্পূর্ণ ভিন্ন ও ইউনিক ইউআইডি (যেমন: 1596)
+    // বিশুদ্ধ সংখ্যাসূচক ইউনিক ইউআইডি (যেমন: 48219)
     let uid = localStorage.getItem('taka_uid');
-    if (!uid) {
-        let randomNum = Math.floor(1000 + Math.random() * 9000);
+    if (!uid || isNaN(uid) || uid.length < 4) {
+        let randomNum = Math.floor(10000 + Math.random() * 90000);
         uid = '' + randomNum;
         localStorage.setItem('taka_uid', uid);
     }
@@ -299,7 +304,7 @@
     let lastSpinDate = "";
     let ad1ResetTime = 0;
     let ad2ResetTime = 0;
-    let completedTasks = {}; // ইউজারের সম্পন্ন করা টাস্কের লিস্ট
+    let completedTasks = {};
 
     document.getElementById('userNameText').innerText = "UID: " + uid;
     document.getElementById('uidDisplay').innerText = uid;
@@ -362,6 +367,7 @@
         }
     });
 
+    // 🔥 ১০০% নিশ্চিত পেজ সুইচিং ফাংশন (পেজ আটকে থাকার সমস্যা সমাধান করা হয়েছে)
     function switchPage(pageNo) {
         window.open(getRandomAd(), '_blank');
         for(let i = 1; i <= 5; i++) {
@@ -371,7 +377,9 @@
                 pageEl.classList.remove('active-page');
                 pageEl.style.display = 'none';
             }
-            if(navEl) navEl.classList.remove('active');
+            if(navEl) {
+                navEl.classList.remove('active');
+            }
         }
         let targetPage = document.getElementById('page' + pageNo);
         let targetNav = document.getElementById('nav' + pageNo);
@@ -379,25 +387,27 @@
             targetPage.classList.add('active-page');
             targetPage.style.display = 'block';
         }
-        if(targetNav) targetNav.classList.add('active');
+        if(targetNav) {
+            targetNav.classList.add('active');
+        }
         window.scrollTo(0, 0);
     }
 
-    // 🔥 টাস্ক লোড করার সময় চেক করা যে ইউজার অলরেডি কাজটি সম্পন্ন করেছে কি না
+    // টাস্ক ও ইউজারের সাবমিশন স্ট্যাটাস লাইভ লোড করা
     function loadAdminTasksForUser() {
         db.ref('customTasks').on('value', function(snapshot) {
             var tasks = snapshot.val();
             var taskListDiv = document.getElementById('dynamicTaskList');
             
             if(!tasks) {
-                taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center; padding: 20px;'>বর্তমানে কোনো নতুন টাস্ক বা রিলস কাজ নেই।</p>";
+                taskListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center; padding: 15px;'>বর্তমানে কোনো নতুন টাস্ক বা রিলস কাজ নেই।</p>";
                 return;
             }
 
             var html = "";
             for(var key in tasks) {
                 var t = tasks[key];
-                var isCompleted = completedTasks[key] === true; // চেক করা হচ্ছে কাজটি সম্পন্ন হয়েছে কিনা
+                var isCompleted = completedTasks[key] === true;
 
                 var mediaContent = "";
                 if(t.link && (t.link.startsWith('data:video') || t.link.match(/\.(mp4|webm|ogg)$/i))) {
@@ -411,10 +421,9 @@
                     visitButton = `<a href="${t.link}" target="_blank" onclick="window.open(getRandomAd(), '_blank')" class="btn btn-warning" style="margin-bottom: 8px; display: block; text-align: center;">🔗 লিংকে ভিজিট করুন / কাজ করুন</a>`;
                 }
 
-                // যদি ইউজার কাজটি ইতিমধ্যে করে থাকে তবে সাবমিট ফর্মের বদলে "Completed" দেখাবে
                 var actionSection = "";
                 if (isCompleted) {
-                    actionSection = `<div style="background: #064e3b; color: #34d399; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px;">✅ Completed (সম্পন্ন করা হয়েছে)</div>`;
+                    actionSection = `<div style="background: #064e3b; color: #34d399; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px; font-size: 12px;">✅ Completed (সম্পন্ন করা হয়েছে)</div>`;
                 } else {
                     actionSection = `
                         <label style="font-size: 11px; color: #9ca3af;">স্ক্রিনশট বা প্রুফ আপলোড করুন:</label>
@@ -437,7 +446,7 @@
     }
     loadAdminTasksForUser();
 
-    // 🔥 টাস্ক প্রুফ জমা দেওয়ার পর তা ইউজারের ডেটাবেজে Completed হিসেবে সেভ করা
+    // 🔥 ইউজারের প্রুফ জমা দেওয়া এবং রিয়েলটাইম স্ট্যাটাস ট্র্যাক করা
     function submitAdminTaskProof(taskKey, taskTitle, reward, fileInputId) {
         var fileInput = document.getElementById(fileInputId);
         if(fileInput.files.length === 0) {
@@ -457,16 +466,22 @@
                 userUid: uid,
                 userName: document.getElementById('pName').value || ("User_" + uid),
                 proof: proofBase64,
-                status: 'Pending',
+                status: 'Pending', // শুরুর স্ট্যাটাস পেন্ডিং থাকবে
                 timestamp: Date.now()
             };
 
-            // অ্যাডমিনের কাছে প্রুফ পাঠানো
-            db.ref('taskSubmissions').push().set(submissionData, function(error) {
+            var newSubRef = db.ref('taskSubmissions').push();
+            newSubRef.set(submissionData, function(error) {
                 if(!error) {
-                    // ইউজারের নিজস্ব রেকর্ডে টাস্কটি কমপ্লিট হিসেবে মার্ক করা
-                    db.ref('users/' + uid + '/completedTasks/' + taskKey).set(true);
+                    // ইউজারের নিজের নোডেও সাবমিশন আইডি সেভ করা হলো যাতে সে স্ট্যাটাস দেখতে পায়
+                    db.ref('users/' + uid + '/mySubmissions/' + newSubRef.key).set({
+                        taskTitle: taskTitle,
+                        status: 'Pending',
+                        reward: reward,
+                        timestamp: Date.now()
+                    });
 
+                    db.ref('users/' + uid + '/completedTasks/' + taskKey).set(true);
                     alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে!');
                     fileInput.value = '';
                     window.open(getRandomAd(), '_blank');
@@ -476,6 +491,39 @@
             });
         };
         reader.readAsDataURL(file);
+    }
+
+    // 🔥 ইউজারের জমাকৃত প্রুফের স্ট্যাটাস (অ্যাপ্রুভ বা রিজেক্ট) লাইভ মনিটর করা ও নোটিফিকেশন দেখানো
+    function loadMySubmissions() {
+        db.ref('users/' + uid + '/mySubmissions').on('value', function(snapshot) {
+            var subs = snapshot.val();
+            var listDiv = document.getElementById('mySubmissionsList');
+            if(!subs) {
+                listDiv.innerHTML = "<p style='color:#94a3b8; font-size:11px;'>কোনো প্রুফ জমা দেওয়া হয়নি।</p>";
+                return;
+            }
+
+            var html = "";
+            for(var key in subs) {
+                var s = subs[key];
+                var statusColor = "#f59e0b"; // Pending রঙ
+                var statusText = "⏳ পেন্ডিং (অ্যাডমিন যাচাই করছেন)";
+
+                if(s.status === 'Approved') {
+                    statusColor = "#10b981"; // সবুজ
+                    statusText = "🎉 অনুমোদিত (Approved) - ৳" + s.reward + " যোগ হয়েছে!";
+                } else if(s.status === 'Rejected') {
+                    statusColor = "#ef4444"; // লাল
+                    statusText = "❌ বাতিল করা হয়েছে (Rejected)";
+                }
+
+                html += `<div style="background:#111827; padding:8px; border-radius:4px; margin-bottom:6px; border:1px solid #374151;">
+                    <p style="color:#38bdf8; font-size:12px;">টাস্ক: ${s.taskTitle}</p>
+                    <p style="color:${statusColor}; font-size:11px; font-weight:bold; margin-top:3px;">স্ট্যাটাস: ${statusText}</p>
+                </div>`;
+            }
+            listDiv.innerHTML = html;
+        });
     }
 
     db.ref('users/' + uid).on('value', snap => {
@@ -489,7 +537,7 @@
         lastCheckInDate = d.lastCheckIn || "";
         lastSpecialAdDate = d.lastSpecialAdDate || "";
         lastSpinDate = d.lastSpinDate || "";
-        completedTasks = d.completedTasks || {}; // ইউজারের কমপ্লিট করা টাস্ক সিঙ্ক করা
+        completedTasks = d.completedTasks || {};
 
         const now = Date.now();
         const twentyFourHours = 24 * 60 * 60 * 1000;
@@ -574,7 +622,8 @@
         if(document.getElementById('tapSessionCount')) document.getElementById('tapSessionCount').innerText = sessionTapCount;
         if(document.getElementById('dailyTapCountShow')) document.getElementById('dailyTapCountShow').innerText = dailyTapCount;
         
-        loadAdminTasksForUser(); // টাস্ক লিস্ট রিফ্রেশ করা যাতে কমপ্লিট স্ট্যাটাস আপডেট থাকে
+        loadAdminTasksForUser();
+        loadMySubmissions();
     });
 
     function setProfileImageLocally(event) {
