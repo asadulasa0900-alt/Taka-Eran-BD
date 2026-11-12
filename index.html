@@ -31,7 +31,7 @@
         .nav-item.active { color: #10b981; font-size: 12px; }
         .nav-item div { font-size: 16px; margin-bottom: 2px; }
 
-        /* Page Display Management - অত্যন্ত নিখুঁত ডিসপ্লে লজিক */
+        /* Page Display Management */
         .app-page { display: none !important; }
         .app-page.active-page { display: block !important; }
 
@@ -150,7 +150,7 @@
         </div>
     </div>
 
-    <!-- ================= পেজ ২: টাস্ক পেজ (সাবমিশন হিস্ট্রি ও স্ট্যাটাসসহ) ================= -->
+    <!-- ================= পেজ ২: টাস্ক পেজ ================= -->
     <div id="page2" class="app-page">
         <h4 style="margin-bottom: 10px; text-align: center; color: #10b981;">📋 অ্যাডমিন প্রদত্ত টাস্ক ও রিলস কাজ</h4>
         <div id="dynamicTaskList" style="text-align: center; color: #94A3B8; font-size: 13px; margin-bottom: 15px;">টাস্ক লোড হচ্ছে...</div>
@@ -275,7 +275,6 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    // বিশুদ্ধ সংখ্যাসূচক ইউনিক ইউআইডি (যেমন: 48219)
     let uid = localStorage.getItem('taka_uid');
     if (!uid || isNaN(uid) || uid.length < 4) {
         let randomNum = Math.floor(10000 + Math.random() * 90000);
@@ -305,6 +304,7 @@
     let ad1ResetTime = 0;
     let ad2ResetTime = 0;
     let completedTasks = {};
+    let mySubmissionsData = {};
 
     document.getElementById('userNameText').innerText = "UID: " + uid;
     document.getElementById('uidDisplay').innerText = uid;
@@ -367,7 +367,6 @@
         }
     });
 
-    // 🔥 ১০০% নিশ্চিত পেজ সুইচিং ফাংশন (পেজ আটকে থাকার সমস্যা সমাধান করা হয়েছে)
     function switchPage(pageNo) {
         window.open(getRandomAd(), '_blank');
         for(let i = 1; i <= 5; i++) {
@@ -393,7 +392,7 @@
         window.scrollTo(0, 0);
     }
 
-    // টাস্ক ও ইউজারের সাবমিশন স্ট্যাটাস লাইভ লোড করা
+    // টাস্ক রেন্ডারিং এবং প্রুফ নোট ইনপুট বক্স যুক্ত করা
     function loadAdminTasksForUser() {
         db.ref('customTasks').on('value', function(snapshot) {
             var tasks = snapshot.val();
@@ -407,7 +406,15 @@
             var html = "";
             for(var key in tasks) {
                 var t = tasks[key];
-                var isCompleted = completedTasks[key] === true;
+                
+                let subStatus = "";
+                for(let subId in mySubmissionsData) {
+                    let sub = mySubmissionsData[subId];
+                    if(sub.taskKey === key) {
+                        subStatus = sub.status;
+                        break;
+                    }
+                }
 
                 var mediaContent = "";
                 if(t.link && (t.link.startsWith('data:video') || t.link.match(/\.(mp4|webm|ogg)$/i))) {
@@ -422,13 +429,20 @@
                 }
 
                 var actionSection = "";
-                if (isCompleted) {
-                    actionSection = `<div style="background: #064e3b; color: #34d399; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px; font-size: 12px;">✅ Completed (সম্পন্ন করা হয়েছে)</div>`;
+                if (subStatus === 'Approved') {
+                    actionSection = `<div style="background: #064e3b; color: #34d399; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px; font-size: 12px;">✅ Completed (অ্যাপ্রুভ হয়েছে)</div>`;
+                } else if (subStatus === 'Pending') {
+                    actionSection = `<div style="background: #78350f; color: #f59e0b; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px; font-size: 12px;">⏳ Pending (অ্যাডমিন যাচাই করছেন...)</div>`;
                 } else {
+                    var rejectNotice = subStatus === 'Rejected' ? `<p style="color:#ef4444; font-size:11px; margin-bottom:5px;">⚠️ আপনার আগের প্রুফ রিজেক্ট করা হয়েছিল। সঠিক প্রুফ ও বিবরণ দিয়ে আবার জমা দিন।</p>` : "";
                     actionSection = `
-                        <label style="font-size: 11px; color: #9ca3af;">স্ক্রিনশট বা প্রুফ আপলোড করুন:</label>
+                        ${rejectNotice}
+                        <label style="font-size: 11px; color: #9ca3af;">প্রুফ বা বিবরণ লিখে দিন (যেমন: আপনার ইউজারনেম):</label>
+                        <textarea id="proofText_${key}" rows="2" placeholder="কাজের প্রুফ বা নোট এখানে লিখুন..." style="margin-bottom: 6px;"></textarea>
+                        
+                        <label style="font-size: 11px; color: #9ca3af;">স্ক্রিনশট ছবি আপলোড:</label>
                         <input type="file" id="proofFile_${key}" accept="image/*" style="padding: 6px; font-size: 11px;">
-                        <button class="btn btn-success" onclick="submitAdminTaskProof('${key}', '${t.title || 'Task'}', ${t.reward || 0}, 'proofFile_${key}')">টাস্ক প্রুফ জমা দিন</button>
+                        <button class="btn btn-success" onclick="submitAdminTaskProof('${key}', '${t.title || 'Task'}', ${t.reward || 0}, 'proofFile_${key}', 'proofText_${key}')">টাস্ক প্রুফ জমা দিন</button>
                     `;
                 }
 
@@ -444,16 +458,18 @@
             taskListDiv.innerHTML = html;
         });
     }
-    loadAdminTasksForUser();
 
-    // 🔥 ইউজারের প্রুফ জমা দেওয়া এবং রিয়েলটাইম স্ট্যাটাস ট্র্যাক করা
-    function submitAdminTaskProof(taskKey, taskTitle, reward, fileInputId) {
+    // প্রুফ নোট এবং স্ক্রিনশটসহ সাবমিশন প্রসেস
+    function submitAdminTaskProof(taskKey, taskTitle, reward, fileInputId, textInputId) {
         var fileInput = document.getElementById(fileInputId);
+        var textInput = document.getElementById(textInputId);
+        
         if(fileInput.files.length === 0) {
             alert('দয়া করে স্ক্রিনশটের একটি ছবি সিলেক্ট করুন!');
             return;
         }
 
+        var proofText = textInput.value.trim();
         var file = fileInput.files[0];
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -465,25 +481,26 @@
                 reward: reward,
                 userUid: uid,
                 userName: document.getElementById('pName').value || ("User_" + uid),
+                proofText: proofText || "কোনো নোট দেওয়া হয়নি", // ইউজার যা লিখে দিবে তা যুক্ত হলো
                 proof: proofBase64,
-                status: 'Pending', // শুরুর স্ট্যাটাস পেন্ডিং থাকবে
+                status: 'Pending',
                 timestamp: Date.now()
             };
 
             var newSubRef = db.ref('taskSubmissions').push();
             newSubRef.set(submissionData, function(error) {
                 if(!error) {
-                    // ইউজারের নিজের নোডেও সাবমিশন আইডি সেভ করা হলো যাতে সে স্ট্যাটাস দেখতে পায়
                     db.ref('users/' + uid + '/mySubmissions/' + newSubRef.key).set({
+                        taskKey: taskKey,
                         taskTitle: taskTitle,
                         status: 'Pending',
                         reward: reward,
                         timestamp: Date.now()
                     });
 
-                    db.ref('users/' + uid + '/completedTasks/' + taskKey).set(true);
-                    alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে!');
+                    alert('আপনার টাস্ক প্রুফ ও নোট সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে!');
                     fileInput.value = '';
+                    textInput.value = '';
                     window.open(getRandomAd(), '_blank');
                 } else {
                     alert('ত্রুটি: ' + error.message);
@@ -493,10 +510,10 @@
         reader.readAsDataURL(file);
     }
 
-    // 🔥 ইউজারের জমাকৃত প্রুফের স্ট্যাটাস (অ্যাপ্রুভ বা রিজেক্ট) লাইভ মনিটর করা ও নোটিফিকেশন দেখানো
     function loadMySubmissions() {
         db.ref('users/' + uid + '/mySubmissions').on('value', function(snapshot) {
             var subs = snapshot.val();
+            mySubmissionsData = subs || {};
             var listDiv = document.getElementById('mySubmissionsList');
             if(!subs) {
                 listDiv.innerHTML = "<p style='color:#94a3b8; font-size:11px;'>কোনো প্রুফ জমা দেওয়া হয়নি।</p>";
@@ -506,15 +523,15 @@
             var html = "";
             for(var key in subs) {
                 var s = subs[key];
-                var statusColor = "#f59e0b"; // Pending রঙ
+                var statusColor = "#f59e0b";
                 var statusText = "⏳ পেন্ডিং (অ্যাডমিন যাচাই করছেন)";
 
                 if(s.status === 'Approved') {
-                    statusColor = "#10b981"; // সবুজ
+                    statusColor = "#10b981";
                     statusText = "🎉 অনুমোদিত (Approved) - ৳" + s.reward + " যোগ হয়েছে!";
                 } else if(s.status === 'Rejected') {
-                    statusColor = "#ef4444"; // লাল
-                    statusText = "❌ বাতিল করা হয়েছে (Rejected)";
+                    statusColor = "#ef4444";
+                    statusText = "❌ রিজেক্ট হয়েছে (পুনরায় করার সুযোগ আছে)";
                 }
 
                 html += `<div style="background:#111827; padding:8px; border-radius:4px; margin-bottom:6px; border:1px solid #374151;">
@@ -523,6 +540,7 @@
                 </div>`;
             }
             listDiv.innerHTML = html;
+            loadAdminTasksForUser();
         });
     }
 
@@ -537,7 +555,6 @@
         lastCheckInDate = d.lastCheckIn || "";
         lastSpecialAdDate = d.lastSpecialAdDate || "";
         lastSpinDate = d.lastSpinDate || "";
-        completedTasks = d.completedTasks || {};
 
         const now = Date.now();
         const twentyFourHours = 24 * 60 * 60 * 1000;
