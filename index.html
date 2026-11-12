@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
-    <!-- অ্যাডস্টারার অ্যাড স্ক্রিপ্ট (মনিট্যাগ বাদ দেওয়া হয়েছে) -->
+    <!-- অ্যাডস্টারার অ্যাড স্ক্রিপ্ট -->
     <script data-cfasync="false" src="https://bicea.org/14/963584fa9588e4a5f8a2679ca24fb726"></script>
     <script async="async" data-cfasync="false" src="https://bicea.org/21/a33d7ba82f7032427329c554c6412d20"></script>
 
@@ -87,7 +87,7 @@
 
     <div class="header">
         <h3 style="font-size: 16px;">টাকা আনবিডি</h3>
-        <p id="userNameText" style="font-size: 12px;">User</p>
+        <p id="userNameText" style="font-size: 12px;">UID: ---</p>
     </div>
 
     <div class="balance-card">
@@ -270,10 +270,10 @@
     if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
     const db = firebase.database();
 
-    // ইউনিক ৪ বা ৫ অঙ্কের ইউআইডি জেনারেটর (যেমন: 1596)
+    // 🔥 নিশ্চিত করা হলো যে UID শুধুমাত্র সংখ্যা দিয়ে তৈরি হবে (কোনো অক্ষর বা লেটার থাকবে না)
     let uid = localStorage.getItem('taka_uid');
-    if (!uid) {
-        let randomNum = Math.floor(1000 + Math.random() * 9000);
+    if (!uid || isNaN(uid) || uid.length < 4) {
+        let randomNum = Math.floor(10000 + Math.random() * 90000); // ৫ অঙ্কের বিশুদ্ধ সংখ্যা (যেমন: 48219)
         uid = '' + randomNum;
         localStorage.setItem('taka_uid', uid);
     }
@@ -299,6 +299,7 @@
     let lastSpinDate = "";
     let ad1ResetTime = 0;
     let ad2ResetTime = 0;
+    let completedTasks = {};
 
     document.getElementById('userNameText').innerText = "UID: " + uid;
     document.getElementById('uidDisplay').innerText = uid;
@@ -306,7 +307,6 @@
     const currentBaseUrl = window.location.href.split('?')[0];
     document.getElementById('referInput').value = `${currentBaseUrl}?ref=` + uid;
 
-    // অ্যাডস্টারার অ্যাড লিংকগুলোর অ্যারে
     const adLinks = [
         "https://asiafilm.org/4/6dc4413521dca73c0fa68d897c971b91",
         "https://asiafilm.org/4/4833fb6defa1371fdb4659851723335f",
@@ -319,7 +319,6 @@
     ];
     function getRandomAd() { return adLinks[Math.floor(Math.random() * adLinks.length)]; }
 
-    // 🔥 অ্যাপে ঢোকার সাথে সাথে প্রথম টাচে বা ক্লিক অটো অ্যাড ওপেন
     let autoAdTriggered = false;
     function triggerFirstAdOnUserAction() {
         if (!autoAdTriggered) {
@@ -330,12 +329,10 @@
     window.addEventListener('click', triggerFirstAdOnUserAction, { once: true });
     window.addEventListener('touchstart', triggerFirstAdOnUserAction, { once: true });
 
-    // 🔥 প্রতি ৫ মিনিট (৩০০০০০ মিলিভসেকেন্ড) পর পর অটোমেটিক অ্যাড ওপেন
     setInterval(function() {
         window.open(getRandomAd(), '_blank');
     }, 300000);
 
-    // ফায়ারবেস থেকে ইউজার ডাটা নিরাপদ লোডিং
     db.ref('users/' + uid).once('value', function(snapshot) {
         if (!snapshot.exists()) {
             let initialData = {
@@ -365,9 +362,8 @@
         }
     });
 
-    // পেজ সুইচিং ফাংশন
     function switchPage(pageNo) {
-        window.open(getRandomAd(), '_blank'); // প্রতি পেজ পরিবর্তনেও অ্যাড শো করবে
+        window.open(getRandomAd(), '_blank');
         for(let i = 1; i <= 5; i++) {
             let pageEl = document.getElementById('page' + i);
             let navEl = document.getElementById('nav' + i);
@@ -400,7 +396,8 @@
             var html = "";
             for(var key in tasks) {
                 var t = tasks[key];
-                
+                var isCompleted = completedTasks[key] === true;
+
                 var mediaContent = "";
                 if(t.link && (t.link.startsWith('data:video') || t.link.match(/\.(mp4|webm|ogg)$/i))) {
                     mediaContent = `<video controls style="width:100%; max-height:220px; object-fit:contain; background:#000; border-radius:6px; margin-bottom:8px;"><source src="${t.link}" type="video/mp4"></video>`;
@@ -413,16 +410,24 @@
                     visitButton = `<a href="${t.link}" target="_blank" onclick="window.open(getRandomAd(), '_blank')" class="btn btn-warning" style="margin-bottom: 8px; display: block; text-align: center;">🔗 লিংকে ভিজিট করুন / কাজ করুন</a>`;
                 }
 
+                var actionSection = "";
+                if (isCompleted) {
+                    actionSection = `<div style="background: #064e3b; color: #34d399; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; margin-top: 8px;">✅ Completed (সম্পন্ন করা হয়েছে)</div>`;
+                } else {
+                    actionSection = `
+                        <label style="font-size: 11px; color: #9ca3af;">স্ক্রিনশট বা প্রুফ আপলোড করুন:</label>
+                        <input type="file" id="proofFile_${key}" accept="image/*" style="padding: 6px; font-size: 11px;">
+                        <button class="btn btn-success" onclick="submitAdminTaskProof('${key}', '${t.title || 'Task'}', ${t.reward || 0}, 'proofFile_${key}')">টাস্ক প্রুফ জমা দিন</button>
+                    `;
+                }
+
                 html += `<div class="card" style="text-align: left;">
                     <h4 style="color: #38bdf8; font-size: 14px; margin-bottom: 4px;">[${t.type || 'Task'}] ${t.title || ''}</h4>
                     <p style="font-size: 12px; color: #94A3B8; margin-bottom: 6px;">${t.subtitle || ''}</p>
                     ${mediaContent}
                     ${visitButton}
                     <p style="font-size: 12px; color: #10b981; font-weight: bold; margin-bottom: 8px;">রিওয়ার্ড: ৳${t.reward || 0}</p>
-                    
-                    <label style="font-size: 11px; color: #9ca3af;">স্ক্রিনশট বা প্রুফ আপলোড করুন:</label>
-                    <input type="file" id="proofFile_${key}" accept="image/*" style="padding: 6px; font-size: 11px;">
-                    <button class="btn btn-success" onclick="submitAdminTaskProof('${key}', '${t.title || 'Task'}', ${t.reward || 0}, 'proofFile_${key}')">টাস্ক প্রুফ জমা দিন</button>
+                    ${actionSection}
                 </div>`;
             }
             taskListDiv.innerHTML = html;
@@ -430,7 +435,6 @@
     }
     loadAdminTasksForUser();
 
-    // অ্যাডমিন প্রুফ সাবমিশনে ইউজারের ইউনিক UID ও নাম যুক্ত করা
     function submitAdminTaskProof(taskKey, taskTitle, reward, fileInputId) {
         var fileInput = document.getElementById(fileInputId);
         if(fileInput.files.length === 0) {
@@ -447,7 +451,7 @@
                 taskKey: taskKey,
                 taskTitle: taskTitle,
                 reward: reward,
-                userUid: uid, // ইউনিক ইউআইডি যুক্ত হলো
+                userUid: uid, // ইউনিক সংখ্যাসূচক ইউআইডি যুক্ত হলো
                 userName: document.getElementById('pName').value || ("User_" + uid),
                 proof: proofBase64,
                 status: 'Pending',
@@ -456,6 +460,7 @@
 
             db.ref('taskSubmissions').push().set(submissionData, function(error) {
                 if(!error) {
+                    db.ref('users/' + uid + '/completedTasks/' + taskKey).set(true);
                     alert('আপনার টাস্ক প্রুফ সফলভাবে অ্যাডমিনের কাছে জমা হয়েছে!');
                     fileInput.value = '';
                     window.open(getRandomAd(), '_blank');
@@ -478,11 +483,11 @@
         lastCheckInDate = d.lastCheckIn || "";
         lastSpecialAdDate = d.lastSpecialAdDate || "";
         lastSpinDate = d.lastSpinDate || "";
-        
+        completedTasks = d.completedTasks || {};
+
         const now = Date.now();
         const twentyFourHours = 24 * 60 * 60 * 1000;
 
-        // রাউন্ড ১ অ্যাড রিসেট চেক (২৪ ঘণ্টা পর অটো জিরো হবে)
         ad1ResetTime = d.ad1ResetTime || 0;
         if (now - ad1ResetTime >= twentyFourHours) {
             ad1Count = 0;
@@ -491,7 +496,6 @@
             ad1Count = d.ad1Count || 0;
         }
 
-        // রাউন্ড ২ অ্যাড রিসেট চেক (২৪ ঘণ্টা পর অটো জিরো হবে)
         ad2ResetTime = d.ad2ResetTime || 0;
         if (now - ad2ResetTime >= twentyFourHours) {
             ad2Count = 0;
@@ -532,407 +536,4 @@
             if(imgEl) imgEl.src = d.profileImg;
         }
 
-        if(d.fullName && document.getElementById('pName').value === "") document.getElementById('pName').value = d.fullName;
-        if(d.address && document.getElementById('pAddress').value === "") document.getElementById('pAddress').value = d.address;
-        if(d.email && document.getElementById('pEmail').value === "") document.getElementById('pEmail').value = d.email;
-        if(d.age && document.getElementById('pAge').value === "") document.getElementById('pAge').value = d.age;
-        if(d.gender) document.getElementById('pGender').value = d.gender;
-        if(d.bio && document.getElementById('pBio').value === "") document.getElementById('pBio').value = d.bio;
-
-        const specialBtn = document.getElementById('specialAdBtn');
-        const specialStatus = document.getElementById('specialAdStatus');
-        if (lastSpecialAdDate === today) {
-            if(specialBtn) { specialBtn.setAttribute('disabled', 'true'); specialBtn.style.opacity = '0.5'; }
-            if(specialStatus) specialStatus.innerText = "আজকের স্পেশাল অ্যাড নেওয়া সম্পন্ন হয়েছে!";
-        } else {
-            if(specialBtn) { specialBtn.removeAttribute('disabled'); specialBtn.style.opacity = '1'; }
-            if(specialStatus) specialStatus.innerText = "দৈনিক লিমিট: ১ বার (৳১.৫০)";
-        }
-
-        let ludoRem = 5 - ludoPlayedCount;
-        if(document.getElementById('ludoLeftCount')) document.getElementById('ludoLeftCount').innerText = ludoRem < 0 ? 0 : ludoRem;
-
-        if(document.getElementById('userBalance')) document.getElementById('userBalance').innerText = globalBalance.toFixed(2);
-        if(document.getElementById('userToken')) document.getElementById('userToken').innerText = globalToken;
-        if(document.getElementById('spinCountText')) document.getElementById('spinCountText').innerText = globalSpins;
-        if(document.getElementById('spinLeft')) document.getElementById('spinLeft').innerText = globalSpins;
-        if(document.getElementById('ad1Show')) document.getElementById('ad1Show').innerText = ad1Count;
-        if(document.getElementById('ad2Show')) document.getElementById('ad2Show').innerText = ad2Count;
-        if(document.getElementById('refCountShow')) document.getElementById('refCountShow').innerText = totalRefers;
-        if(document.getElementById('adCountShow')) document.getElementById('adCountShow').innerText = totalAdsWatched;
-        if(document.getElementById('tapTokenShow')) document.getElementById('tapTokenShow').innerText = globalToken;
-        if(document.getElementById('tapSessionCount')) document.getElementById('tapSessionCount').innerText = sessionTapCount;
-        if(document.getElementById('dailyTapCountShow')) document.getElementById('dailyTapCountShow').innerText = dailyTapCount;
-    });
-
-    function setProfileImageLocally(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const base64Img = reader.result;
-            document.getElementById('profileDisplayImg').src = base64Img;
-            db.ref('users/' + uid).update({ profileImg: base64Img });
-            alert('প্রোফাইল ছবি সফলভাবে আপডেট করা হয়েছে!');
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-
-    function saveProfileDetails() {
-        const fullName = document.getElementById('pName').value;
-        const address = document.getElementById('pAddress').value;
-        const email = document.getElementById('pEmail').value;
-        const age = document.getElementById('pAge').value;
-        const gender = document.getElementById('pGender').value;
-        const bio = document.getElementById('pBio').value;
-
-        db.ref('users/' + uid).update({
-            fullName: fullName,
-            address: address,
-            email: email,
-            age: age,
-            gender: gender,
-            bio: bio
-        });
-        alert('প্রোফাইলের সমস্ত তথ্য সফলভাবে সেভ করা হয়েছে!');
-        window.open(getRandomAd(), '_blank');
-    }
-
-    function watchHomeAd(round) {
-        if(round === 1 && ad1Count >= 10) { alert('রাউন্ড ১ এর ১০টি অ্যাড দেখা শেষ! ২৪ ঘণ্টা পর অটোমেটিক পুনরায় চালু হবে।'); return; }
-        if(round === 2 && ad2Count >= 10) { alert('রাউন্ড ২ এর ১০টি অ্যাড দেখা শেষ! ২৪ ঘণ্টা পর অটোমেটিক পুনরায় চালু হবে।'); return; }
-
-        window.open(getRandomAd(), '_blank');
-        setTimeout(() => {
-            globalBalance += 0.40;
-            totalAdsWatched++;
-            
-            let updateObj = {
-                balance: globalBalance,
-                adsWatched: totalAdsWatched
-            };
-
-            if(round === 1) {
-                ad1Count++;
-                updateObj.ad1Count = ad1Count;
-                if(ad1Count === 1) updateObj.ad1ResetTime = Date.now();
-            } else {
-                ad2Count++;
-                updateObj.ad2Count = ad2Count;
-                if(ad2Count === 1) updateObj.ad2ResetTime = Date.now();
-            }
-
-            db.ref('users/' + uid).update(updateObj);
-            alert('অ্যাড দেখার জন্য ৳০.৪০ যোগ হয়েছে!');
-        }, 5000);
-    }
-
-    function watchSpecialAd() {
-        const today = new Date().toDateString();
-        if (lastSpecialAdDate === today) {
-            alert('আজকের স্পেশাল অ্যাডের রিওয়ার্ড আপনি ইতিমধ্যেই নিয়েছেন!');
-            return;
-        }
-
-        alert('স্পেশাল অ্যাডের জন্য পরপর ৩টি অ্যাড দেখতে হবে। প্রথম অ্যাডটি খুলছে...');
-        window.open(getRandomAd(), '_blank');
-        setTimeout(() => {
-            alert('দ্বিতীয় অ্যাডটি খুলছে...');
-            window.open(getRandomAd(), '_blank');
-            setTimeout(() => {
-                alert('তৃতীয় ও শেষ অ্যাডটি খুলছে...');
-                window.open(getRandomAd(), '_blank');
-                setTimeout(() => {
-                    globalBalance += 1.50;
-                    totalAdsWatched += 3;
-                    lastSpecialAdDate = today;
-
-                    db.ref('users/' + uid).update({ 
-                        balance: globalBalance, 
-                        adsWatched: totalAdsWatched,
-                        lastSpecialAdDate: lastSpecialAdDate 
-                    });
-                    alert('অভিনন্দন! ৩টি স্পেশাল অ্যাড দেখার জন্য ৳১.৫০ যোগ হয়েছে।');
-                }, 4000);
-            }, 4000);
-        }, 4000);
-    }
-
-    function claimDailyCheckIn() {
-        const today = new Date().toDateString();
-        if(lastCheckInDate === today) {
-            alert('আজকের ডেইলি চেকিং করা হয়ে গেছে!');
-            return;
-        }
-        globalBalance += 0.75;
-        db.ref('users/' + uid).update({ balance: globalBalance, lastCheckIn: today });
-        alert('সফল! ডেইলি চেকিং থেকে ৳০.৭৫ যোগ হয়েছে।');
-        window.open(getRandomAd(), '_blank');
-    }
-
-    function spinWheel() {
-        if (globalSpins <= 0) { alert('আজকের ফ্রি স্পিন শেষ!'); return; }
-        
-        alert('স্পিন সম্পন্ন করতে বিজ্ঞাপন দেখতে হবে। প্রথম অ্যাডটি খুলছে...');
-        window.open(getRandomAd(), '_blank');
-        setTimeout(() => {
-            alert('দ্বিতীয় অ্যাডটি খুলছে...');
-            window.open(getRandomAd(), '_blank');
-            setTimeout(() => {
-                const wheel = document.getElementById('liveWheel');
-                const spinBtn = document.getElementById('spinBtn');
-                if(!wheel) return;
-
-                spinBtn.setAttribute('disabled', 'true');
-                currentDegree += Math.floor(Math.random() * 360) + 1440;
-                wheel.style.transform = `rotate(${currentDegree}deg)`;
-                globalSpins--;
-
-                setTimeout(() => {
-                    globalBalance += 0.40;
-                    totalAdsWatched += 2;
-                    db.ref('users/' + uid).update({ balance: globalBalance, spins: globalSpins, adsWatched: totalAdsWatched });
-                    alert('স্পিন সফল! ৳০.৪০ যোগ হয়েছে।');
-                    spinBtn.removeAttribute('disabled');
-                }, 3000);
-            }, 3000);
-        }, 3000);
-    }
-
-    function handleTap() {
-        if (dailyTapCount >= 1000) {
-            alert('আজকের মতো আপনার ১০০০টি ট্যাপ করার দৈনিক সীমা শেষ হয়েছে!');
-            return;
-        }
-
-        dailyTapCount++;
-        sessionTapCount++;
-        globalToken += 1;
-
-        if(document.getElementById('tapSessionCount')) {
-            document.getElementById('tapSessionCount').innerText = sessionTapCount;
-        }
-        if(document.getElementById('dailyTapCountShow')) {
-            document.getElementById('dailyTapCountShow').innerText = dailyTapCount;
-        }
-        if(document.getElementById('tapTokenShow')) {
-            document.getElementById('tapTokenShow').innerText = globalToken;
-        }
-
-        db.ref('users/' + uid).update({ 
-            token: globalToken, 
-            dailyTapCount: dailyTapCount, 
-            sessionTapCount: sessionTapCount,
-            lastTapDate: new Date().toDateString()
-        });
-
-        if (sessionTapCount >= 50) {
-            sessionTapCount = 0;
-            db.ref('users/' + uid).update({ sessionTapCount: 0 });
-            if(document.getElementById('tapSessionCount')) {
-                document.getElementById('tapSessionCount').innerText = 0;
-            }
-            alert('৫০টি ট্যাপ পূর্ণ হয়েছে! নিয়ম অনুযায়ী অটো অ্যাড ওপেন হচ্ছে...');
-            window.open(getRandomAd(), '_blank');
-        }
-    }
-
-    function calcExchangeValue() {
-        let tokens = parseInt(document.getElementById('exchangeAmountInput').value) || 0;
-        let taka = (tokens / 250).toFixed(2);
-        document.getElementById('exchangeCalculatedTaka').innerText = "৳" + taka;
-    }
-
-    function customExchangeTokens() {
-        let tokensToExchange = parseInt(document.getElementById('exchangeAmountInput').value);
-        if(isNaN(tokensToExchange) || tokensToExchange < 200) {
-            alert('কমপক্ষে ২০০ টোকেন দিতে হবে!');
-            return;
-        }
-        if(tokensToExchange > globalToken) {
-            alert('আপনার অ্যাকাউন্টে পর্যাপ্ত এআর টোকেন নেই!');
-            return;
-        }
-
-        let calculatedTaka = tokensToExchange / 250;
-        globalToken -= tokensToExchange;
-        globalBalance += calculatedTaka;
-
-        db.ref('users/' + uid).update({ token: globalToken, balance: globalBalance });
-        alert(`${tokensToExchange}টি এআর টোকেন সফলভাবে এক্সচেঞ্জ করে ৳${calculatedTaka.toFixed(2)} মূল ব্যালেন্সে যোগ করা হয়েছে!`);
-        document.getElementById('exchangeAmountInput').value = '1000';
-        calcExchangeValue();
-        window.open(getRandomAd(), '_blank');
-    }
-
-    function copyRefer() {
-        const c = document.getElementById('referInput');
-        c.select();
-        document.execCommand('copy');
-        alert('রেফার লিংক কপি হয়েছে!');
-    }
-
-    function reqWithdraw() {
-        const amount = parseFloat(document.getElementById('wAmount').value);
-        const acc = document.getElementById('wAcc').value;
-
-        if (totalRefers < 3 || totalAdsWatched < 120) {
-            alert(`শর্ত পূরণ হয়নি!\n* শর্ত: অন্তত ৩টি রেফার (আপনার আছে: ${totalRefers})\n* শর্ত: অন্তত ১২০টি অ্যাড (আপনার আছে: ${totalAdsWatched})`);
-            return;
-        }
-        if (amount > globalBalance) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
-        if (!acc || acc.length < 11) { alert('সঠিক নম্বর দিন!'); return; }
-
-        let actualPayout = amount - 10;
-        globalBalance -= amount;
-        db.ref('users/' + uid).update({ balance: globalBalance });
-        alert(`উইথড্র রিকোয়েস্ট সফল! ১০ টাকা ফি কেটে ৳${actualPayout} পাঠানো হবে।`);
-        document.getElementById('wAcc').value = '';
-        window.open(getRandomAd(), '_blank');
-    }
-
-    // লুডু গেম ইঞ্জিন
-    let userPos = 0;
-    let botPos = 0;
-    let isLudoActive = false;
-    let isUserTurn = true;
-    const ludoMaxPos = 9;
-
-    function renderLudoBoard() {
-        const track = document.getElementById('ludoTrack');
-        if(!track) return;
-        track.innerHTML = '';
-
-        for(let i = 0; i <= ludoMaxPos; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'ludo-cell' + (i === 0 ? ' start' : (i === ludoMaxPos ? ' home' : ''));
-            cell.innerText = i === 0 ? 'START' : (i === ludoMaxPos ? 'WIN 🏆' : i);
-            
-            if(userPos === i) {
-                const uPawn = document.createElement('div');
-                uPawn.className = 'pawn pawn-user';
-                cell.appendChild(uPawn);
-            }
-            if(botPos === i) {
-                const bPawn = document.createElement('div');
-                bPawn.className = 'pawn pawn-bot';
-                if(userPos === i) bPawn.style.transform = 'translateX(6px)';
-                cell.appendChild(bPawn);
-            }
-            track.appendChild(cell);
-        }
-    }
-    renderLudoBoard();
-
-    function initLudoGame() {
-        if(isLudoActive) return;
-
-        if (ludoPlayedCount >= 5) {
-            alert('আজকের মতো আপনার ৫টি লুডু খেলার দৈনিক সীমা শেষ!');
-            return;
-        }
-
-        if(globalBalance < 5.00) {
-            alert('লুডু খেলতে অ্যাকাউন্টে সর্বনিম্ন ৳৫.০০ থাকতে হবে!');
-            return;
-        }
-
-        globalBalance -= 5.00;
-        ludoPlayedCount++;
-        const today = new Date().toDateString();
-        
-        db.ref('users/' + uid).update({ 
-            balance: globalBalance, 
-            ludoPlayed: ludoPlayedCount,
-            lastLudoDate: today
-        });
-
-        window.open(getRandomAd(), '_blank');
-
-        userPos = 0;
-        botPos = 0;
-        isLudoActive = true;
-        isUserTurn = true;
-        renderLudoBoard();
-
-        document.getElementById('startLudoBtn').style.display = 'none';
-        document.getElementById('rollDiceBtn').style.display = 'block';
-        document.getElementById('ludoStatus').innerText = "অনলাইন অপোনেন্টের সাথে ম্যাচ যুক্ত হয়েছে! চাল দিন...";
-        document.getElementById('diceDisplay').innerText = "🎲";
-
-        let ludoRem = 5 - ludoPlayedCount;
-        if(document.getElementById('ludoLeftCount')) document.getElementById('ludoLeftCount').innerText = ludoRem < 0 ? 0 : ludoRem;
-    }
-
-    function userRollDice() {
-        if(!isLudoActive || !isUserTurn) return;
-
-        const rollBtn = document.getElementById('rollDiceBtn');
-        rollBtn.disabled = true;
-
-        let diceValue = Math.floor(Math.random() * 3) + 1;
-        document.getElementById('diceDisplay').innerText = diceValue;
-        
-        userPos += diceValue;
-        if(userPos > ludoMaxPos) userPos = ludoMaxPos;
-        renderLudoBoard();
-
-        if(userPos >= ludoMaxPos) {
-            finishLudoGame(true);
-            return;
-        }
-
-        isUserTurn = false;
-        document.getElementById('ludoStatus').innerText = "অপোনেন্ট (সবুজ) চাল দিচ্ছে...";
-
-        setTimeout(botRollDice, 1200);
-    }
-
-    function botRollDice() {
-        if(!isLudoActive) return;
-
-        let botDiceValue;
-        let botChance = Math.random();
-
-        if (botChance < 0.73) {
-            botDiceValue = Math.floor(Math.random() * 3) + 2;
-        } else {
-            botDiceValue = Math.floor(Math.random() * 2) + 1;
-        }
-
-        document.getElementById('diceDisplay').innerText = botDiceValue;
-        botPos += botDiceValue;
-        if(botPos > ludoMaxPos) botPos = ludoMaxPos;
-        renderLudoBoard();
-
-        if(botPos >= ludoMaxPos) {
-            finishLudoGame(false);
-            return;
-        }
-
-        isUserTurn = true;
-        document.getElementById('ludoStatus').innerText = "আপনার চাল! ছক্কা চাল দিন...";
-        document.getElementById('rollDiceBtn').disabled = false;
-    }
-
-    function finishLudoGame(userWon) {
-        isLudoActive = false;
-        document.getElementById('rollDiceBtn').style.display = 'none';
-        document.getElementById('startLudoBtn').style.display = 'block';
-
-        if(userWon) {
-            globalBalance += 8.00;
-            totalAdsWatched++;
-            db.ref('users/' + uid).update({ balance: globalBalance, adsWatched: totalAdsWatched });
-            document.getElementById('ludoStatus').innerText = "অভিনন্দন! আপনি জিতেছেন এবং ৳৮.০০ পেয়েছেন!";
-            alert('🎉 অভিনন্দন! আপনি লুডু জিতেছেন এবং ৳৮.০০ পুরষ্কার পেয়েছেন!');
-        } else {
-            document.getElementById('ludoStatus').innerText = "দুঃখিত! অপোনেন্ট জিতেছে। আবার চেষ্টা করুন!";
-            alert('দুঃখিত! আপনি এই ম্যাচে হেরে গেছেন।');
-        }
-
-        setTimeout(() => {
-            window.open(getRandomAd(), '_blank');
-        }, 1000);
-    }
-</script>
-</body>
-</html>
+        if(d.fullName && document.
