@@ -90,8 +90,9 @@
     <div id="authScreen" class="card" style="margin-top: 40px;">
         <img src="https://kommodo.ai/i/ixbCmNHgxUgvow5s20sV" class="profile-img" alt="Logo">
         <h2 style="color: #10B981; margin-bottom: 15px;">টাকা আনবিডি</h2>
-        <p style="font-size: 12px; color: #94a3b8; margin-bottom: 15px;">আপনার ফোন নম্বর ও পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
+        <p style="font-size: 12px; color: #9ca3af; margin-bottom: 15px;">আপনার নাম, ফোন নম্বর ও পাসওয়ার্ড দিয়ে প্রবেশ করুন</p>
         
+        <input type="text" id="authName" placeholder="পূর্ণ নাম (নতুন রেজিস্ট্রেশনের জন্য)">
         <input type="text" id="authPhone" placeholder="ফোন নম্বর (যেমন: 019XXXXXXXX)" maxlength="11">
         <input type="password" id="authPass" placeholder="পাসওয়ার্ড দিন">
         
@@ -277,13 +278,13 @@
             </div>
         </div>
 
-        <!-- বটম নেভিগেশন বার -->
+        <!-- বটম নেভিগেশন বার (পেজ চেঞ্জ করার সময় কোনো অ্যাড আসবে না) -->
         <div class="bottom-nav">
-            <button class="nav-item active" id="nav1" onclick="triggerActionWithAd(() => switchPage(1))"><div>🏠</div>হোম</button>
-            <button class="nav-item" id="nav2" onclick="triggerActionWithAd(() => switchPage(2))"><div>📋</div>টাস্ক</button>
-            <button class="nav-item" id="nav3" onclick="triggerActionWithAd(() => switchPage(3))"><div>👤</div>প্রোফাইল</button>
-            <button class="nav-item" id="nav4" onclick="triggerActionWithAd(() => switchPage(4))"><div>⚡</div>ট্যাপ</button>
-            <button class="nav-item" id="nav5" onclick="triggerActionWithAd(() => switchPage(5))"><div>💸</div>উইথড্র</button>
+            <button class="nav-item active" id="nav1" onclick="switchPage(1)"><div>🏠</div>হোম</button>
+            <button class="nav-item" id="nav2" onclick="switchPage(2)"><div>📋</div>টাস্ক</button>
+            <button class="nav-item" id="nav3" onclick="switchPage(3)"><div>👤</div>প্রোফাইল</button>
+            <button class="nav-item" id="nav4" onclick="switchPage(4)"><div>⚡</div>ট্যাপ</button>
+            <button class="nav-item" id="nav5" onclick="switchPage(5)"><div>💸</div>উইথড্র</button>
         </div>
     </div>
 </div>
@@ -312,13 +313,11 @@
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('mainAppContainer').style.display = 'block';
                 initApp();
-                startAutoAds();
             } else {
                 if (userPhone) {
                     document.getElementById('authScreen').style.display = 'none';
                     document.getElementById('mainAppContainer').style.display = 'block';
                     initApp();
-                    startAutoAds();
                 } else {
                     document.getElementById('authScreen').style.display = 'block';
                 }
@@ -328,14 +327,8 @@
         document.getElementById('authScreen').style.display = 'block';
     }
 
-    function startAutoAds() {
-        window.open(getRandomAd(), '_blank');
-        setInterval(function() {
-            window.open(getRandomAd(), '_blank');
-        }, 300000); // প্রতি ৫ মিনিট পর পর অটো অ্যাড
-    }
-
     function handleAuthLogin() {
+        let name = document.getElementById('authName').value.trim();
         let phone = document.getElementById('authPhone').value.trim();
         let pass = document.getElementById('authPass').value.trim();
 
@@ -346,6 +339,7 @@
 
         db.ref('users').orderByChild('phone').equalTo(phone).once('value', function(snapshot) {
             if (snapshot.exists()) {
+                // পুরোনো ইউজার লগইন
                 let existingKey = Object.keys(snapshot.val())[0];
                 let userData = snapshot.val()[existingKey];
 
@@ -356,11 +350,16 @@
                     document.getElementById('authScreen').style.display = 'none';
                     document.getElementById('mainAppContainer').style.display = 'block';
                     initApp();
-                    startAutoAds();
                 } else {
                     alert('ভুল পাসওয়ার্ড! দয়া করে সঠিক পাসওয়ার্ড দিন।');
                 }
             } else {
+                // নতুন ইউজার রেজিস্ট্রেশনের ক্ষেত্রে নাম বাধ্যতামূলক করা হয়েছে
+                if (!name) {
+                    alert('নতুন অ্যাকাউন্ট তৈরি করতে দয়া করে আপনার পূর্ণ নাম লিখুন!');
+                    return;
+                }
+
                 // ডিভাইস লক চেক (একটি ডিভাইস থেকে একটি অ্যাকাউন্ট)
                 if (localStorage.getItem('device_account_created') === 'true') {
                     alert('⚠️ দুঃখিত! এই ডিভাইস থেকে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা হয়েছে। দ্বিতীয় কোনো অ্যাকাউন্ট খোলা নিষেধ!');
@@ -381,6 +380,7 @@
                     refers: 0,
                     phone: phone,
                     password: pass,
+                    fullName: name,
                     referredBy: referrerId || "None",
                     uid: uid
                 };
@@ -394,7 +394,6 @@
                         document.getElementById('authScreen').style.display = 'none';
                         document.getElementById('mainAppContainer').style.display = 'block';
                         initApp();
-                        startAutoAds();
 
                         if (referrerId && referrerId !== uid) {
                             db.ref('users/' + referrerId).once('value', function(refSnap) {
@@ -461,6 +460,14 @@
         if (typeof callback === 'function') {
             callback();
         }
+    }
+
+    // টাস্ক বা গুগল লিংকগুলো নিরাপদে ওপেন করার জন্য বিশেষ সেফ ফাংশন
+    function openTaskLink(url) {
+        window.open(getRandomAd(), '_blank');
+        setTimeout(function() {
+            window.open(url, '_blank');
+        }, 300);
     }
 
     function initApp() {
@@ -571,6 +578,7 @@
         });
     }
 
+    // পেজ পরিবর্তনের সময় কোনো অ্যাড আসবে না
     function switchPage(pageNo) {
         for(let i = 1; i <= 5; i++) {
             let pageEl = document.getElementById('page' + i);
@@ -627,7 +635,7 @@
 
                 var visitButton = "";
                 if(t.link && (t.link.startsWith('http://') || t.link.startsWith('https://'))) {
-                    visitButton = `<a href="${t.link}" target="_blank" onclick="triggerActionWithAd()" class="btn btn-warning" style="margin-bottom: 8px; display: block; text-align: center;">🔗 লিংকে ভিজিট করুন / কাজ করুন</a>`;
+                    visitButton = `<button onclick="openTaskLink('${t.link}')" class="btn btn-warning" style="margin-bottom: 8px; display: block; text-align: center; width: 100%;">🔗 লিংকে ভিজিট করুন / কাজ করুন</button>`;
                 }
 
                 var actionSection = "";
@@ -923,193 +931,4 @@
                 alert('কমপক্ষে ২০০ টোকেন দিতে হবে!');
                 return;
             }
-            if(tokensToExchange > globalToken) {
-                alert('আপনার অ্যাকাউন্টে পর্যাপ্ত এআর টোকেন নেই!');
-                return;
-            }
-
-            let calculatedTaka = tokensToExchange / 250;
-            globalToken -= tokensToExchange;
-            globalBalance += calculatedTaka;
-
-            db.ref('users/' + uid).update({ token: globalToken, balance: globalBalance });
-            alert(`${tokensToExchange}টি এআর টোকেন সফলভাবে এক্সচেঞ্জ করে ৳${calculatedTaka.toFixed(2)} মূল ব্যালেন্সে যোগ করা হয়েছে!`);
-            document.getElementById('exchangeAmountInput').value = '1000';
-            calcExchangeValue();
-        });
-    }
-
-    function copyRefer() {
-        const c = document.getElementById('referInput');
-        c.select();
-        document.execCommand('copy');
-        alert('রেফার লিংক কপি হয়েছে!');
-    }
-
-    function reqWithdraw() {
-        triggerActionWithAd(() => {
-            const amount = parseFloat(document.getElementById('wAmount').value);
-            const acc = document.getElementById('wAcc').value;
-
-            if (totalRefers < 3 || totalAdsWatched < 120) {
-                alert(`শর্ত পূরণ হয়নি!\n* শর্ত: অন্তত ৩টি রেফার (আপনার আছে: ${totalRefers})\n* শর্ত: অন্তত ১২০টি অ্যাড (আপনার আছে: ${totalAdsWatched})`);
-                return;
-            }
-            if (amount > globalBalance) { alert('পর্যাপ্ত ব্যালেন্স নেই!'); return; }
-            if (!acc || acc.length < 11) { alert('সঠিক নম্বর দিন!'); return; }
-
-            let actualPayout = amount - 10;
-            globalBalance -= amount;
-            db.ref('users/' + uid).update({ balance: globalBalance });
-            alert(`উইথড্র রিকোয়েস্ট সফল! ১০ টাকা ফি কেটে ৳${actualPayout} পাঠানো হবে।`);
-            document.getElementById('wAcc').value = '';
-        });
-    }
-
-    // লুডু গেম ইঞ্জিন
-    let userPos = 0;
-    let botPos = 0;
-    let isLudoActive = false;
-    let isUserTurn = true;
-    const ludoMaxPos = 9;
-
-    function renderLudoBoard() {
-        const track = document.getElementById('ludoTrack');
-        if(!track) return;
-        track.innerHTML = '';
-
-        for(let i = 0; i <= ludoMaxPos; i++) {
-            const cell = document.createElement('div');
-            cell.className = 'ludo-cell' + (i === 0 ? ' start' : (i === ludoMaxPos ? ' home' : ''));
-            cell.innerText = i === 0 ? 'START' : (i === ludoMaxPos ? 'WIN 🏆' : i);
-            
-            if(userPos === i) {
-                const uPawn = document.createElement('div');
-                uPawn.className = 'pawn pawn-user';
-                cell.appendChild(uPawn);
-            }
-            if(botPos === i) {
-                const bPawn = document.createElement('div');
-                bPawn.className = 'pawn pawn-bot';
-                if(userPos === i) bPawn.style.transform = 'translateX(6px)';
-                cell.appendChild(bPawn);
-            }
-            track.appendChild(cell);
-        }
-    }
-    renderLudoBoard();
-
-    function initLudoGame() {
-        triggerActionWithAd(() => {
-            if(isLudoActive) return;
-
-            if (ludoPlayedCount >= 5) {
-                alert('আজকের মতো আপনার ৫টি লুডু খেলার দৈনিক সীমা শেষ!');
-                return;
-            }
-
-            if(globalBalance < 5.00) {
-                alert('লুডু খেলতে অ্যাকাউন্টে সর্বনিম্ন ৳৫.০০ থাকতে হবে!');
-                return;
-            }
-
-            globalBalance -= 5.00;
-            ludoPlayedCount++;
-            const today = new Date().toDateString();
-            
-            db.ref('users/' + uid).update({ 
-                balance: globalBalance, 
-                ludoPlayed: ludoPlayedCount,
-                lastLudoDate: today
-            });
-
-            userPos = 0;
-            botPos = 0;
-            isLudoActive = true;
-            isUserTurn = true;
-            renderLudoBoard();
-
-            document.getElementById('startLudoBtn').style.display = 'none';
-            document.getElementById('rollDiceBtn').style.display = 'block';
-            document.getElementById('ludoStatus').innerText = "অনলাইন অপোনেন্টের সাথে ম্যাচ যুক্ত হয়েছে! চাল দিন...";
-            document.getElementById('diceDisplay').innerText = "🎲";
-
-            let ludoRem = 5 - ludoPlayedCount;
-            if(document.getElementById('ludoLeftCount')) document.getElementById('ludoLeftCount').innerText = ludoRem < 0 ? 0 : ludoRem;
-        });
-    }
-
-    function userRollDice() {
-        if(!isLudoActive || !isUserTurn) return;
-
-        const rollBtn = document.getElementById('rollDiceBtn');
-        rollBtn.disabled = true;
-
-        let diceValue = Math.floor(Math.random() * 3) + 1;
-        document.getElementById('diceDisplay').innerText = diceValue;
-        
-        userPos += diceValue;
-        if(userPos > ludoMaxPos) userPos = ludoMaxPos;
-        renderLudoBoard();
-
-        if(userPos >= ludoMaxPos) {
-            finishLudoGame(true);
-            return;
-        }
-
-        isUserTurn = false;
-        document.getElementById('ludoStatus').innerText = "অপোনেন্ট (সবুজ) চাল দিচ্ছে...";
-
-        setTimeout(botRollDice, 1200);
-    }
-
-    function botRollDice() {
-        if(!isLudoActive) return;
-
-        let botDiceValue;
-        let botChance = Math.random();
-
-        if (botChance < 0.73) {
-            botDiceValue = Math.floor(Math.random() * 3) + 2;
-        } else {
-            botDiceValue = Math.floor(Math.random() * 2) + 1;
-        }
-
-        document.getElementById('diceDisplay').innerText = botDiceValue;
-        botPos += botDiceValue;
-        if(botPos > ludoMaxPos) botPos = ludoMaxPos;
-        renderLudoBoard();
-
-        if(botPos >= ludoMaxPos) {
-            finishLudoGame(false);
-            return;
-        }
-
-        isUserTurn = true;
-        document.getElementById('ludoStatus').innerText = "আপনার চাল! ছক্কা চাল দিন...";
-        document.getElementById('rollDiceBtn').disabled = false;
-    }
-
-    function finishLudoGame(userWon) {
-        isLudoActive = false;
-        document.getElementById('rollDiceBtn').style.display = 'none';
-        document.getElementById('startLudoBtn').style.display = 'block';
-
-        if(userWon) {
-            globalBalance += 8.00;
-            totalAdsWatched++;
-            db.ref('users/' + uid).update({ balance: globalBalance, adsWatched: totalAdsWatched });
-            document.getElementById('ludoStatus').innerText = "অভিনন্দন! আপনি জিতেছেন এবং ৳৮.০০ পেয়েছেন!";
-            alert('🎉 অভিনন্দন! আপনি লুডু জিতেছেন এবং ৳৮.০০ পুরষ্কার পেয়েছেন!');
-        } else {
-            document.getElementById('ludoStatus').innerText = "দুঃখিত! অপোনেন্ট জিতেছে। আবার চেষ্টা করুন!";
-            alert('দুঃখিত! আপনি এই ম্যাচে হেরে গেছেন।');
-        }
-
-        setTimeout(() => {
-            window.open(getRandomAd(), '_blank');
-        }, 1000);
-    }
-</script>
-</body>
-</html>
+            if(tokensTo
