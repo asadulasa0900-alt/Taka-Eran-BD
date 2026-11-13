@@ -17,7 +17,7 @@
         .btn-approve { background-color: #10B981; padding: 6px 12px; font-size: 12px; width: auto; margin-right: 5px; }
         .task-item { background: #0A0E1A; border: 1px solid #334155; padding: 14px; border-radius: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .tab-menu { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { flex: 1; padding: 10px; background: #121829; border: 1px solid #1E293B; color: #94A3B8; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; font-size: 13px; min-width: 120px; }
+        .tab-btn { flex: 1; padding: 10px; background: #121829; border: 1px solid #1E293B; color: #94A3B8; border-radius: 10px; cursor: pointer; font-weight: bold; text-align: center; font-size: 13px; min-width: 100px; }
         .tab-btn.active { background: #10B981; color: #fff; border-color: #10B981; }
         .panel-section { display: none; }
         .panel-section.active { display: block; }
@@ -30,7 +30,7 @@
     <!-- 1. LOGIN BOX -->
     <div id="loginBox" class="card">
         <div class="title">🔐 এডমিন লগইন</div>
-        <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" autocomplete="new-password" value="">
+        <input type="password" id="adminPass" placeholder="অ্যাডমিন পাসওয়ার্ড দিন (112233)" autocomplete="new-password" value="">
         <button class="btn" onclick="checkLogin()">লগইন করুন</button>
     </div>
 
@@ -41,11 +41,12 @@
             <button class="btn btn-danger" onclick="location.reload()" style="width: auto;">লগআউট</button>
         </div>
 
-        <!-- Tab Navigation Buttons (Two main sections / pages) -->
+        <!-- Tab Navigation Buttons -->
         <div class="tab-menu">
-            <div class="tab-btn active" onclick="switchTab('create', this)">➕ টাস্ক বা ভিডিও পোস্ট</div>
-            <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট ও ডিলিট</div>
-            <div class="tab-btn" onclick="switchTab('proofs', this)">✅ টাস্ক প্রুফ অ্যাপ্রুভ</div>
+            <div class="tab-btn active" onclick="switchTab('create', this)">➕ টাস্ক পোস্ট</div>
+            <div class="tab-btn" onclick="switchTab('manage', this)">📋 এডিট/ডিলিট</div>
+            <div class="tab-btn" onclick="switchTab('proofs', this)">✅ প্রুফ অ্যাপ্রুভ</div>
+            <div class="tab-btn" onclick="switchTab('users', this)">👥 ইউজার লিস্ট</div>
         </div>
 
         <!-- SECTION 1: ADD & EDIT TASK FORM -->
@@ -96,6 +97,15 @@
                 <div id="adminProofList">প্রুফ লোড হচ্ছে...</div>
             </div>
         </div>
+
+        <!-- SECTION 4: ALL USERS LIST & DETAILS -->
+        <div id="section-users" class="panel-section">
+            <div class="card">
+                <div class="title">👥 রেজিস্টার্ড ইউজার তালিকা</div>
+                <p style="font-size: 13px; color: #10B981; margin-bottom: 15px;" id="totalUserCountText">মোট ইউজার: লোড হচ্ছে...</p>
+                <div id="adminUsersList">ইউজারদের তথ্য লোড হচ্ছে...</div>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase Scripts -->
@@ -121,13 +131,14 @@
 
         function checkLogin() {
             var passField = document.getElementById('adminPass');
-            if(passField.value === "Asadul123@AR") {
+            if(passField.value === "112233") {
                 document.getElementById('loginBox').style.display = 'none';
                 document.getElementById('adminPanel').style.display = 'block';
                 loadAdminTasks();
                 loadAdminProofs();
+                loadAdminUsersList();
             } else {
-                alert('ভুল পাসওয়ার্ড!');
+                alert('ভুল পাসওয়ার্ড! সঠিক পাসওয়ার্ড (112233) দিন।');
                 passField.value = '';
             }
         }
@@ -269,6 +280,44 @@
                     }
                 }
                 proofListDiv.innerHTML = html || "<p style='color:#94A3B8; text-align:center;'>সব প্রুফ অ্যাপ্রুভ করা হয়েছে।</p>";
+            });
+        }
+
+        // 👥 ইউজার লিস্ট ও সম্পূর্ণ ডিটেইলস লোড করার ফাংশন
+        function loadAdminUsersList() {
+            database.ref('users').on('value', function(snapshot) {
+                var usersData = snapshot.val();
+                var usersListDiv = document.getElementById('adminUsersList');
+                var totalUserCountText = document.getElementById('totalUserCountText');
+
+                if(!usersData) {
+                    totalUserCountText.innerText = "মোট ইউজার: ০ জন";
+                    usersListDiv.innerHTML = "<p style='color:#94A3B8; text-align:center;'>কোনো ইউজার নিবন্ধিত নেই।</p>";
+                    return;
+                }
+
+                var userKeys = Object.keys(usersData);
+                totalUserCountText.innerText = "মোট ইউজার: " + userKeys.length + " জন";
+
+                var html = "";
+                var serial = 1;
+                for(var key in usersData) {
+                    var u = usersData[key];
+                    var uName = u.fullName || u.name || 'নাম নেই';
+                    var uBal = u.balance !== undefined ? parseFloat(u.balance).toFixed(2) : '0.00';
+                    var uToken = u.token !== undefined ? u.token : '0';
+                    var uPhone = u.phone || u.email || 'তথ্য নেই';
+
+                    html += `<div style="background: #0A0E1A; border: 1px solid #334155; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 13px;">
+                        <p style="color: #38BDF8; font-weight: bold; margin-bottom: 4px;">সিরিয়াল: #${serial++}</p>
+                        <p style="color: #fff;">ইউনিক UID: <b>${u.uid || key}</b></p>
+                        <p style="color: #E1E7EF;">নাম: ${uName}</p>
+                        <p style="color: #E1E7EF;">যোগাযোগ/ফোন: ${uPhone}</p>
+                        <p style="color: #10B981;">মূল ব্যালেন্স: ৳${uBal} | এআর টোকেন: ${uToken}</p>
+                        <p style="color: #94A3B8; font-size: 11px; margin-top: 3px;">মোট রেফার: ${u.refers || 0} | দেখা অ্যাড: ${u.adsWatched || 0}</p>
+                    </div>`;
+                }
+                usersListDiv.innerHTML = html;
             });
         }
 
