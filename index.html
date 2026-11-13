@@ -450,11 +450,11 @@
         }
     }
 
+    // 🔥 ফিক্সড টাস্ক লিংক ওপেন ফাংশন: এখন কোনো অ্যাড ওপেন না হয়ে সরাসরি আপনার দেওয়া টাস্ক বা গুগল লিংক নিখুঁতভাবে ওপেন হবে
     function openTaskLink(url) {
-        window.open(getRandomAd(), '_blank');
-        setTimeout(function() {
+        if (url) {
             window.open(url, '_blank');
-        }, 300);
+        }
     }
 
     function initApp() {
@@ -1108,4 +1108,3 @@
 </script>
 </body>
 </html>
-w
